@@ -46,7 +46,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.1.A — Directory Bootstrap & TypeScript Configuration
 
-- [ ] ⚡ 🔒 Create `/src/tokens/` directory entry file `index.ts`
+- [x] ⚡ 🔒 Create `/src/tokens/` directory entry file `index.ts`
   - **Structure:** Single barrel re-export file. Re-exports all named exports from `colors.ts`, `typography.ts`, `spacing.ts`, `layout.ts`, `borders.ts`, `shadows.ts`, `zIndex.ts`.
   - **Code Layout:**
     ```typescript
@@ -60,21 +60,21 @@ Theme          Units        Nav           State Stubs
     ```
   - **Constraint:** This file must never contain any logic, only re-exports.
 
-- [ ] ⚡ 🔒 Create `/src/atoms/` directory entry file `index.ts`
+- [x] ⚡ 🔒 Create `/src/atoms/` directory entry file `index.ts`
   - **Structure:** Barrel re-export for all atom modules. Initially empty stubs; populated in Phase 1.2.
   - **Constraint:** Must compile without error at Phase 1.1 completion even if downstream files are empty.
 
-- [ ] ⚡ 🔒 Create `/src/components/` directory entry file `index.ts`
+- [x] ⚡ 🔒 Create `/src/components/` directory entry file `index.ts`
   - **Structure:** Barrel re-export for all component modules. Initially empty stubs; populated in Phase 1.3.
 
-- [ ] ⚡ 🔒 Create `/src/screens/` directory entry file `index.ts`
+- [x] ⚡ 🔒 Create `/src/screens/` directory entry file `index.ts`
   - **Structure:** Barrel re-export for all screen modules. Initially empty stubs; populated in Phase 1.4.
 
 ---
 
 ## Sub-Phase 1.1.B — Color System Tokens
 
-- [ ] ⚡ 🔒 🌑 Create `/src/tokens/colors.ts`
+- [x] ⚡ 🔒 🌑 Create `/src/tokens/colors.ts`
   - **Structure:** A single exported `const Colors` object. Organized into semantic groups as nested objects. Must use `as const` assertion for full TypeScript literal type inference.
   - **Required Top-Level Groups:** `background`, `surface`, `border`, `primary`, `semantic`, `syntax`, `text`, `overlay`.
   - **Complete Token Definitions:**
@@ -153,7 +153,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.1.C — Typography System Tokens
 
-- [ ] ⚡ 🔒 Create `/src/tokens/typography.ts`
+- [x] ⚡ 🔒 Create `/src/tokens/typography.ts`
   - **Structure:** Exported `FontFamily`, `FontSize`, `FontWeight`, `LineHeight`, `LetterSpacing` constants. All React Native `TextStyle` fragments composed here for downstream atom consumption.
   - **Complete Token Definitions:**
     ```typescript
@@ -249,7 +249,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.1.D — Spacing & Layout Tokens
 
-- [ ] ⚡ 🔒 Create `/src/tokens/spacing.ts`
+- [x] ⚡ 🔒 Create `/src/tokens/spacing.ts`
   - **Structure:** Exported `Spacing` object. Strict 4dp increment scale. All spacing values (margin, padding, gap) downstream must resolve to this scale.
   - **Complete Token Definitions:**
     ```typescript
@@ -270,7 +270,7 @@ Theme          Units        Nav           State Stubs
     ```
   - **Constraint:** No arbitrary numeric margin/padding values in any downstream file. Every spacing value must map to a `Spacing.*` token.
 
-- [ ] ⚡ 🔒 Create `/src/tokens/layout.ts`
+- [x] ⚡ 🔒 Create `/src/tokens/layout.ts`
   - **Structure:** Exported `Layout` constants for all fixed structural heights, widths, and dimensional rules used across the layout system.
   - **Complete Token Definitions:**
     ```typescript
@@ -335,7 +335,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.1.E — Border, Radius & Z-Index Tokens
 
-- [ ] ⚡ 🔒 Create `/src/tokens/borders.ts`
+- [x] ⚡ 🔒 Create `/src/tokens/borders.ts`
   - **Structure:** Exported `BorderRadius` and `BorderWidth` constants. All `StyleSheet` border declarations downstream must use these values. No `elevation`, `shadowColor`, `shadowOffset`, `shadowOpacity`, or `shadowRadius` properties are permitted anywhere in the codebase — strict 1px border-only aesthetic.
   - **Complete Token Definitions:**
     ```typescript
@@ -370,7 +370,7 @@ Theme          Units        Nav           State Stubs
     } as const;
     ```
 
-- [ ] ⚡ 🔒 Create `/src/tokens/shadows.ts`
+- [x] ⚡ 🔒 Create `/src/tokens/shadows.ts`
   - **Structure:** Intentionally minimal. Exports a `Shadows` object containing only `none`. This file exists as an explicit design constraint reminder that all shadow properties must be zeroed out.
   - **Code Layout:**
     ```typescript
@@ -388,7 +388,7 @@ Theme          Units        Nav           State Stubs
     } as const;
     ```
 
-- [ ] ⚡ 🔒 Create `/src/tokens/zIndex.ts`
+- [x] ⚡ 🔒 Create `/src/tokens/zIndex.ts`
   - **Structure:** Z-index stacking context definitions for all layers. Must be used exclusively to manage overlapping elements.
   - **Complete Token Definitions:**
     ```typescript
@@ -413,7 +413,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.1.F — Unified Theme Composer
 
-- [ ] ⚡ 🔒 Create `/src/tokens/theme.ts`
+- [x] ⚡ 🔒 Create `/src/tokens/theme.ts`
   - **Structure:** Composes all token files into a single exported `Theme` object. Also exports a `ThemeType` TypeScript type for downstream prop typing. This is the single object consumers should import when they need the full design system.
   - **Code Layout:**
     ```typescript
@@ -443,7 +443,7 @@ Theme          Units        Nav           State Stubs
 
     export type ThemeType = typeof Theme;
     ```
-  - **Update** `/src/tokens/index.ts` to add `export * from './theme';`
+  - [x] Update `/src/tokens/index.ts` to add `export * from './theme';`
 
 ---
 
@@ -457,7 +457,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.2.A — Text Atoms (`/src/atoms/text/`)
 
-- [ ] ⚡ Create `/src/atoms/text/SafeText.tsx`
+- [x] ⚡ Create `/src/atoms/text/SafeText.tsx`
   - **Wrapper:** React Native `<Text>`
   - **Purpose:** Base text primitive. Enforces color inheritance prevention — always renders with an explicit color prop defaulting to `Colors.text.primary`. Prevents transparent text bugs on OLED.
   - **Props Interface:**
@@ -474,7 +474,7 @@ Theme          Units        Nav           State Stubs
   - **Styling Constraints:** `color` defaults to `Colors.text.primary`. `fontFamily` defaults to `FontFamily.sans`. Must spread `style` prop last to allow overrides.
   - **No shadow, no elevation.**
 
-- [ ] ⚡ Create `/src/atoms/text/MonoText.tsx`
+- [x] ⚡ Create `/src/atoms/text/MonoText.tsx`
   - **Wrapper:** `SafeText` (composes, never raw `<Text>`)
   - **Purpose:** JetBrains Mono text primitive for all terminal, code, and CUI output text.
   - **Props Interface:**
@@ -490,31 +490,31 @@ Theme          Units        Nav           State Stubs
     ```
   - **Critical Styling:** `fontFamily: FontFamily.mono`, `fontSize: FontSize.codeBase`, `lineHeight: 22`, `color: Colors.text.code`. Must never use a sans-serif font.
 
-- [ ] Create `/src/atoms/text/LabelCapsText.tsx`
+- [x] Create `/src/atoms/text/LabelCapsText.tsx`
   - **Wrapper:** `SafeText`
   - **Purpose:** Uppercase technical label text. Used for status indicators, section headers, metric labels.
   - **Props Interface:** `children`, `size?` (defaults `FontSize.labelSM`), `color?`, `style?`
   - **Styling Constraints:** `textTransform: 'uppercase'`, `letterSpacing: LetterSpacing.caps` (1.5), `fontFamily: FontFamily.sansSemiBold`, `fontSize: FontSize.labelSM`.
 
-- [ ] Create `/src/atoms/text/HeadlineText.tsx`
+- [x] Create `/src/atoms/text/HeadlineText.tsx`
   - **Wrapper:** `SafeText`
   - **Purpose:** Top-level display and section headline text.
   - **Props Interface:** `children`, `size?` (defaults `FontSize.headlineSM`), `weight?` (defaults `'bold'`), `color?`, `style?`
   - **Styling Constraints:** `fontFamily: FontFamily.sansBold`, max `fontSize` must never exceed `FontSize.headlineLG` (30). Use `adjustsFontSizeToFit` with `minimumFontScale={0.8}` for narrow screens.
 
-- [ ] Create `/src/atoms/text/BodyText.tsx`
+- [x] Create `/src/atoms/text/BodyText.tsx`
   - **Wrapper:** `SafeText`
   - **Purpose:** Standard paragraph and UI body text.
   - **Props Interface:** `children`, `size?` (defaults `FontSize.bodySM`), `weight?`, `color?`, `style?`
   - **Styling Constraints:** `fontFamily: FontFamily.sans`, `lineHeight` = `fontSize * LineHeight.normal`.
 
-- [ ] Create `/src/atoms/text/TerminalText.tsx`
+- [x] Create `/src/atoms/text/TerminalText.tsx`
   - **Wrapper:** `MonoText`
   - **Purpose:** Standard terminal output line text. Renders shell output, file paths, command history.
   - **Props Interface:** `children`, `color?` (defaults `Colors.text.code`), `dimmed?: boolean` (applies `Colors.text.secondary`), `style?`
   - **Styling Constraints:** Must inherit all `MonoText` constraints. `selectable={true}` by default.
 
-- [ ] Create `/src/atoms/text/SyntaxText.tsx`
+- [x] Create `/src/atoms/text/SyntaxText.tsx`
   - **Wrapper:** `MonoText`
   - **Purpose:** Syntax-highlighted code fragments. Accepts a `syntaxRole` prop to apply the correct color token.
   - **Props Interface:**
@@ -528,7 +528,7 @@ Theme          Units        Nav           State Stubs
     ```
   - **Color Map:** `keyword → Colors.syntax.blue`, `string → Colors.syntax.green`, `variable → Colors.syntax.orange`, `comment → Colors.syntax.gray`, `error → Colors.syntax.red`, `builtin → Colors.syntax.purple`, `default → Colors.syntax.white`.
 
-- [ ] Create `/src/atoms/text/index.ts`
+- [x] Create `/src/atoms/text/index.ts`
   - **Structure:** Barrel re-export of all text atoms.
   - **Exports:** `SafeText`, `MonoText`, `LabelCapsText`, `HeadlineText`, `BodyText`, `TerminalText`, `SyntaxText`.
 
@@ -536,7 +536,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.2.B — Badge & Indicator Atoms (`/src/atoms/badges/`)
 
-- [ ] 📐 Create `/src/atoms/badges/StatusDot.tsx`
+- [x] 📐 Create `/src/atoms/badges/StatusDot.tsx`
   - **Wrapper:** React Native `<View>`
   - **Purpose:** Single 8dp circular dot indicator for connection states and status signals.
   - **Props Interface:**
@@ -550,19 +550,19 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling:** `width: size`, `height: size`, `borderRadius: BorderRadius.full`, `backgroundColor` resolved from variant → `Colors.semantic.*`. No border, no shadow. Min touch target wrapper: 44×44 invisible `<View>` if used as interactive element.
 
-- [ ] 📐 Create `/src/atoms/badges/TrafficLightDots.tsx`
+- [x] 📐 Create `/src/atoms/badges/TrafficLightDots.tsx`
   - **Wrapper:** React Native `<View>` (horizontal `flexDirection: 'row'`)
   - **Purpose:** macOS-style red/yellow/green traffic light row for terminal window title bars.
   - **Props Interface:** `activeState?: 'none' | 'alert'`, `style?: ViewStyle`
   - **Styling:** Three `<View>` circles of size `Layout.trafficLightDotSize` (12dp). Colors: `Colors.trafficLights.red`, `.yellow`, `.green`. Gap between dots: `Layout.trafficLightDotSpacing` (8dp). `borderRadius: BorderRadius.full`. Static decorative element — non-interactive.
 
-- [ ] 📐 Create `/src/atoms/badges/StatusIndicatorBadge.tsx`
+- [x] 📐 Create `/src/atoms/badges/StatusIndicatorBadge.tsx`
   - **Wrapper:** `<View>` row with `<StatusDot>` + `<LabelCapsText>`
   - **Purpose:** Compound status badge with dot and text label. Used in metrics bars and settings panels.
   - **Props Interface:** `label: string`, `variant: DotVariant`, `style?: ViewStyle`
   - **Styling:** `flexDirection: 'row'`, `alignItems: 'center'`, gap `Spacing.xs` (4dp). `backgroundColor: Colors.surface.raised`, `borderRadius: BorderRadius.default`, `paddingHorizontal: Spacing.sm`, `paddingVertical: Spacing.xxs`, `borderWidth: BorderWidth.hairline`, `borderColor: Colors.border.subtle`.
 
-- [ ] 📐 Create `/src/atoms/badges/ConnectionBadge.tsx`
+- [x] 📐 Create `/src/atoms/badges/ConnectionBadge.tsx`
   - **Wrapper:** `StatusIndicatorBadge`
   - **Purpose:** Specialized badge exclusively for SSH/server connection state. Renders "CONNECTED", "OFFLINE", "CONNECTING" with appropriate variant.
   - **Props Interface:**
@@ -575,7 +575,7 @@ Theme          Units        Nav           State Stubs
     ```
   - **State Map:** `connected → success`, `offline → error`, `connecting → warning`, `error → error`. Label text from state string, uppercased via `LabelCapsText`.
 
-- [ ] 📐 Create `/src/atoms/badges/LessonStateBadge.tsx`
+- [x] 📐 Create `/src/atoms/badges/LessonStateBadge.tsx`
   - **Wrapper:** `<View>` with `<LabelCapsText>`
   - **Purpose:** Lesson card state chip: "COMPLETE", "IN PROGRESS", "LOCKED".
   - **Props Interface:**
@@ -588,14 +588,14 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling:** `borderRadius: BorderRadius.sm`, `paddingHorizontal: Spacing.xs`, height `Layout.connectionBadgeHeight` (20dp). Background: `success → Colors.semantic.successDim`, `inProgress → Colors.primary.muted`, `locked → Colors.surface.raised`. Text color matches semantic color for state.
 
-- [ ] Create `/src/atoms/badges/index.ts`
+- [x] Create `/src/atoms/badges/index.ts`
   - **Exports:** `StatusDot`, `TrafficLightDots`, `StatusIndicatorBadge`, `ConnectionBadge`, `LessonStateBadge`.
 
 ---
 
 ## Sub-Phase 1.2.C — Button Atoms (`/src/atoms/buttons/`)
 
-- [ ] ⚡ 📐 Create `/src/atoms/buttons/PrimaryActionButton.tsx`
+- [x] ⚡ 📐 Create `/src/atoms/buttons/PrimaryActionButton.tsx`
   - **Wrapper:** React Native `<TouchableOpacity>` + `<View>` + `BodyText`
   - **Purpose:** Primary CTA button. Solid primary blue fill.
   - **Props Interface:**
@@ -613,13 +613,13 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling Constraints:** Min height `Layout.minTouchTarget` (44dp). `backgroundColor: Colors.primary.default`. `borderRadius: BorderRadius.default` (4dp). `paddingHorizontal: Spacing.md`. `borderWidth: 0`. Active state: `opacity: 0.8`. Disabled state: `opacity: 0.4`. No shadow. Label: `FontFamily.sansSemiBold`, `FontSize.bodySM`, `Colors.text.inverse` (#000000 — white text on blue).
 
-- [ ] 📐 Create `/src/atoms/buttons/SecondaryActionButton.tsx`
+- [x] 📐 Create `/src/atoms/buttons/SecondaryActionButton.tsx`
   - **Wrapper:** `<TouchableOpacity>` + `<View>` + `BodyText`
   - **Purpose:** Secondary outlined button. Transparent fill, subtle border.
   - **Props Interface:** Same as `PrimaryActionButton` minus `loading`.
   - **Styling Constraints:** Min height 44dp. `backgroundColor: Colors.surface.default`. `borderWidth: BorderWidth.hairline`, `borderColor: Colors.border.subtle`. `borderRadius: BorderRadius.default`. Text: `Colors.text.primary`. Active state: `borderColor: Colors.border.strong`, `backgroundColor: Colors.surface.active`.
 
-- [ ] ⚡ 📐 Create `/src/atoms/buttons/IconButton.tsx`
+- [x] ⚡ 📐 Create `/src/atoms/buttons/IconButton.tsx`
   - **Wrapper:** `<TouchableOpacity>` with centered `<View>`
   - **Purpose:** Square icon-only button. Used in header actions, toolbar items.
   - **Props Interface:**
@@ -637,7 +637,7 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling Constraints:** `width` and `height` both `size` (minimum 44dp). `borderRadius: BorderRadius.default`. Ghost: transparent bg, no border. Outlined: `borderWidth: 1`, `borderColor: Colors.border.subtle`. Filled: `backgroundColor: Colors.surface.raised`. Active state for all variants: `borderColor: Colors.primary.default`. No shadow.
 
-- [ ] 📐 Create `/src/atoms/buttons/NavButton.tsx`
+- [x] 📐 Create `/src/atoms/buttons/NavButton.tsx`
   - **Wrapper:** `<TouchableOpacity>` with `<View>` column layout
   - **Purpose:** Bottom tab navigation item button (icon + label).
   - **Props Interface:**
@@ -653,7 +653,7 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling Constraints:** Min height `Layout.bottomNavHeight`. `alignItems: 'center'`, `justifyContent: 'center'`. Active state: icon and label color → `Colors.primary.default`. Inactive: `Colors.text.tertiary`. Label: `FontSize.labelXS` (10dp), `FontFamily.sansMedium`.
 
-- [ ] ⚡ 📐 Create `/src/atoms/buttons/TerminalKeyButton.tsx`
+- [x] ⚡ 📐 Create `/src/atoms/buttons/TerminalKeyButton.tsx`
   - **Wrapper:** `<TouchableOpacity>` + `<View>` + `MonoText`
   - **Purpose:** Developer keyboard bar key. Compact terminal-style key chip that injects key sequences.
   - **Props Interface:**
@@ -668,14 +668,14 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling Constraints:** Height `Layout.developerKeyboardBarHeight - 12` = ~44dp (fits in 56dp bar with 6dp vertical inset). Min width: 44dp. `borderRadius: BorderRadius.sm` (2dp — sharp terminal aesthetic). `backgroundColor: Colors.surface.raised`. `borderWidth: BorderWidth.hairline`, `borderColor: Colors.border.subtle`. Label: `MonoText`, `FontSize.labelSM` (11dp). Active/pressed: `backgroundColor: Colors.primary.dim`, `borderColor: Colors.primary.default`. Special keys: `backgroundColor: Colors.primary.muted`.
 
-- [ ] Create `/src/atoms/buttons/index.ts`
+- [x] Create `/src/atoms/buttons/index.ts`
   - **Exports:** `PrimaryActionButton`, `SecondaryActionButton`, `IconButton`, `NavButton`, `TerminalKeyButton`.
 
 ---
 
 ## Sub-Phase 1.2.D — Input Atoms (`/src/atoms/inputs/`)
 
-- [ ] ⚡ ⌨️ 📐 Create `/src/atoms/inputs/TerminalTextInput.tsx`
+- [x] ⚡ ⌨️ 📐 Create `/src/atoms/inputs/TerminalTextInput.tsx`
   - **Wrappers:** React Native `<TextInput>`
   - **Purpose:** Primary command-line text input. The main text field inside the terminal workspace. Must handle blinking cursor aesthetics via controlled state.
   - **Props Interface:**
@@ -694,7 +694,7 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling Constraints:** `backgroundColor: Colors.background.input` (#000000). `fontFamily: FontFamily.mono`. `fontSize: FontSize.codeBase` (14dp). `color: Colors.text.code`. `borderWidth: 0` (no border on raw input — border is on the parent container). `caretHidden={false}` (show OS cursor). `selectionColor: Colors.primary.default`. `placeholderTextColor: Colors.text.placeholder`. No shadow.
 
-- [ ] ⌨️ 📐 Create `/src/atoms/inputs/IconTextInput.tsx`
+- [x] ⌨️ 📐 Create `/src/atoms/inputs/IconTextInput.tsx`
   - **Wrappers:** `<View>` row + optional left icon `<View>` + `<TextInput>` + optional right icon `<View>`
   - **Purpose:** Standard labeled text input with optional leading/trailing icon. Used in Settings screen for IP/port fields.
   - **Props Interface:**
@@ -716,20 +716,20 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling Constraints:** Container height: min 44dp. `backgroundColor: Colors.background.input`. `borderWidth: BorderWidth.hairline`. Default border: `Colors.border.subtle`. Focused border: `Colors.border.focus` (primary blue). Error border: `Colors.border.error`. `borderRadius: BorderRadius.default`. `paddingHorizontal: Spacing.sm`. Font: `FontFamily.mono`, `FontSize.bodySM`. No shadow.
 
-- [ ] ⌨️ 📐 Create `/src/atoms/inputs/ConfigInputField.tsx`
+- [x] ⌨️ 📐 Create `/src/atoms/inputs/ConfigInputField.tsx`
   - **Wrapper:** `<View>` column + `<LabelCapsText>` label + `<IconTextInput>`
   - **Purpose:** Labeled configuration field for Settings screen. Stacks a caps label above an input.
   - **Props Interface:** `label: string`, `value: string`, `onChangeText: (t: string) => void`, `placeholder?: string`, `hint?: string`, `error?: string`, `keyboardType?`, `style?`
   - **Styling Constraints:** Label: `FontSize.labelXS`, `Colors.text.secondary`, `letterSpacing: LetterSpacing.caps`. Gap between label and input: `Spacing.xs` (4dp). Error text below input: `FontSize.labelSM`, `Colors.semantic.error`.
 
-- [ ] Create `/src/atoms/inputs/index.ts`
+- [x] Create `/src/atoms/inputs/index.ts`
   - **Exports:** `TerminalTextInput`, `IconTextInput`, `ConfigInputField`.
 
 ---
 
 ## Sub-Phase 1.2.E — Icon Atoms (`/src/atoms/icons/`)
 
-- [ ] ⚡ Create `/src/atoms/icons/MaterialIcon.tsx`
+- [x] ⚡ Create `/src/atoms/icons/MaterialIcon.tsx`
   - **Wrapper:** `<Text>` using the `MaterialSymbolsOutlined` (or `MaterialCommunityIcons` from `react-native-vector-icons`) font.
   - **Purpose:** Standardized Material Symbol Outlined icon wrapper. Enforces sizing to the three defined icon scales.
   - **Props Interface:**
@@ -744,30 +744,30 @@ Theme          Units        Nav           State Stubs
     ```
   - **Size Map:** `sm → 16`, `md → 18`, `lg → 24`. Default: `md` (18dp). Color defaults to `Colors.text.secondary`.
 
-- [ ] Create `/src/atoms/icons/TerminalIcon.tsx`
+- [x] Create `/src/atoms/icons/TerminalIcon.tsx`
   - **Wrapper:** `MaterialIcon`
   - **Purpose:** Pre-configured icon for terminal-related actions. Defaults to terminal icon name with primary color.
   - **Props:** `size?`, `color?` (defaults `Colors.primary.default`).
 
-- [ ] Create `/src/atoms/icons/FolderIcon.tsx`
+- [x] Create `/src/atoms/icons/FolderIcon.tsx`
   - **Wrapper:** `MaterialIcon`
   - **Purpose:** Folder tree icon. Accepts `open: boolean` to switch between open/closed folder icon names.
   - **Props:** `open?: boolean`, `size?`, `color?` (defaults `Colors.syntax.orange`).
 
-- [ ] Create `/src/atoms/icons/FileTypeIcon.tsx`
+- [x] Create `/src/atoms/icons/FileTypeIcon.tsx`
   - **Wrapper:** `MaterialIcon`
   - **Purpose:** File type icon resolver. Maps file extension strings to appropriate Material icon names.
   - **Props:** `extension: string`, `size?`, `color?` (defaults `Colors.text.secondary`).
   - **Extension Map:** `.sh → 'terminal'`, `.txt → 'article'`, `.md → 'description'`, `.py → 'code'`, `.js/.ts → 'javascript'`, default → `'insert_drive_file'`.
 
-- [ ] Create `/src/atoms/icons/index.ts`
+- [x] Create `/src/atoms/icons/index.ts`
   - **Exports:** `MaterialIcon`, `TerminalIcon`, `FolderIcon`, `FileTypeIcon`.
 
 ---
 
 ## Sub-Phase 1.2.F — Container Atoms (`/src/atoms/containers/`)
 
-- [ ] ⚡ 🌑 Create `/src/atoms/containers/Surface.tsx`
+- [x] ⚡ 🌑 Create `/src/atoms/containers/Surface.tsx`
   - **Wrapper:** React Native `<View>`
   - **Purpose:** Standard elevated surface container. OLED-safe dark fill. Accepts `level` prop to select surface depth.
   - **Props Interface:**
@@ -782,7 +782,7 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling:** Background from `Colors.background.*` keyed by level. `...Shadows.none`. No border. `borderRadius` defaults to 0 (consumers add their own).
 
-- [ ] ⚡ Create `/src/atoms/containers/BorderedSurface.tsx`
+- [x] ⚡ Create `/src/atoms/containers/BorderedSurface.tsx`
   - **Wrapper:** `Surface`
   - **Purpose:** Surface with a mandatory 1px structural border. The foundational panel building block for all cards and containers.
   - **Props Interface:**
@@ -799,38 +799,38 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling Constraints:** `borderWidth: BorderWidth.hairline` (1dp). `borderColor` defaults to `Colors.border.subtle`. When `focused`, border becomes `Colors.border.focus`. `...Shadows.none` — absolutely no elevation or shadow.
 
-- [ ] Create `/src/atoms/containers/TerminalPanel.tsx`
+- [x] Create `/src/atoms/containers/TerminalPanel.tsx`
   - **Wrapper:** `BorderedSurface`
   - **Purpose:** The base container for all terminal-style content panels. Forces `borderRadius: BorderRadius.lg` and `level: 'default'`.
   - **Props Interface:** `children`, `fullWidth?: boolean`, `style?`
   - **Extra Styling:** `overflow: 'hidden'` to clip terminal content within border.
 
-- [ ] Create `/src/atoms/containers/SectionHeader.tsx`
+- [x] Create `/src/atoms/containers/SectionHeader.tsx`
   - **Wrapper:** `<View>` row + `LabelCapsText` + optional right `<View>` slot
   - **Purpose:** Standard section divider header with uppercase label and optional trailing action slot.
   - **Props Interface:** `title: string`, `rightSlot?: React.ReactNode`, `style?`
   - **Styling:** `paddingHorizontal: Spacing.md`, `paddingVertical: Spacing.sm`. `borderBottomWidth: BorderWidth.hairline`, `borderBottomColor: Colors.border.subtle`.
 
-- [ ] Create `/src/atoms/containers/Divider.tsx`
+- [x] Create `/src/atoms/containers/Divider.tsx`
   - **Wrapper:** `<View>`
   - **Purpose:** 1px horizontal or vertical separator line.
   - **Props Interface:** `orientation?: 'horizontal' | 'vertical'`, `color?` (defaults `Colors.border.subtle`), `style?`
   - **Styling:** Horizontal: `height: Layout.dividerThickness (1)`, `width: '100%'`. Vertical: `width: 1`, `alignSelf: 'stretch'`. `backgroundColor: color`.
 
-- [ ] Create `/src/atoms/containers/ProgressTrack.tsx`
+- [x] Create `/src/atoms/containers/ProgressTrack.tsx`
   - **Wrapper:** `<View>` (track) + `<View>` (fill, animated via `Animated.View`)
   - **Purpose:** 4dp height progress bar rail.
   - **Props Interface:** `progress: number` (0–1), `color?` (defaults `Colors.semantic.success`), `trackColor?` (defaults `Colors.border.subtle`), `style?`
   - **Styling:** `height: Layout.progressBarHeight` (4dp). `borderRadius: BorderRadius.full`. Track: `backgroundColor: trackColor`. Fill: `backgroundColor: color`, `width: ${progress * 100}%`. No shadow.
 
-- [ ] Create `/src/atoms/containers/index.ts`
+- [x] Create `/src/atoms/containers/index.ts`
   - **Exports:** `Surface`, `BorderedSurface`, `TerminalPanel`, `SectionHeader`, `Divider`, `ProgressTrack`.
 
 ---
 
 ## Sub-Phase 1.2.G — Atom Barrel Update
 
-- [ ] Update `/src/atoms/index.ts` with final barrel re-exports:
+- [x] Update `/src/atoms/index.ts` with final barrel re-exports:
   - **Code Layout:**
     ```typescript
     export * from './text';
