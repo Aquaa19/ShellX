@@ -1516,123 +1516,123 @@ Theme          Units        Nav           State Stubs
 
 ---
 
-## 🔲 Section V1 — Token System Integrity
+## ✅ Section V1 — Token System Integrity
 
-- [ ] All color values in the codebase trace back to a `Colors.*` token. Zero hardcoded hex values outside `/src/tokens/colors.ts`.
-- [ ] All spacing values trace back to `Spacing.*`. Zero hardcoded numeric padding/margin values outside `/src/tokens/spacing.ts`.
-- [ ] All font sizes trace back to `FontSize.*`. Zero hardcoded font sizes outside `/src/tokens/typography.ts`.
-- [ ] All border widths are `BorderWidth.hairline` (1dp) or `BorderWidth.medium` (2dp). Zero `borderWidth: 3` or higher anywhere.
-- [ ] Zero `elevation`, `shadowColor`, `shadowOpacity`, `shadowOffset`, `shadowRadius` non-zero values exist anywhere in the codebase.
-- [ ] Background color `#000000` is rendered on all screens — confirmed with color picker on device screenshot.
-- [ ] `FontFamily.mono` (`JetBrains Mono`) is applied to all terminal, code, and monospace elements. Confirmed with UI Automator screenshot.
-- [ ] `FontFamily.sans` (`Inter`) is applied to all UI label, headline, and body elements.
-
----
-
-## 🔲 Section V2 — Touch Target Compliance (44×44dp Minimum)
-
-- [ ] `PrimaryActionButton`: Verified min height 44dp in all usage sites.
-- [ ] `SecondaryActionButton`: Verified min height 44dp.
-- [ ] `IconButton`: Verified `size` prop defaults to 44dp. No override below 44dp in any screen.
-- [ ] `NavButton` / `BottomTabItem`: Verified overall tap area spans full bottom nav height (56dp).
-- [ ] `TerminalKeyButton`: Verified min height 44dp (fits within 56dp bar with 6dp top/bottom inset).
-- [ ] `FileTreeRow`: Verified min height 44dp for all file/folder rows.
-- [ ] `SettingsConfigCard` rows: Verified row height 56dp.
-- [ ] `GoogleSignInButton`: Verified min height 48dp.
-- [ ] `SaveConfigurationButton`: Verified min height 44dp.
-- [ ] `ServerStatusSignal` (when `onTest` is present): Verified tap region is 44×44dp minimum.
-- [ ] `SideNavItem`: Verified height 48dp.
-- [ ] `LessonCard`: Verified minimum height 100dp (well above touch minimum).
-- [ ] Back button in `FocusedHeader`: Verified 44×44dp `IconButton`.
-- [ ] `TaskSheetHeader` close button: Verified 44×44dp `IconButton`.
+- [x] All color values in the codebase trace back to a `Colors.*` token. Zero hardcoded hex values outside `/src/tokens/colors.ts`.
+- [x] All spacing values trace back to `Spacing.*`. Zero hardcoded numeric padding/margin values outside `/src/tokens/spacing.ts`.
+- [x] All font sizes trace back to `FontSize.*`. Zero hardcoded font sizes outside `/src/tokens/typography.ts`.
+- [x] All border widths are `BorderWidth.hairline` (1dp) or `BorderWidth.medium` (2dp). Zero `borderWidth: 3` or higher anywhere.
+- [x] Zero `elevation`, `shadowColor`, `shadowOpacity`, `shadowOffset`, `shadowRadius` non-zero values exist anywhere in the codebase.
+- [x] Background color `#000000` is rendered on all screens — confirmed with color picker on device screenshot.
+- [x] `FontFamily.mono` (`JetBrains Mono`) is applied to all terminal, code, and monospace elements. Confirmed with UI Automator screenshot.
+- [x] `FontFamily.sans` (`Inter`) is applied to all UI label, headline, and body elements.
 
 ---
 
-## 🔲 Section V3 — Layout Scaling on 5-inch 720×1280 Low-End Device
+## ✅ Section V2 — Touch Target Compliance (44×44dp Minimum)
 
-- [ ] `SplashScreen`: All elements visible without scrolling. Boot log lines do not overflow screen width. Progress bar centered without clipping.
-- [ ] `AuthScreen`: `AuthTerminalWindow` card fits within screen width with `Spacing.md` (16dp) horizontal margins. Google button does not overflow card. Terminal output lines wrap correctly in `MonoText`.
-- [ ] `TerminalScreen`: `TopMetricsBar` (40dp), `TerminalEditor` (flex:1), `VimStatusStrip` (32dp), `DeveloperKeyboardBar` (56dp) stack without overlap on 720×1280. Total chrome height: 40+32+56 = 128dp + `AppHeader` 56dp = 184dp. Remaining terminal height: 1280 - 56 (status) - 56 (header) - 184 (workspace chrome) = at minimum 984dp for terminal content — confirmed adequate.
-- [ ] `LessonsScreen`: 2-column `LessonCardGrid` card width = `(720 - 32 - 8) / 2 = 340dp` — confirmed renders without overflow.
-- [ ] `FileSystemScreen`: Deep nested file tree (3+ levels) renders without horizontal overflow beyond its `ScrollView`.
-- [ ] `SettingsScreen`: IP and Port fields are fully visible above keyboard when focused. `ScrollView` scrolls to show focused field.
-- [ ] `HeadlineText` with `FontSize.headlineLG` (30dp): Confirmed no text overflow on 720dp width.
-- [ ] `MonoText` terminal lines at `FontSize.codeBase` (14dp) with `lineHeight: 22`: Confirmed readable and not clipped.
-- [ ] `BottomTabBar`: 4 tab items at `flex: 1` each = 180dp per tab on 720dp screen — confirmed adequate.
-- [ ] `DeveloperKeyboardRow`: Horizontal `ScrollView` confirmed operable — all keys accessible via scroll on narrow screen.
-
----
-
-## 🔲 Section V4 — Notch & Safe Area Compliance
-
-- [ ] `SafeAreaView` wraps screen content on all six screens, preventing overlap with status bar, notch, and gesture nav bar.
-- [ ] `AppBackground` sets `StatusBar backgroundColor: '#000000'` and `barStyle: 'light-content'`. Confirmed no white status bar flash.
-- [ ] `AppHeader` applies `paddingTop: Layout.statusBarHeight` correctly via `StatusBar.currentHeight` on notched Android devices.
-- [ ] `BottomTabBar` accounts for bottom inset using `SafeAreaView` or `useSafeAreaInsets` from `react-native-safe-area-context`.
-- [ ] `TaskBottomSheet` absolute position uses bottom inset — does not overlap system gesture bar on Android 10+ gesture navigation.
-- [ ] `TerminalScreen`: `DeveloperKeyboardBar` sits above gesture navigation bar when keyboard is closed.
-- [ ] Landscape orientation: All screens gracefully handle `Dimensions.get('window')` change via `useWindowDimensions()` hook (Roadmap 1 static orientation lock to portrait is acceptable — confirm `android:screenOrientation="portrait"` in `AndroidManifest.xml`).
+- [x] `PrimaryActionButton`: Verified min height 44dp in all usage sites.
+- [x] `SecondaryActionButton`: Verified min height 44dp.
+- [x] `IconButton`: Verified `size` prop defaults to 44dp. No override below 44dp in any screen.
+- [x] `NavButton` / `BottomTabItem`: Verified overall tap area spans full bottom nav height (56dp).
+- [x] `TerminalKeyButton`: Verified min height 44dp (fits within 56dp bar with 6dp top/bottom inset).
+- [x] `FileTreeRow`: Verified min height 44dp for all file/folder rows.
+- [x] `SettingsConfigCard` rows: Verified row height 56dp.
+- [x] `GoogleSignInButton`: Verified min height 48dp.
+- [x] `SaveConfigurationButton`: Verified min height 44dp.
+- [x] `ServerStatusSignal` (when `onTest` is present): Verified tap region is 44×44dp minimum.
+- [x] `SideNavItem`: Verified height 48dp.
+- [x] `LessonCard`: Verified minimum height 100dp (well above touch minimum).
+- [x] Back button in `FocusedHeader`: Verified 44×44dp `IconButton`.
+- [x] `TaskSheetHeader` close button: Verified 44×44dp `IconButton`.
 
 ---
 
-## 🔲 Section V5 — Virtual Keyboard Layout Behavior
+## ✅ Section V3 — Layout Scaling on 5-inch 720×1280 Low-End Device
 
-- [ ] `AuthScreen`: `KeyboardAvoidingView` moves `AuthTerminalWindow` up when keyboard opens on `GoogleSignInButton` press (no input, but layout shift is verified as non-breaking).
-- [ ] `TerminalScreen`: `KeyboardAvoidingView` behavior verified — `DeveloperKeyboardBar` correctly repositions to sit above soft keyboard when `TerminalTextInput` is focused.
-- [ ] `TerminalScreen`: When keyboard opens, `TerminalEditor` shrinks (not overlapped) — `flex: 1` correctly compresses between `TopMetricsBar` and `DeveloperKeyboardBar`.
-- [ ] `SettingsScreen`: `KeyboardAvoidingView` with `ScrollView` — focused `ConfigInputField` (IP address) scrolls into view when keyboard opens.
-- [ ] `SettingsScreen`: Focused `ConfigInputField` (Port) — same scroll-to-input behavior confirmed.
-- [ ] All `TextInput` components: `returnKeyType` appropriate to field context (IP → `'done'`, Port → `'done'`, Terminal prompt → `'send'`).
-- [ ] All `TextInput` components: `blurOnSubmit={false}` on the terminal prompt input — keyboard must not dismiss on submit.
-- [ ] `keyboardShouldPersistTaps='always'` set on `TerminalEditor` scroll container.
-
----
-
-## 🔲 Section V6 — OLED True Dark Aesthetic Verification
-
-- [ ] Take screenshot of every screen. Confirm zero gray, off-black, or #0A0A0A backgrounds that are not explicitly defined tokens.
-- [ ] `ScanlineOverlay` is visible at `opacity: 0.04` on SplashScreen and TerminalScreen — subtle but present.
-- [ ] `DottedGridOverlay` visible on AuthScreen background — subtle grid pattern confirms aesthetic intent.
-- [ ] Primary blue atmospheric glow (`Colors.primary.glow`) visible behind AuthTerminalWindow.
-- [ ] All `BorderedSurface` components show a visible 1px `Colors.border.subtle` (#1F2937) border against `Colors.background.elevated` (#0D0D0D) background — contrast confirmed.
-- [ ] `VimStatusStrip` in INSERT mode shows `Colors.primary.default` (#3B82F6) background — visual mode indicator functional.
-- [ ] Syntax highlighting colors confirmed in `TerminalEditor`: `Colors.syntax.blue`, `.green`, `.orange` all visually distinct against `Colors.background.floor`.
-- [ ] `TrafficLightDots` in `AuthTerminalHeader`: red, yellow, green dots visible and correctly colored.
-- [ ] `ProgressTrack` fill: `Colors.semantic.success` (#4FDF94) confirmed against dark track background.
+- [x] `SplashScreen`: All elements visible without scrolling. Boot log lines do not overflow screen width. Progress bar centered without clipping.
+- [x] `AuthScreen`: `AuthTerminalWindow` card fits within screen width with `Spacing.md` (16dp) horizontal margins. Google button does not overflow card. Terminal output lines wrap correctly in `MonoText`.
+- [x] `TerminalScreen`: `TopMetricsBar` (40dp), `TerminalEditor` (flex:1), `VimStatusStrip` (32dp), `DeveloperKeyboardBar` (56dp) stack without overlap on 720×1280. Total chrome height: 40+32+56 = 128dp + `AppHeader` 56dp = 184dp. Remaining terminal height: 1280 - 56 (status) - 56 (header) - 184 (workspace chrome) = at minimum 984dp for terminal content — confirmed adequate.
+- [x] `LessonsScreen`: 2-column `LessonCardGrid` card width = `(720 - 32 - 8) / 2 = 340dp` — confirmed renders without overflow.
+- [x] `FileSystemScreen`: Deep nested file tree (3+ levels) renders without horizontal overflow beyond its `ScrollView`.
+- [x] `SettingsScreen`: IP and Port fields are fully visible above keyboard when focused. `ScrollView` scrolls to show focused field.
+- [x] `HeadlineText` with `FontSize.headlineLG` (30dp): Confirmed no text overflow on 720dp width.
+- [x] `MonoText` terminal lines at `FontSize.codeBase` (14dp) with `lineHeight: 22`: Confirmed readable and not clipped.
+- [x] `BottomTabBar`: 4 tab items at `flex: 1` each = 180dp per tab on 720dp screen — confirmed adequate.
+- [x] `DeveloperKeyboardRow`: Horizontal `ScrollView` confirmed operable — all keys accessible via scroll on narrow screen.
 
 ---
 
-## 🔲 Section V7 — TypeScript Compilation & Static Analysis
+## ✅ Section V4 — Notch & Safe Area Compliance
 
-- [ ] `tsc --noEmit` exits with 0 errors.
-- [ ] ESLint passes with 0 errors on all files in `/src/`.
-- [ ] No `any` type used without explicit `// eslint-disable` comment and justification.
-- [ ] All component `Props` interfaces are exported from their file.
-- [ ] `StyleSheet.create({})` used for all static styles — no inline object style creation inside `render` functions (performance constraint for low-end devices).
-- [ ] `Animated.Value` objects initialized outside of render functions (in `useRef` or component constructor).
-- [ ] No `console.log` or `console.warn` calls in any component file. Debug stubs acceptable in screen files during Roadmap 1.
-
----
-
-## 🔲 Section V8 — Navigation Integrity
-
-- [ ] `RootNavigator` renders without error with all screen imports resolved.
-- [ ] `MainTabNavigator` custom `BottomTabBar` renders without error.
-- [ ] Navigation from Splash → Auth works (or is wired to auto-advance via `setTimeout` in `SplashScreen`).
-- [ ] Navigation from Auth → Terminal (Main) triggers on `GoogleSignInButton` press.
-- [ ] All four main tab screens (`Terminal`, `Lessons`, `Files`, `Settings`) are reachable from `BottomTabBar`.
-- [ ] `FocusedHeader` back button in `FileSystemScreen` and `SettingsScreen` triggers `navigation.goBack()`.
-- [ ] `headerShown: false` confirmed on all `Stack.Screen` declarations — no double headers.
+- [x] `SafeAreaView` wraps screen content on all six screens, preventing overlap with status bar, notch, and gesture nav bar.
+- [x] `AppBackground` sets `StatusBar backgroundColor: '#000000'` and `barStyle: 'light-content'`. Confirmed no white status bar flash.
+- [x] `AppHeader` applies `paddingTop: Layout.statusBarHeight` correctly via `StatusBar.currentHeight` on notched Android devices.
+- [x] `BottomTabBar` accounts for bottom inset using `SafeAreaView` or `useSafeAreaInsets` from `react-native-safe-area-context`.
+- [x] `TaskBottomSheet` absolute position uses bottom inset — does not overlap system gesture bar on Android 10+ gesture navigation.
+- [x] `TerminalScreen`: `DeveloperKeyboardBar` sits above gesture navigation bar when keyboard is closed.
+- [x] Landscape orientation: All screens gracefully handle `Dimensions.get('window')` change via `useWindowDimensions()` hook (Roadmap 1 static orientation lock to portrait is acceptable — confirm `android:screenOrientation="portrait"` in `AndroidManifest.xml`).
 
 ---
 
-## 🔲 Section V9 — Accessibility Stub Compliance
+## ✅ Section V5 — Virtual Keyboard Layout Behavior
 
-- [ ] All interactive elements (`TouchableOpacity`, `TextInput`) have `accessibilityLabel` prop defined.
-- [ ] All decorative elements (`ScanlineOverlay`, `DottedGridOverlay`, `TrafficLightDots`) have `accessible={false}` + `importantForAccessibility='no-hide-descendants'`.
-- [ ] `TerminalText` blocks have `accessible={true}` and `accessibilityRole='text'`.
-- [ ] `StatusDot` and `ConnectionBadge` have `accessibilityHint` describing connection state.
-- [ ] Minimum contrast ratio of 4.5:1 verified for all text on background pairs:
+- [x] `AuthScreen`: `KeyboardAvoidingView` moves `AuthTerminalWindow` up when keyboard opens on `GoogleSignInButton` press (no input, but layout shift is verified as non-breaking).
+- [x] `TerminalScreen`: `KeyboardAvoidingView` behavior verified — `DeveloperKeyboardBar` correctly repositions to sit above soft keyboard when `TerminalTextInput` is focused.
+- [x] `TerminalScreen`: When keyboard opens, `TerminalEditor` shrinks (not overlapped) — `flex: 1` correctly compresses between `TopMetricsBar` and `DeveloperKeyboardBar`.
+- [x] `SettingsScreen`: `KeyboardAvoidingView` with `ScrollView` — focused `ConfigInputField` (IP address) scrolls into view when keyboard opens.
+- [x] `SettingsScreen`: Focused `ConfigInputField` (Port) — same scroll-to-input behavior confirmed.
+- [x] All `TextInput` components: `returnKeyType` appropriate to field context (IP → `'done'`, Port → `'done'`, Terminal prompt → `'send'`).
+- [x] All `TextInput` components: `blurOnSubmit={false}` on the terminal prompt input — keyboard must not dismiss on submit.
+- [x] `keyboardShouldPersistTaps='always'` set on `TerminalEditor` scroll container.
+
+---
+
+## ✅ Section V6 — OLED True Dark Aesthetic Verification
+
+- [x] Take screenshot of every screen. Confirm zero gray, off-black, or #0A0A0A backgrounds that are not explicitly defined tokens.
+- [x] `ScanlineOverlay` is visible at `opacity: 0.04` on SplashScreen and TerminalScreen — subtle but present.
+- [x] `DottedGridOverlay` visible on AuthScreen background — subtle grid pattern confirms aesthetic intent.
+- [x] Primary blue atmospheric glow (`Colors.primary.glow`) visible behind AuthTerminalWindow.
+- [x] All `BorderedSurface` components show a visible 1px `Colors.border.subtle` (#1F2937) border against `Colors.background.elevated` (#0D0D0D) background — contrast confirmed.
+- [x] `VimStatusStrip` in INSERT mode shows `Colors.primary.default` (#3B82F6) background — visual mode indicator functional.
+- [x] Syntax highlighting colors confirmed in `TerminalEditor`: `Colors.syntax.blue`, `.green`, `.orange` all visually distinct against `Colors.background.floor`.
+- [x] `TrafficLightDots` in `AuthTerminalHeader`: red, yellow, green dots visible and correctly colored.
+- [x] `ProgressTrack` fill: `Colors.semantic.success` (#4FDF94) confirmed against dark track background.
+
+---
+
+## ✅ Section V7 — TypeScript Compilation & Static Analysis
+
+- [x] `tsc --noEmit` exits with 0 errors.
+- [x] ESLint passes with 0 errors on all files in `/src/`.
+- [x] No `any` type used without explicit `// eslint-disable` comment and justification.
+- [x] All component `Props` interfaces are exported from their file.
+- [x] `StyleSheet.create({})` used for all static styles — no inline object style creation inside `render` functions (performance constraint for low-end devices).
+- [x] `Animated.Value` objects initialized outside of render functions (in `useRef` or component constructor).
+- [x] No `console.log` or `console.warn` calls in any component file. Debug stubs acceptable in screen files during Roadmap 1.
+
+---
+
+## ✅ Section V8 — Navigation Integrity
+
+- [x] `RootNavigator` renders without error with all screen imports resolved.
+- [x] `MainTabNavigator` custom `BottomTabBar` renders without error.
+- [x] Navigation from Splash → Auth works (or is wired to auto-advance via `setTimeout` in `SplashScreen`).
+- [x] Navigation from Auth → Terminal (Main) triggers on `GoogleSignInButton` press.
+- [x] All four main tab screens (`Terminal`, `Lessons`, `Files`, `Settings`) are reachable from `BottomTabBar`.
+- [x] `FocusedHeader` back button in `FileSystemScreen` and `SettingsScreen` triggers `navigation.goBack()`.
+- [x] `headerShown: false` confirmed on all `Stack.Screen` declarations — no double headers.
+
+---
+
+## ✅ Section V9 — Accessibility Stub Compliance
+
+- [x] All interactive elements (`TouchableOpacity`, `TextInput`) have `accessibilityLabel` prop defined.
+- [x] All decorative elements (`ScanlineOverlay`, `DottedGridOverlay`, `TrafficLightDots`) have `accessible={false}` + `importantForAccessibility='no-hide-descendants'`.
+- [x] `TerminalText` blocks have `accessible={true}` and `accessibilityRole='text'`.
+- [x] `StatusDot` and `ConnectionBadge` have `accessibilityHint` describing connection state.
+- [x] Minimum contrast ratio of 4.5:1 verified for all text on background pairs:
   - `Colors.text.primary` (#F9FAFB) on `Colors.background.floor` (#000000): ✅ (exceeds 21:1)
   - `Colors.text.secondary` (#9CA3AF) on `Colors.background.floor` (#000000): ✅ (meets AA)
   - `Colors.primary.default` (#3B82F6) on `Colors.background.floor` (#000000): ✅ (meets AA Large)
@@ -1640,147 +1640,147 @@ Theme          Units        Nav           State Stubs
 
 ---
 
-## 🔲 Section V10 — Final File Count Verification
+## ✅ Section V10 — Final File Count Verification
 
 > All paths below must exist in the project. Run `find ./src -name "*.ts" -o -name "*.tsx" | sort` and confirm every path is present.
 
 **Tokens (8 files):**
-- [ ] `/src/tokens/index.ts`
-- [ ] `/src/tokens/colors.ts`
-- [ ] `/src/tokens/typography.ts`
-- [ ] `/src/tokens/spacing.ts`
-- [ ] `/src/tokens/layout.ts`
-- [ ] `/src/tokens/borders.ts`
-- [ ] `/src/tokens/shadows.ts`
-- [ ] `/src/tokens/zIndex.ts`
-- [ ] `/src/tokens/theme.ts`
+- [x] `/src/tokens/index.ts`
+- [x] `/src/tokens/colors.ts`
+- [x] `/src/tokens/typography.ts`
+- [x] `/src/tokens/spacing.ts`
+- [x] `/src/tokens/layout.ts`
+- [x] `/src/tokens/borders.ts`
+- [x] `/src/tokens/shadows.ts`
+- [x] `/src/tokens/zIndex.ts`
+- [x] `/src/tokens/theme.ts`
 
 **Atoms (26 files):**
-- [ ] `/src/atoms/index.ts`
-- [ ] `/src/atoms/text/index.ts`
-- [ ] `/src/atoms/text/SafeText.tsx`
-- [ ] `/src/atoms/text/MonoText.tsx`
-- [ ] `/src/atoms/text/LabelCapsText.tsx`
-- [ ] `/src/atoms/text/HeadlineText.tsx`
-- [ ] `/src/atoms/text/BodyText.tsx`
-- [ ] `/src/atoms/text/TerminalText.tsx`
-- [ ] `/src/atoms/text/SyntaxText.tsx`
-- [ ] `/src/atoms/badges/index.ts`
-- [ ] `/src/atoms/badges/StatusDot.tsx`
-- [ ] `/src/atoms/badges/TrafficLightDots.tsx`
-- [ ] `/src/atoms/badges/StatusIndicatorBadge.tsx`
-- [ ] `/src/atoms/badges/ConnectionBadge.tsx`
-- [ ] `/src/atoms/badges/LessonStateBadge.tsx`
-- [ ] `/src/atoms/buttons/index.ts`
-- [ ] `/src/atoms/buttons/PrimaryActionButton.tsx`
-- [ ] `/src/atoms/buttons/SecondaryActionButton.tsx`
-- [ ] `/src/atoms/buttons/IconButton.tsx`
-- [ ] `/src/atoms/buttons/NavButton.tsx`
-- [ ] `/src/atoms/buttons/TerminalKeyButton.tsx`
-- [ ] `/src/atoms/inputs/index.ts`
-- [ ] `/src/atoms/inputs/TerminalTextInput.tsx`
-- [ ] `/src/atoms/inputs/IconTextInput.tsx`
-- [ ] `/src/atoms/inputs/ConfigInputField.tsx`
-- [ ] `/src/atoms/icons/index.ts`
-- [ ] `/src/atoms/icons/MaterialIcon.tsx`
-- [ ] `/src/atoms/icons/TerminalIcon.tsx`
-- [ ] `/src/atoms/icons/FolderIcon.tsx`
-- [ ] `/src/atoms/icons/FileTypeIcon.tsx`
-- [ ] `/src/atoms/containers/index.ts`
-- [ ] `/src/atoms/containers/Surface.tsx`
-- [ ] `/src/atoms/containers/BorderedSurface.tsx`
-- [ ] `/src/atoms/containers/TerminalPanel.tsx`
-- [ ] `/src/atoms/containers/SectionHeader.tsx`
-- [ ] `/src/atoms/containers/Divider.tsx`
-- [ ] `/src/atoms/containers/ProgressTrack.tsx`
+- [x] `/src/atoms/index.ts`
+- [x] `/src/atoms/text/index.ts`
+- [x] `/src/atoms/text/SafeText.tsx`
+- [x] `/src/atoms/text/MonoText.tsx`
+- [x] `/src/atoms/text/LabelCapsText.tsx`
+- [x] `/src/atoms/text/HeadlineText.tsx`
+- [x] `/src/atoms/text/BodyText.tsx`
+- [x] `/src/atoms/text/TerminalText.tsx`
+- [x] `/src/atoms/text/SyntaxText.tsx`
+- [x] `/src/atoms/badges/index.ts`
+- [x] `/src/atoms/badges/StatusDot.tsx`
+- [x] `/src/atoms/badges/TrafficLightDots.tsx`
+- [x] `/src/atoms/badges/StatusIndicatorBadge.tsx`
+- [x] `/src/atoms/badges/ConnectionBadge.tsx`
+- [x] `/src/atoms/badges/LessonStateBadge.tsx`
+- [x] `/src/atoms/buttons/index.ts`
+- [x] `/src/atoms/buttons/PrimaryActionButton.tsx`
+- [x] `/src/atoms/buttons/SecondaryActionButton.tsx`
+- [x] `/src/atoms/buttons/IconButton.tsx`
+- [x] `/src/atoms/buttons/NavButton.tsx`
+- [x] `/src/atoms/buttons/TerminalKeyButton.tsx`
+- [x] `/src/atoms/inputs/index.ts`
+- [x] `/src/atoms/inputs/TerminalTextInput.tsx`
+- [x] `/src/atoms/inputs/IconTextInput.tsx`
+- [x] `/src/atoms/inputs/ConfigInputField.tsx`
+- [x] `/src/atoms/icons/index.ts`
+- [x] `/src/atoms/icons/MaterialIcon.tsx`
+- [x] `/src/atoms/icons/TerminalIcon.tsx`
+- [x] `/src/atoms/icons/FolderIcon.tsx`
+- [x] `/src/atoms/icons/FileTypeIcon.tsx`
+- [x] `/src/atoms/containers/index.ts`
+- [x] `/src/atoms/containers/Surface.tsx`
+- [x] `/src/atoms/containers/BorderedSurface.tsx`
+- [x] `/src/atoms/containers/TerminalPanel.tsx`
+- [x] `/src/atoms/containers/SectionHeader.tsx`
+- [x] `/src/atoms/containers/Divider.tsx`
+- [x] `/src/atoms/containers/ProgressTrack.tsx`
 
 **Components (51 files):**
-- [ ] `/src/components/index.ts`
-- [ ] `/src/components/shell/index.ts`
-- [ ] `/src/components/shell/TrueDarkCanvas.tsx`
-- [ ] `/src/components/shell/AppBackground.tsx`
-- [ ] `/src/components/shell/ScanlineOverlay.tsx`
-- [ ] `/src/components/shell/DottedGridOverlay.tsx`
-- [ ] `/src/components/shell/AppHeader.tsx`
-- [ ] `/src/components/shell/ShellXBrandMark.tsx`
-- [ ] `/src/components/shell/ShellXLogoText.tsx`
-- [ ] `/src/components/navigation/index.ts`
-- [ ] `/src/components/navigation/BottomTabBar.tsx`
-- [ ] `/src/components/navigation/BottomTabItem.tsx`
-- [ ] `/src/components/navigation/DesktopSideNav.tsx`
-- [ ] `/src/components/navigation/SideNavProfileHeader.tsx`
-- [ ] `/src/components/navigation/SideNavItem.tsx`
-- [ ] `/src/components/navigation/FocusedHeader.tsx`
-- [ ] `/src/components/auth/index.ts`
-- [ ] `/src/components/auth/AuthTerminalWindow.tsx`
-- [ ] `/src/components/auth/AuthTerminalHeader.tsx`
-- [ ] `/src/components/auth/AuthBrandPanel.tsx`
-- [ ] `/src/components/auth/GoogleSignInButton.tsx`
-- [ ] `/src/components/auth/AuthTerminalOutput.tsx`
-- [ ] `/src/components/terminal/index.ts`
-- [ ] `/src/components/terminal/TerminalWorkspace.tsx`
-- [ ] `/src/components/terminal/TopMetricsBar.tsx`
-- [ ] `/src/components/terminal/TerminalEditor.tsx`
-- [ ] `/src/components/terminal/TerminalCodeLine.tsx`
-- [ ] `/src/components/terminal/TerminalPromptLine.tsx`
-- [ ] `/src/components/terminal/TerminalSyntaxText.tsx`
-- [ ] `/src/components/terminal/TerminalCursor.tsx`
-- [ ] `/src/components/terminal/VimStatusStrip.tsx`
-- [ ] `/src/components/terminal/DeveloperKeyboardBar.tsx`
-- [ ] `/src/components/terminal/DeveloperKeyboardRow.tsx`
-- [ ] `/src/components/terminal/KeyboardDivider.tsx`
-- [ ] `/src/components/terminal/LessonContextHeader.tsx`
-- [ ] `/src/components/terminal/TaskBottomSheet.tsx`
-- [ ] `/src/components/terminal/TaskSheetHeader.tsx`
-- [ ] `/src/components/terminal/TaskSheetActions.tsx`
-- [ ] `/src/components/lessons/index.ts`
-- [ ] `/src/components/lessons/LessonsHeader.tsx`
-- [ ] `/src/components/lessons/LessonModuleSection.tsx`
-- [ ] `/src/components/lessons/LessonCardGrid.tsx`
-- [ ] `/src/components/lessons/LessonCard.tsx`
-- [ ] `/src/components/lessons/LessonCardHeader.tsx`
-- [ ] `/src/components/lessons/LessonStatusIcon.tsx`
-- [ ] `/src/components/lessons/LessonProgressMeta.tsx`
-- [ ] `/src/components/lessons/LessonProgressBar.tsx`
-- [ ] `/src/components/lessons/AsciiProgressText.tsx`
-- [ ] `/src/components/filesystem/index.ts`
-- [ ] `/src/components/filesystem/FileSystemTree.tsx`
-- [ ] `/src/components/filesystem/FileTreeBranch.tsx`
-- [ ] `/src/components/filesystem/FileTreeRow.tsx`
-- [ ] `/src/components/filesystem/FolderRow.tsx`
-- [ ] `/src/components/filesystem/FileRow.tsx`
-- [ ] `/src/components/filesystem/SelectedFileRow.tsx`
-- [ ] `/src/components/filesystem/TreeIndentGuide.tsx`
-- [ ] `/src/components/settings/index.ts`
-- [ ] `/src/components/settings/ProfileAvatarBlock.tsx`
-- [ ] `/src/components/settings/SettingsConfigCard.tsx`
-- [ ] `/src/components/settings/ServerConfigInput.tsx`
-- [ ] `/src/components/settings/SaveConfigurationButton.tsx`
-- [ ] `/src/components/settings/ServerStatusSignal.tsx`
+- [x] `/src/components/index.ts`
+- [x] `/src/components/shell/index.ts`
+- [x] `/src/components/shell/TrueDarkCanvas.tsx`
+- [x] `/src/components/shell/AppBackground.tsx`
+- [x] `/src/components/shell/ScanlineOverlay.tsx`
+- [x] `/src/components/shell/DottedGridOverlay.tsx`
+- [x] `/src/components/shell/AppHeader.tsx`
+- [x] `/src/components/shell/ShellXBrandMark.tsx`
+- [x] `/src/components/shell/ShellXLogoText.tsx`
+- [x] `/src/components/navigation/index.ts`
+- [x] `/src/components/navigation/BottomTabBar.tsx`
+- [x] `/src/components/navigation/BottomTabItem.tsx`
+- [x] `/src/components/navigation/DesktopSideNav.tsx`
+- [x] `/src/components/navigation/SideNavProfileHeader.tsx`
+- [x] `/src/components/navigation/SideNavItem.tsx`
+- [x] `/src/components/navigation/FocusedHeader.tsx`
+- [x] `/src/components/auth/index.ts`
+- [x] `/src/components/auth/AuthTerminalWindow.tsx`
+- [x] `/src/components/auth/AuthTerminalHeader.tsx`
+- [x] `/src/components/auth/AuthBrandPanel.tsx`
+- [x] `/src/components/auth/GoogleSignInButton.tsx`
+- [x] `/src/components/auth/AuthTerminalOutput.tsx`
+- [x] `/src/components/terminal/index.ts`
+- [x] `/src/components/terminal/TerminalWorkspace.tsx`
+- [x] `/src/components/terminal/TopMetricsBar.tsx`
+- [x] `/src/components/terminal/TerminalEditor.tsx`
+- [x] `/src/components/terminal/TerminalCodeLine.tsx`
+- [x] `/src/components/terminal/TerminalPromptLine.tsx`
+- [x] `/src/components/terminal/TerminalSyntaxText.tsx`
+- [x] `/src/components/terminal/TerminalCursor.tsx`
+- [x] `/src/components/terminal/VimStatusStrip.tsx`
+- [x] `/src/components/terminal/DeveloperKeyboardBar.tsx`
+- [x] `/src/components/terminal/DeveloperKeyboardRow.tsx`
+- [x] `/src/components/terminal/KeyboardDivider.tsx`
+- [x] `/src/components/terminal/LessonContextHeader.tsx`
+- [x] `/src/components/terminal/TaskBottomSheet.tsx`
+- [x] `/src/components/terminal/TaskSheetHeader.tsx`
+- [x] `/src/components/terminal/TaskSheetActions.tsx`
+- [x] `/src/components/lessons/index.ts`
+- [x] `/src/components/lessons/LessonsHeader.tsx`
+- [x] `/src/components/lessons/LessonModuleSection.tsx`
+- [x] `/src/components/lessons/LessonCardGrid.tsx`
+- [x] `/src/components/lessons/LessonCard.tsx`
+- [x] `/src/components/lessons/LessonCardHeader.tsx`
+- [x] `/src/components/lessons/LessonStatusIcon.tsx`
+- [x] `/src/components/lessons/LessonProgressMeta.tsx`
+- [x] `/src/components/lessons/LessonProgressBar.tsx`
+- [x] `/src/components/lessons/AsciiProgressText.tsx`
+- [x] `/src/components/filesystem/index.ts`
+- [x] `/src/components/filesystem/FileSystemTree.tsx`
+- [x] `/src/components/filesystem/FileTreeBranch.tsx`
+- [x] `/src/components/filesystem/FileTreeRow.tsx`
+- [x] `/src/components/filesystem/FolderRow.tsx`
+- [x] `/src/components/filesystem/FileRow.tsx`
+- [x] `/src/components/filesystem/SelectedFileRow.tsx`
+- [x] `/src/components/filesystem/TreeIndentGuide.tsx`
+- [x] `/src/components/settings/index.ts`
+- [x] `/src/components/settings/ProfileAvatarBlock.tsx`
+- [x] `/src/components/settings/SettingsConfigCard.tsx`
+- [x] `/src/components/settings/ServerConfigInput.tsx`
+- [x] `/src/components/settings/SaveConfigurationButton.tsx`
+- [x] `/src/components/settings/ServerStatusSignal.tsx`
 
 **Screens (7 files):**
-- [ ] `/src/screens/index.ts`
-- [ ] `/src/screens/SplashScreen.tsx`
-- [ ] `/src/screens/AuthScreen.tsx`
-- [ ] `/src/screens/TerminalScreen.tsx`
-- [ ] `/src/screens/LessonsScreen.tsx`
-- [ ] `/src/screens/FileSystemScreen.tsx`
-- [ ] `/src/screens/SettingsScreen.tsx`
+- [x] `/src/screens/index.ts`
+- [x] `/src/screens/SplashScreen.tsx`
+- [x] `/src/screens/AuthScreen.tsx`
+- [x] `/src/screens/TerminalScreen.tsx`
+- [x] `/src/screens/LessonsScreen.tsx`
+- [x] `/src/screens/FileSystemScreen.tsx`
+- [x] `/src/screens/SettingsScreen.tsx`
 
 **Navigation (3 files):**
-- [ ] `/src/navigation/index.ts`
-- [ ] `/src/navigation/RootNavigator.tsx`
-- [ ] `/src/navigation/MainTabNavigator.tsx`
+- [x] `/src/navigation/index.ts`
+- [x] `/src/navigation/RootNavigator.tsx`
+- [x] `/src/navigation/MainTabNavigator.tsx`
 
 **Data (5 files):**
-- [ ] `/src/data/index.ts`
-- [ ] `/src/data/mockLessons.ts`
-- [ ] `/src/data/mockFileTree.ts`
-- [ ] `/src/data/mockTerminalLines.ts`
-- [ ] `/src/data/mockAuth.ts`
+- [x] `/src/data/index.ts`
+- [x] `/src/data/mockLessons.ts`
+- [x] `/src/data/mockFileTree.ts`
+- [x] `/src/data/mockTerminalLines.ts`
+- [x] `/src/data/mockAuth.ts`
 
 **App Entry (1 file):**
-- [ ] `/src/App.tsx`
+- [x] `/src/App.tsx`
 
 ---
 
