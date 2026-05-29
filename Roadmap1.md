@@ -1297,26 +1297,26 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.4.A — Static Mock Data Layer (`/src/data/`)
 
-- [ ] ⚡ Create `/src/data/mockLessons.ts`
+- [x] ⚡ Create `/src/data/mockLessons.ts`
   - **Structure:** Exported `MOCK_LESSONS` array matching `LessonData[]` interface. Minimum 8 lesson items across 2 modules. Includes items in all three states: `complete`, `inProgress`, `locked`.
 
-- [ ] ⚡ Create `/src/data/mockFileTree.ts`
+- [x] ⚡ Create `/src/data/mockFileTree.ts`
   - **Structure:** Exported `MOCK_FILE_TREE` tree structure matching `FileTreeNode[]`. Minimum 3 levels deep: root `/home/student/` → `projects/` → `hello.sh`. Includes both expanded and collapsed folder states.
 
-- [ ] ⚡ Create `/src/data/mockTerminalLines.ts`
+- [x] ⚡ Create `/src/data/mockTerminalLines.ts`
   - **Structure:** Exported `MOCK_TERMINAL_LINES` array of `TerminalLine[]`. Includes a mix of `command`, `output`, `error`, and `system` type lines that simulate a realistic shell session.
 
-- [ ] ⚡ Create `/src/data/mockAuth.ts`
+- [x] ⚡ Create `/src/data/mockAuth.ts`
   - **Structure:** Exported `MOCK_AUTH_TERMINAL_OUTPUT` — an array of `OutputLine[]` for the `AuthTerminalOutput` component. Simulates init messages like `[OK] Loading session keys...`, `[OK] Checking environment...`.
 
-- [ ] Create `/src/data/index.ts`
+- [x] Create `/src/data/index.ts`
   - **Exports:** `MOCK_LESSONS`, `MOCK_FILE_TREE`, `MOCK_TERMINAL_LINES`, `MOCK_AUTH_TERMINAL_OUTPUT`.
 
 ---
 
 ## Sub-Phase 1.4.B — SplashScreen (`/src/screens/SplashScreen.tsx`)
 
-- [ ] ⚡ 🌑 📱 Create `/src/screens/SplashScreen.tsx`
+- [x] ⚡ 🌑 📱 Create `/src/screens/SplashScreen.tsx`
   - **Wrappers (top-down):**
     1. `AppBackground` (root OLED canvas)
     2. `ScanlineOverlay` (absolute, pointer-none)
@@ -1335,7 +1335,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.4.C — AuthScreen (`/src/screens/AuthScreen.tsx`)
 
-- [ ] 🌑 ⌨️ 📐 Create `/src/screens/AuthScreen.tsx`
+- [x] 🌑 ⌨️ 📐 Create `/src/screens/AuthScreen.tsx`
   - **Wrappers (top-down):**
     1. `AppBackground`
     2. `DottedGridOverlay` (absolute, full-screen behind content)
@@ -1358,7 +1358,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.4.D — TerminalScreen (`/src/screens/TerminalScreen.tsx`)
 
-- [ ] ⚡ 🌑 ⌨️ 📐 📱 Create `/src/screens/TerminalScreen.tsx`
+- [x] ⚡ 🌑 ⌨️ 📐 📱 Create `/src/screens/TerminalScreen.tsx`
   - **Wrappers (top-down):**
     1. `AppBackground`
     2. `<SafeAreaView>` `flex: 1` `backgroundColor: '#000000'`
@@ -1385,7 +1385,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.4.E — LessonsScreen (`/src/screens/LessonsScreen.tsx`)
 
-- [ ] 📐 📱 Create `/src/screens/LessonsScreen.tsx`
+- [x] 📐 📱 Create `/src/screens/LessonsScreen.tsx`
   - **Wrappers:**
     1. `AppBackground`
     2. `<SafeAreaView>` `flex: 1`
@@ -1404,7 +1404,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.4.F — FileSystemScreen (`/src/screens/FileSystemScreen.tsx`)
 
-- [ ] 📐 Create `/src/screens/FileSystemScreen.tsx`
+- [x] 📐 Create `/src/screens/FileSystemScreen.tsx`
   - **Wrappers:**
     1. `AppBackground`
     2. `<SafeAreaView>` `flex: 1`
@@ -1424,7 +1424,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.4.G — SettingsScreen (`/src/screens/SettingsScreen.tsx`)
 
-- [ ] ⌨️ 📐 Create `/src/screens/SettingsScreen.tsx`
+- [x] ⌨️ 📐 Create `/src/screens/SettingsScreen.tsx`
   - **Wrappers:**
     1. `AppBackground`
     2. `<SafeAreaView>` `flex: 1`
@@ -1451,7 +1451,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.4.H — Screen Barrel Update
 
-- [ ] Update `/src/screens/index.ts` with final barrel re-exports:
+- [x] Update `/src/screens/index.ts` with final barrel re-exports:
   - **Code Layout:**
     ```typescript
     export { default as SplashScreen }    from './SplashScreen';
@@ -1466,27 +1466,27 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.4.I — Navigation Root (`/src/navigation/`)
 
-- [ ] ⚡ Create `/src/navigation/RootNavigator.tsx`
+- [x] ⚡ Create `/src/navigation/RootNavigator.tsx`
   - **Wrappers:** React Navigation `<NavigationContainer>` + `<Stack.Navigator>`
   - **Purpose:** Top-level navigation stack. Manages the screen transition sequence from Splash → Auth → Main.
   - **Stack Screens:** `Splash` (initial route), `Auth`, `Main` (renders `MainTabNavigator`).
   - **Screen Options:** `headerShown: false` for all screens. `animation: 'fade'` for Splash→Auth. `animation: 'slide_from_right'` for Auth→Main.
   - **Dependency:** Requires `@react-navigation/native` and `@react-navigation/native-stack`.
 
-- [ ] ⚡ Create `/src/navigation/MainTabNavigator.tsx`
+- [x] ⚡ Create `/src/navigation/MainTabNavigator.tsx`
   - **Wrappers:** React Navigation `<Tab.Navigator>` with custom `tabBar` prop pointing to `BottomTabBar`
   - **Purpose:** Bottom tab navigation for the main app experience.
   - **Tab Screens:** `Terminal` → `TerminalScreen`, `Lessons` → `LessonsScreen`, `Files` → `FileSystemScreen`, `Settings` → `SettingsScreen`.
   - **Custom Tab Bar:** `tabBar={(props) => <BottomTabBar {...props} />}`. Tab bar `backgroundColor` must be `#000000`.
 
-- [ ] Create `/src/navigation/index.ts`
+- [x] Create `/src/navigation/index.ts`
   - **Exports:** `RootNavigator`, `MainTabNavigator`.
 
 ---
 
 ## Sub-Phase 1.4.J — Application Entry Point
 
-- [ ] ⚡ Create `/src/App.tsx`
+- [x] ⚡ Create `/src/App.tsx`
   - **Wrappers:** `<AppBackground>` + `<RootNavigator>`
   - **Purpose:** Root application component. Mounts the navigation tree inside the OLED canvas.
   - **Code Layout:**
@@ -1504,7 +1504,7 @@ Theme          Units        Nav           State Stubs
     export default App;
     ```
 
-- [ ] Verify `/index.js` (project root) registers `App` with `AppRegistry.registerComponent`.
+- [x] Verify `/index.js` (project root) registers `App` with `AppRegistry.registerComponent`.
 
 ---
 
