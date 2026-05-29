@@ -1016,7 +1016,7 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.3.D — Terminal Workspace Components (`/src/components/terminal/`)
 
-- [ ] ⚡ Create `/src/components/terminal/TerminalWorkspace.tsx`
+- [x] ⚡ Create `/src/components/terminal/TerminalWorkspace.tsx`
   - **Wrappers:** `<View>` column (`flex: 1`) + `TopMetricsBar` + `TerminalEditor` + `VimStatusStrip` + `DeveloperKeyboardBar`
   - **Purpose:** The complete assembled terminal workspace layout. Top-down column composition. This is the master container for all terminal workspace sub-components.
   - **Props Interface:** `style?: ViewStyle`
@@ -1026,13 +1026,13 @@ Theme          Units        Nav           State Stubs
     3. `VimStatusStrip` — fixed height `Layout.vimStatusStripHeight` (32dp)
     4. `DeveloperKeyboardBar` — fixed height `Layout.developerKeyboardBarHeight` (56dp)
 
-- [ ] Create `/src/components/terminal/TopMetricsBar.tsx`
+- [x] Create `/src/components/terminal/TopMetricsBar.tsx`
   - **Wrapper:** `<View>` row
   - **Purpose:** Top status bar in the terminal workspace. Shows file path, connection badge, and vim mode indicator.
   - **Props Interface:** `filePath?: string`, `connectionState?: ConnectionState`, `vimMode?: string`, `style?: ViewStyle`
   - **Styling:** Height `40dp`. `backgroundColor: Colors.background.elevated`. `borderBottomWidth: 1`, `borderBottomColor: Colors.border.subtle`. `paddingHorizontal: Spacing.sm`. `flexDirection: 'row'`, `alignItems: 'center'`, `justifyContent: 'space-between'`. File path: `MonoText` `FontSize.codeXS` `Colors.text.secondary`. Right slot: `ConnectionBadge`.
 
-- [ ] ⚡ Create `/src/components/terminal/TerminalEditor.tsx`
+- [x] ⚡ Create `/src/components/terminal/TerminalEditor.tsx`
   - **Wrappers:** React Native `<ScrollView>` (vertical) + array of `TerminalCodeLine` + `TerminalPromptLine`
   - **Purpose:** The scrollable terminal content area. Renders the history of code lines plus the active prompt.
   - **Props Interface:**
@@ -1045,25 +1045,25 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling Constraints:** `flex: 1`. `backgroundColor: Colors.background.floor`. `padding: Spacing.sm`. `ScrollView` with `ref` for auto-scroll-to-bottom. `keyboardShouldPersistTaps='always'`. Each line minimum height: `Layout.terminalCursorHeight` (22dp from line-height).
 
-- [ ] Create `/src/components/terminal/TerminalCodeLine.tsx`
+- [x] Create `/src/components/terminal/TerminalCodeLine.tsx`
   - **Wrapper:** `<View>` row + optional line number `MonoText` + content `TerminalText` / `SyntaxText`
   - **Purpose:** A single historical terminal line. Can render plain text or syntax-highlighted output.
   - **Props Interface:** `lineNumber?: number`, `content: string`, `type?: 'output' | 'command' | 'error' | 'system'`, `style?: ViewStyle`
   - **Styling:** Height: `Layout.terminalLineHeight` (22dp). `type: 'command'` → prefix `$` in `Colors.primary.default`. `type: 'error'` → text `Colors.semantic.error`. `type: 'system'` → text `Colors.text.secondary`.
 
-- [ ] Create `/src/components/terminal/TerminalPromptLine.tsx`
+- [x] Create `/src/components/terminal/TerminalPromptLine.tsx`
   - **Wrapper:** `<View>` row + prompt prefix `MonoText` + `TerminalTextInput` + `TerminalCursor`
   - **Purpose:** The active input prompt line. Shows the shell `$` prefix, the text input, and a blinking cursor.
   - **Props Interface:** `promptPrefix?: string` (defaults `'$ '`), `value: string`, `onChangeText: (t: string) => void`, `onSubmit?: () => void`
   - **Styling:** `flexDirection: 'row'`, `alignItems: 'center'`. Prompt: `MonoText` `Colors.primary.default`.
 
-- [ ] Create `/src/components/terminal/TerminalCursor.tsx`
+- [x] Create `/src/components/terminal/TerminalCursor.tsx`
   - **Wrapper:** `Animated.View`
   - **Purpose:** Blinking block cursor element. Animates opacity 1↔0 on 500ms loop.
   - **Props Interface:** `visible?: boolean`, `color?` (defaults `Colors.primary.default`), `style?: ViewStyle`
   - **Styling:** `width: Layout.terminalCursorWidth` (8dp), `height: Layout.terminalCursorHeight` (18dp), `backgroundColor: color`.
 
-- [ ] Create `/src/components/terminal/TerminalSyntaxText.tsx`
+- [x] Create `/src/components/terminal/TerminalSyntaxText.tsx`
   - **Wrapper:** `<Text>` with nested `SyntaxText` spans
   - **Purpose:** Multi-span syntax highlighted line renderer. Accepts a token array to render mixed-color code in a single `<Text>` (important: nested `<Text>` in RN can share a single line without layout breaks).
   - **Props Interface:**
@@ -1072,77 +1072,77 @@ Theme          Units        Nav           State Stubs
     interface TerminalSyntaxTextProps { tokens: SyntaxToken[]; style?: TextStyle; }
     ```
 
-- [ ] Create `/src/components/terminal/VimStatusStrip.tsx`
+- [x] Create `/src/components/terminal/VimStatusStrip.tsx`
   - **Wrapper:** `<View>` row
   - **Purpose:** Vim-style status bar at the bottom of the terminal editor area. Shows mode (NORMAL/INSERT/VISUAL), filename, cursor position.
   - **Props Interface:** `mode?: string` (defaults `'NORMAL'`), `filename?: string`, `cursorPos?: { line: number; col: number }`, `style?: ViewStyle`
   - **Styling Constraints:** Height `Layout.vimStatusStripHeight` (32dp). `backgroundColor: Colors.primary.default` when mode is `INSERT`, `Colors.surface.raised` for `NORMAL`, `Colors.semantic.warning` for `VISUAL`. `paddingHorizontal: Spacing.sm`. All text: `MonoText` `FontSize.labelSM` `Colors.text.inverse` (or high-contrast text). `borderTopWidth: 1`, `borderTopColor: Colors.border.subtle`.
 
-- [ ] ⚡ ⌨️ 📐 Create `/src/components/terminal/DeveloperKeyboardBar.tsx`
+- [x] ⚡ ⌨️ 📐 Create `/src/components/terminal/DeveloperKeyboardBar.tsx`
   - **Wrappers:** `<View>` column + `KeyboardDivider` + `DeveloperKeyboardRow`
   - **Purpose:** The custom developer keyboard accessory bar that sits above the system soft keyboard. Provides quick-access terminal key injection.
   - **Props Interface:** `onKeyPress: (key: string) => void`, `visible?: boolean`, `style?: ViewStyle`
   - **Styling Constraints:** Height `Layout.developerKeyboardBarHeight` (56dp). `backgroundColor: Colors.surface.default`. `borderTopWidth: BorderWidth.hairline`, `borderTopColor: Colors.border.strong`. This component must be rendered within a `KeyboardAvoidingView` parent. When `visible={false}`, it collapses gracefully.
 
-- [ ] ⌨️ 📐 Create `/src/components/terminal/DeveloperKeyboardRow.tsx`
+- [x] ⌨️ 📐 Create `/src/components/terminal/DeveloperKeyboardRow.tsx`
   - **Wrapper:** `<ScrollView>` horizontal + array of `TerminalKeyButton`
   - **Purpose:** Horizontally scrollable row of terminal key buttons.
   - **Props Interface:** `keys: KeyDef[]`, `onKeyPress: (key: string) => void`, `style?: ViewStyle`
   - **Default Keys:** `['ESC', 'TAB', 'CTRL', 'ALT', '|', '/', '\\', '-', '~', 'UP', 'DOWN', 'LEFT', 'RIGHT']`
   - **Styling:** `showsHorizontalScrollIndicator={false}`. `contentContainerStyle: { paddingHorizontal: Spacing.sm, gap: Spacing.xs, alignItems: 'center' }`. Each key min 44dp touch target.
 
-- [ ] Create `/src/components/terminal/KeyboardDivider.tsx`
+- [x] Create `/src/components/terminal/KeyboardDivider.tsx`
   - **Wrapper:** `Divider` with specific styling
   - **Purpose:** 1px separator between keyboard bar and keyboard row.
 
-- [ ] Create `/src/components/terminal/LessonContextHeader.tsx`
+- [x] Create `/src/components/terminal/LessonContextHeader.tsx`
   - **Wrapper:** `<View>` row
   - **Purpose:** Compact lesson context indicator at top of workspace. Shows current lesson title and progress.
   - **Props Interface:** `lessonTitle?: string`, `progress?: number` (0–1), `onExpand?: () => void`
   - **Styling:** `paddingHorizontal: Spacing.md`, `paddingVertical: Spacing.xs`. `borderBottomWidth: 1`. `ProgressTrack` full width below the title row.
 
-- [ ] 📐 Create `/src/components/terminal/TaskBottomSheet.tsx`
+- [x] 📐 Create `/src/components/terminal/TaskBottomSheet.tsx`
   - **Wrappers:** `Animated.View` + `TaskSheetHeader` + scrollable content + `TaskSheetActions`
   - **Purpose:** The collapsible task overlay panel that slides up from the bottom of the terminal workspace. Shows task instructions, hints, and validation actions.
   - **Props Interface:** `visible: boolean`, `onDismiss: () => void`, `taskTitle?: string`, `taskContent?: string`, `style?: ViewStyle`
   - **Styling Constraints:** `position: 'absolute'`, `bottom: 0`, `left: 0`, `right: 0`. Max height `Layout.screenHeight * 0.6`. `borderTopLeftRadius: BorderRadius.xl`, `borderTopRightRadius: BorderRadius.xl`. `borderTopWidth: 1`, `borderTopColor: Colors.border.subtle`. `backgroundColor: Colors.surface.default`. `zIndex: ZIndex.taskSheet`.
   - **Animation:** `Animated.timing` on `translateY` 0↔(sheet height). Not gesture-driven in Roadmap 1 — toggle only.
 
-- [ ] Create `/src/components/terminal/TaskSheetHeader.tsx`
+- [x] Create `/src/components/terminal/TaskSheetHeader.tsx`
   - **Wrapper:** `<View>` row + drag handle + title + close `IconButton`
   - **Props Interface:** `title: string`, `onClose: () => void`
   - **Drag Handle:** 32dp wide × 4dp tall centered pill, `backgroundColor: Colors.border.strong`, `borderRadius: BorderRadius.full`. Non-interactive in Roadmap 1.
 
-- [ ] Create `/src/components/terminal/TaskSheetActions.tsx`
+- [x] Create `/src/components/terminal/TaskSheetActions.tsx`
   - **Wrapper:** `<View>` row
   - **Purpose:** Action buttons at bottom of task sheet ("Run Check", "Show Hint").
   - **Props Interface:** `onRunCheck?: () => void`, `onShowHint?: () => void`
   - **Styling:** `paddingHorizontal: Spacing.md`, `paddingVertical: Spacing.sm`. `gap: Spacing.sm`. `borderTopWidth: 1`.
 
-- [ ] Create `/src/components/terminal/index.ts`
+- [x] Create `/src/components/terminal/index.ts`
   - **Exports:** `TerminalWorkspace`, `TopMetricsBar`, `TerminalEditor`, `TerminalCodeLine`, `TerminalPromptLine`, `TerminalSyntaxText`, `TerminalCursor`, `VimStatusStrip`, `DeveloperKeyboardBar`, `DeveloperKeyboardRow`, `KeyboardDivider`, `LessonContextHeader`, `TaskBottomSheet`, `TaskSheetHeader`, `TaskSheetActions`.
 
 ---
 
 ## Sub-Phase 1.3.E — Lessons Components (`/src/components/lessons/`)
 
-- [ ] Create `/src/components/lessons/LessonsHeader.tsx`
+- [x] Create `/src/components/lessons/LessonsHeader.tsx`
   - **Wrapper:** `<View>` column
   - **Purpose:** Top header section of the Lessons screen with title and filter tabs.
   - **Props Interface:** `title?: string`, `subtitle?: string`, `style?: ViewStyle`
 
-- [ ] Create `/src/components/lessons/LessonModuleSection.tsx`
+- [x] Create `/src/components/lessons/LessonModuleSection.tsx`
   - **Wrapper:** `<View>` column + `SectionHeader` + `LessonCardGrid`
   - **Purpose:** A grouped module section within the lessons list.
   - **Props Interface:** `moduleTitle: string`, `lessons: LessonData[]`, `onLessonPress: (id: string) => void`
 
-- [ ] 📐 Create `/src/components/lessons/LessonCardGrid.tsx`
+- [x] 📐 Create `/src/components/lessons/LessonCardGrid.tsx`
   - **Wrapper:** React Native `<FlatList>` with `numColumns={2}` or `<View>` wrapped grid
   - **Purpose:** 2-column grid layout for lesson cards.
   - **Props Interface:** `lessons: LessonData[]`, `onLessonPress: (id: string) => void`, `style?: ViewStyle`
   - **Styling:** `gap: Spacing.sm`. Card width: `(Layout.screenWidth - Spacing.md * 2 - Spacing.sm) / 2`.
 
-- [ ] 📐 Create `/src/components/lessons/LessonCard.tsx`
+- [x] 📐 Create `/src/components/lessons/LessonCard.tsx`
   - **Wrapper:** `<TouchableOpacity>` + `BorderedSurface` + `LessonCardHeader` + `LessonProgressMeta` + `LessonProgressBar`
   - **Purpose:** Individual lesson card tile. Three states: complete, in-progress, locked.
   - **Props Interface:**
@@ -1163,32 +1163,32 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling Constraints:** Min height `Layout.lessonCardMinHeight` (100dp). `borderRadius: BorderRadius.lg`. `borderColor` by state: complete → `Colors.border.success`, locked → `Colors.border.subtle`, inProgress → `Colors.border.focus`. `...Shadows.none`. Locked state: `opacity: 0.5`.
 
-- [ ] Create `/src/components/lessons/LessonCardHeader.tsx`
+- [x] Create `/src/components/lessons/LessonCardHeader.tsx`
   - **Wrapper:** `<View>` row + `LessonStatusIcon` + title
   - **Props Interface:** `title: string`, `state: LessonState`, `icon?: string`
 
-- [ ] Create `/src/components/lessons/LessonStatusIcon.tsx`
+- [x] Create `/src/components/lessons/LessonStatusIcon.tsx`
   - **Wrapper:** `<View>` + `MaterialIcon`
   - **Purpose:** Resolves the correct icon for each lesson state.
   - **State Map:** `complete → 'check_circle'` (`Colors.semantic.success`), `inProgress → 'radio_button_checked'` (`Colors.primary.default`), `locked → 'lock'` (`Colors.text.tertiary`).
 
-- [ ] Create `/src/components/lessons/LessonProgressMeta.tsx`
+- [x] Create `/src/components/lessons/LessonProgressMeta.tsx`
   - **Wrapper:** `<View>` row
   - **Purpose:** Metadata row: command count, time estimate.
   - **Props Interface:** `commandCount: number`, `estimatedMinutes: number`, `state: LessonState`
 
-- [ ] Create `/src/components/lessons/LessonProgressBar.tsx`
+- [x] Create `/src/components/lessons/LessonProgressBar.tsx`
   - **Wrapper:** `ProgressTrack`
   - **Purpose:** Lesson-specific progress bar. Wraps `ProgressTrack` with lesson-appropriate color.
   - **Props Interface:** `progress: number`, `state: LessonState`
   - **Color Resolution:** `complete → Colors.semantic.success`, `inProgress → Colors.primary.default`, `locked → Colors.border.subtle`.
 
-- [ ] Create `/src/components/lessons/AsciiProgressText.tsx`
+- [x] Create `/src/components/lessons/AsciiProgressText.tsx`
   - **Wrapper:** `MonoText`
   - **Purpose:** ASCII-style text progress bar e.g. `[████░░░░] 50%`.
   - **Props Interface:** `progress: number` (0–1), `width?: number` (number of characters, defaults 10), `style?: TextStyle`
 
-- [ ] Create `/src/components/lessons/index.ts`
+- [x] Create `/src/components/lessons/index.ts`
   - **Exports:** `LessonsHeader`, `LessonModuleSection`, `LessonCardGrid`, `LessonCard`, `LessonCardHeader`, `LessonStatusIcon`, `LessonProgressMeta`, `LessonProgressBar`, `AsciiProgressText`.
 
 ---
