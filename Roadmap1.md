@@ -1195,85 +1195,85 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.3.F — FileSystem Components (`/src/components/filesystem/`)
 
-- [ ] Create `/src/components/filesystem/FileSystemTree.tsx`
+- [x] Create `/src/components/filesystem/FileSystemTree.tsx`
   - **Wrapper:** `<ScrollView>` vertical + `<ScrollView>` horizontal (inner) + array of `FileTreeBranch`
   - **Purpose:** Scrollable filesystem tree container. Horizontal scroll enables deep nesting.
   - **Props Interface:** `tree: FileTreeNode[]`, `onFileSelect: (path: string) => void`, `onFolderToggle: (path: string) => void`, `selectedPath?: string`, `style?: ViewStyle`
 
-- [ ] Create `/src/components/filesystem/FileTreeBranch.tsx`
+- [x] Create `/src/components/filesystem/FileTreeBranch.tsx`
   - **Wrapper:** `<View>` column + `FolderRow` + conditionally rendered children (recursion)
   - **Purpose:** Recursive folder branch renderer.
   - **Props Interface:** `node: FileTreeNode`, `depth: number`, `onFileSelect: (path: string) => void`, `onFolderToggle: (path: string) => void`, `selectedPath?: string`
 
-- [ ] 📐 Create `/src/components/filesystem/FileTreeRow.tsx`
+- [x] 📐 Create `/src/components/filesystem/FileTreeRow.tsx`
   - **Wrapper:** `<TouchableOpacity>` row
   - **Purpose:** Base row component for all tree items. Handles indent guides and touch targets.
   - **Props Interface:** `depth: number`, `onPress: () => void`, `active?: boolean`, `children: React.ReactNode`, `style?: ViewStyle`
   - **Styling:** Height min 44dp. Indent: `depth * Spacing.md` (16dp per level). Active: `backgroundColor: Colors.primary.muted`.
 
-- [ ] 📐 Create `/src/components/filesystem/FolderRow.tsx`
+- [x] 📐 Create `/src/components/filesystem/FolderRow.tsx`
   - **Wrapper:** `FileTreeRow` + `FolderIcon` + `MonoText` + expand chevron
   - **Props Interface:** `name: string`, `depth: number`, `open: boolean`, `onToggle: () => void`
 
-- [ ] 📐 Create `/src/components/filesystem/FileRow.tsx`
+- [x] 📐 Create `/src/components/filesystem/FileRow.tsx`
   - **Wrapper:** `FileTreeRow` + `FileTypeIcon` + `MonoText`
   - **Props Interface:** `name: string`, `depth: number`, `onSelect: () => void`, `selected?: boolean`
 
-- [ ] Create `/src/components/filesystem/SelectedFileRow.tsx`
+- [x] Create `/src/components/filesystem/SelectedFileRow.tsx`
   - **Wrapper:** `FileRow` with forced `selected={true}` and highlight styling
   - **Purpose:** Variant of `FileRow` for the currently selected/open file.
 
-- [ ] Create `/src/components/filesystem/TreeIndentGuide.tsx`
+- [x] Create `/src/components/filesystem/TreeIndentGuide.tsx`
   - **Wrapper:** `<View>` (1dp vertical line)
   - **Purpose:** Visual indent guide line connecting folder to children.
   - **Props Interface:** `depth: number`, `style?: ViewStyle`
   - **Styling:** `width: 1`, `backgroundColor: Colors.border.subtle`, absolute positioned at `left: depth * Spacing.md + 6dp`.
 
-- [ ] Create `/src/components/filesystem/index.ts`
+- [x] Create `/src/components/filesystem/index.ts`
   - **Exports:** `FileSystemTree`, `FileTreeBranch`, `FileTreeRow`, `FolderRow`, `FileRow`, `SelectedFileRow`, `TreeIndentGuide`.
 
 ---
 
 ## Sub-Phase 1.3.G — Settings Components (`/src/components/settings/`)
 
-- [ ] Create `/src/components/settings/ProfileAvatarBlock.tsx`
+- [x] Create `/src/components/settings/ProfileAvatarBlock.tsx`
   - **Wrapper:** `<View>` column + `<Image>` (avatar) + `HeadlineText` (name) + `BodyText` (email)
   - **Purpose:** User profile display block at top of settings screen.
   - **Props Interface:** `avatarUri?: string`, `displayName: string`, `email: string`, `style?: ViewStyle`
   - **Styling:** Avatar: `width/height: Layout.profileAvatarSizeLG` (72dp), `borderRadius: BorderRadius.full`, `borderWidth: 1`, `borderColor: Colors.border.default`. Centered column. Gap: `Spacing.sm`.
 
-- [ ] Create `/src/components/settings/SettingsConfigCard.tsx`
+- [x] Create `/src/components/settings/SettingsConfigCard.tsx`
   - **Wrapper:** `BorderedSurface` + `SectionHeader` + content slot
   - **Purpose:** Grouped settings card container with header and content padding.
   - **Props Interface:** `title: string`, `children: React.ReactNode`, `style?: ViewStyle`
   - **Styling:** `borderRadius: BorderRadius.lg`. `padding: Spacing.md`. `marginBottom: Spacing.md`.
 
-- [ ] ⌨️ 📐 Create `/src/components/settings/ServerConfigInput.tsx`
+- [x] ⌨️ 📐 Create `/src/components/settings/ServerConfigInput.tsx`
   - **Wrapper:** `<View>` column + `ConfigInputField` (IP) + `ConfigInputField` (Port)
   - **Purpose:** SSH server configuration input group. IP address + port number.
   - **Props Interface:** `ipValue: string`, `portValue: string`, `onIpChange: (v: string) => void`, `onPortChange: (v: string) => void`, `ipError?: string`, `portError?: string`
   - **Keyboard Types:** IP field: `keyboardType='numeric'`. Port field: `keyboardType='number-pad'`.
 
-- [ ] 📐 Create `/src/components/settings/SaveConfigurationButton.tsx`
+- [x] 📐 Create `/src/components/settings/SaveConfigurationButton.tsx`
   - **Wrapper:** `PrimaryActionButton`
   - **Purpose:** Settings-specific save action button with terminal save aesthetic.
   - **Props Interface:** `onPress: () => void`, `loading?: boolean`, `disabled?: boolean`
   - **Label:** `"SAVE CONFIGURATION"` — all caps, `MonoText` variant label.
 
-- [ ] 📐 Create `/src/components/settings/ServerStatusSignal.tsx`
+- [x] 📐 Create `/src/components/settings/ServerStatusSignal.tsx`
   - **Wrapper:** `<View>` row + `StatusDot` + `MonoText` (ping text) + optional latency badge
   - **Purpose:** Live server connection test signal display.
   - **Props Interface:** `state: ConnectionState`, `latencyMs?: number`, `onTest?: () => void`, `style?: ViewStyle`
   - **Styling:** Min touch target 44dp for `onTest` tap area. Latency: `MonoText` `FontSize.labelXS` `Colors.text.secondary`.
 
-- [ ] Create `/src/components/settings/index.ts`
+- [x] Create `/src/components/settings/index.ts`
   - **Exports:** `ProfileAvatarBlock`, `SettingsConfigCard`, `ServerConfigInput`, `SaveConfigurationButton`, `ServerStatusSignal`.
 
 ---
 
 ## Sub-Phase 1.3.H — Component Barrel Update
 
-- [ ] Update `/src/components/index.ts` with final barrel re-exports:
+- [x] Update `/src/components/index.ts` with final barrel re-exports:
   - **Code Layout:**
     ```typescript
     export * from './shell';
