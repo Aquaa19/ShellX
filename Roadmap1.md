@@ -853,32 +853,32 @@ Theme          Units        Nav           State Stubs
 
 ## Sub-Phase 1.3.A — App Shell Components (`/src/components/shell/`)
 
-- [ ] ⚡ 🌑 Create `/src/components/shell/TrueDarkCanvas.tsx`
+- [x] ⚡ 🌑 Create `/src/components/shell/TrueDarkCanvas.tsx`
   - **Wrappers:** React Native `<View>` with `flex: 1`
   - **Purpose:** The root full-screen OLED-black canvas. Every screen must be wrapped in this component. Ensures the system status bar area and full screen are pitch-black (#000000).
   - **Props Interface:** `children: React.ReactNode`, `style?: ViewStyle`
   - **Styling Constraints:** `flex: 1`, `backgroundColor: Colors.background.floor` (#000000). Must use `StyleSheet.absoluteFillObject` internally for positioning safety. Explicit `...Shadows.none`.
 
-- [ ] 🌑 Create `/src/components/shell/AppBackground.tsx`
+- [x] 🌑 Create `/src/components/shell/AppBackground.tsx`
   - **Wrappers:** `TrueDarkCanvas` + React Native `<StatusBar>` (set to `barStyle: 'light-content'`, `backgroundColor: '#000000'`, `translucent: true`)
   - **Purpose:** Full application background provider. Sets system status bar style globally. All screens are wrapped here.
   - **Props Interface:** `children: React.ReactNode`
   - **Constraints:** Status bar background is always `#000000`. Never use `default` bar style.
 
-- [ ] Create `/src/components/shell/ScanlineOverlay.tsx`
+- [x] Create `/src/components/shell/ScanlineOverlay.tsx`
   - **Wrappers:** React Native `<View>` with `StyleSheet.absoluteFillObject` + `pointerEvents="none"`
   - **Purpose:** Decorative CRT scanline illusion overlay layer. Sits above content but does not intercept touches. Uses repeating thin horizontal stripes via background pattern or SVG.
   - **Props Interface:** `opacity?: number` (defaults `0.04`), `style?: ViewStyle`
   - **Implementation:** Renders a `<View>` array of alternating 1dp/1dp transparent and tinted stripes (`Colors.overlay.scanline`). Or uses `<Canvas>` if `@shopify/react-native-skia` is available. `pointerEvents='none'`. `zIndex: ZIndex.overlay`.
   - **Styling:** Full screen absolute position. Must not affect layout. `opacity` prop controls visual intensity.
 
-- [ ] Create `/src/components/shell/DottedGridOverlay.tsx`
+- [x] Create `/src/components/shell/DottedGridOverlay.tsx`
   - **Wrappers:** `<View>` with `StyleSheet.absoluteFillObject` + `pointerEvents="none"`
   - **Purpose:** Subtle dotted grid background pattern for the Auth screen. Creates terminal-paper aesthetic.
   - **Props Interface:** `dotColor?: string` (defaults `Colors.border.subtle`), `spacing?: number` (defaults 24), `opacity?: number` (defaults 0.4)
   - **Implementation:** SVG-based repeating dot grid using `react-native-svg` `<Defs>` + `<Pattern>` + `<Rect>`. If SVG unavailable, use repeated `<View>` grid layout with small circular dots. `pointerEvents='none'`.
 
-- [ ] Create `/src/components/shell/AppHeader.tsx`
+- [x] Create `/src/components/shell/AppHeader.tsx`
   - **Wrappers:** `<View>` row + optional left slot + title center + optional right slot
   - **Purpose:** Reusable top application header / navigation bar. Used on Lessons, FileSystem, Settings screens.
   - **Props Interface:**
@@ -893,26 +893,26 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling Constraints:** Height: `Layout.topAppBarHeight` (56dp). `backgroundColor: Colors.background.floor`. `paddingHorizontal: Spacing.md`. `borderBottomWidth: BorderWidth.hairline`. `borderBottomColor: Colors.border.subtle`. `flexDirection: 'row'`, `alignItems: 'center'`. Title: `HeadlineText` `FontSize.titleMD`, `FontFamily.sansSemiBold`. No shadow. Must account for `Layout.statusBarHeight` with `paddingTop`.
 
-- [ ] Create `/src/components/shell/ShellXBrandMark.tsx`
+- [x] Create `/src/components/shell/ShellXBrandMark.tsx`
   - **Wrappers:** `<View>` column + `MonoText` (the `$_` symbol) + `Animated.View` (blinking cursor block)
   - **Purpose:** The central terminal logo mark shown on SplashScreen and Auth headers. Renders `$ _` with a blinking block cursor.
   - **Props Interface:** `size?: 'sm' | 'md' | 'lg'`, `showCursor?: boolean`, `animated?: boolean`, `style?: ViewStyle`
   - **Animation:** `Animated.loop(Animated.sequence([...]))` toggling cursor opacity 0↔1 every 500ms. Only animates when `animated={true}`. Cursor block: `width: Layout.terminalCursorWidth` (8dp), `height: 18dp`, `backgroundColor: Colors.primary.default`.
   - **Styling:** `MonoText` for `$_` in `Colors.primary.default`. `FontSize.headlineMD` for `md` size.
 
-- [ ] Create `/src/components/shell/ShellXLogoText.tsx`
+- [x] Create `/src/components/shell/ShellXLogoText.tsx`
   - **Wrapper:** `<View>` row
   - **Purpose:** The "ShellX" wordmark logotype. Renders "Shell" in `Colors.text.primary` and "X" in `Colors.primary.default`.
   - **Props Interface:** `size?: number` (defaults `FontSize.titleLG`), `style?: ViewStyle`
 
-- [ ] Create `/src/components/shell/index.ts`
+- [x] Create `/src/components/shell/index.ts`
   - **Exports:** `TrueDarkCanvas`, `AppBackground`, `ScanlineOverlay`, `DottedGridOverlay`, `AppHeader`, `ShellXBrandMark`, `ShellXLogoText`.
 
 ---
 
 ## Sub-Phase 1.3.B — Navigation Components (`/src/components/navigation/`)
 
-- [ ] ⚡ 📐 📱 Create `/src/components/navigation/BottomTabBar.tsx`
+- [x] ⚡ 📐 📱 Create `/src/components/navigation/BottomTabBar.tsx`
   - **Wrappers:** React Native `<View>` + `<SafeAreaView>` (bottom safe area) + array of `NavButton`
   - **Purpose:** Primary bottom tab navigation bar. Renders 4–5 nav items. Handles safe area insets for notch/gesture navigation devices.
   - **Props Interface:**
@@ -932,68 +932,68 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling Constraints:** `height: Layout.bottomNavHeight` (56dp) + safe area bottom inset. `backgroundColor: Colors.background.floor`. `borderTopWidth: BorderWidth.hairline`, `borderTopColor: Colors.border.subtle`. `flexDirection: 'row'`. Each `NavButton` gets `flex: 1`. `...Shadows.none`. Tab items must be minimum 44dp touch target.
 
-- [ ] 📐 Create `/src/components/navigation/BottomTabItem.tsx`
+- [x] 📐 Create `/src/components/navigation/BottomTabItem.tsx`
   - **Wrapper:** `NavButton` with additional active indicator
   - **Purpose:** Individual bottom tab item with active indicator line at top.
   - **Props Interface:** `icon: React.ReactNode`, `label: string`, `active: boolean`, `onPress: () => void`, `badge?: number`
   - **Active Indicator:** 2dp wide × 16dp tall centered line above icon using `Colors.primary.default`. Or: 16dp wide × 2dp height top bar with `borderRadius: BorderRadius.full`.
 
-- [ ] 📐 Create `/src/components/navigation/DesktopSideNav.tsx`
+- [x] 📐 Create `/src/components/navigation/DesktopSideNav.tsx`
   - **Wrappers:** `<View>` column + `SideNavProfileHeader` + `FlatList` of `SideNavItem`
   - **Purpose:** Persistent side navigation panel for tablets/larger screens. Fixed `width: Layout.sideNavWidth` (256dp).
   - **Props Interface:** `items: NavItem[]`, `activeKey: string`, `onItemPress: (key: string) => void`, `profileData?: ProfileData`, `style?: ViewStyle`
   - **Styling:** `width: 256dp`. `backgroundColor: Colors.background.elevated`. `borderRightWidth: BorderWidth.hairline`, `borderRightColor: Colors.border.subtle`. No shadow.
 
-- [ ] Create `/src/components/navigation/SideNavProfileHeader.tsx`
+- [x] Create `/src/components/navigation/SideNavProfileHeader.tsx`
   - **Wrapper:** `<View>` row
   - **Purpose:** User profile mini-header at the top of the side nav.
   - **Props Interface:** `avatarUri?: string`, `displayName: string`, `email: string`, `style?: ViewStyle`
   - **Styling:** Height min 72dp. `paddingHorizontal: Spacing.md`. Avatar: 36dp circle. Name: `BodyText` bold. Email: `LabelCapsText` `Colors.text.secondary`.
 
-- [ ] Create `/src/components/navigation/SideNavItem.tsx`
+- [x] Create `/src/components/navigation/SideNavItem.tsx`
   - **Wrapper:** `<TouchableOpacity>` row
   - **Purpose:** Individual side nav list item.
   - **Props Interface:** `icon: React.ReactNode`, `label: string`, `active: boolean`, `onPress: () => void`
   - **Styling:** Height `Layout.sideNavItemHeight` (48dp). `paddingHorizontal: Spacing.md`. Active: `backgroundColor: Colors.primary.muted`, left `borderLeftWidth: 2`, `borderLeftColor: Colors.primary.default`. Inactive: transparent bg. Label: `BodyText`, `FontSize.bodySM`.
 
-- [ ] Create `/src/components/navigation/FocusedHeader.tsx`
+- [x] Create `/src/components/navigation/FocusedHeader.tsx`
   - **Wrapper:** `AppHeader` variant with back button
   - **Purpose:** Navigation header for non-root screens with a back chevron.
   - **Props Interface:** `title: string`, `onBack: () => void`, `rightSlot?: React.ReactNode`
   - **Back Button:** `IconButton` with left chevron icon, 44×44dp.
 
-- [ ] Create `/src/components/navigation/index.ts`
+- [x] Create `/src/components/navigation/index.ts`
   - **Exports:** `BottomTabBar`, `BottomTabItem`, `DesktopSideNav`, `SideNavProfileHeader`, `SideNavItem`, `FocusedHeader`.
 
 ---
 
 ## Sub-Phase 1.3.C — Auth Components (`/src/components/auth/`)
 
-- [ ] Create `/src/components/auth/AuthTerminalWindow.tsx`
+- [x] Create `/src/components/auth/AuthTerminalWindow.tsx`
   - **Wrappers:** `BorderedSurface` + `AuthTerminalHeader` + content slot
   - **Purpose:** The mock terminal window container for the Auth screen. Simulates an OS terminal window frame.
   - **Props Interface:** `children: React.ReactNode`, `style?: ViewStyle`
   - **Styling:** `borderRadius: BorderRadius.xl` (12dp). `borderColor: Colors.border.default`. `backgroundColor: Colors.surface.default`. Min width: `Layout.screenWidth * 0.85`. Max width: 400dp.
 
-- [ ] Create `/src/components/auth/AuthTerminalHeader.tsx`
+- [x] Create `/src/components/auth/AuthTerminalHeader.tsx`
   - **Wrapper:** `<View>` row
   - **Purpose:** Terminal window title bar inside the auth container. Shows `TrafficLightDots` + filename label.
   - **Props Interface:** `filename?: string` (defaults `'auth_session.sh'`), `style?: ViewStyle`
   - **Styling:** Height 36dp. `backgroundColor: Colors.surface.raised`. `borderTopLeftRadius: BorderRadius.xl`, `borderTopRightRadius: BorderRadius.xl`. `borderBottomWidth: BorderWidth.hairline`, `borderBottomColor: Colors.border.subtle`. `paddingHorizontal: Spacing.sm`. `TrafficLightDots` on left. Filename: `MonoText` `FontSize.labelSM` `Colors.text.secondary` centered.
 
-- [ ] Create `/src/components/auth/AuthBrandPanel.tsx`
+- [x] Create `/src/components/auth/AuthBrandPanel.tsx`
   - **Wrapper:** `<View>` column
   - **Purpose:** Top branding section inside the auth terminal window. Shows `ShellXBrandMark` + tagline text.
   - **Props Interface:** `style?: ViewStyle`
   - **Styling:** `alignItems: 'center'`, `paddingVertical: Spacing.lg`. `ShellXBrandMark` at `'lg'` size with `animated={true}`. Tagline: `MonoText` `FontSize.labelSM` `Colors.text.secondary` below mark.
 
-- [ ] 📐 Create `/src/components/auth/GoogleSignInButton.tsx`
+- [x] 📐 Create `/src/components/auth/GoogleSignInButton.tsx`
   - **Wrapper:** `<TouchableOpacity>` row + Google SVG icon + `BodyText`
   - **Purpose:** Mock "Sign in with Google" button. Static (no real OAuth in Roadmap 1).
   - **Props Interface:** `onPress: () => void`, `loading?: boolean`, `style?: ViewStyle`
   - **Styling Constraints:** Height min 48dp. Full width of parent container. `backgroundColor: Colors.surface.raised`. `borderWidth: BorderWidth.hairline`, `borderColor: Colors.border.default`. `borderRadius: BorderRadius.default`. Google "G" icon: 18dp, SVG or asset. Label: `BodyText` `FontFamily.sansSemiBold` `Colors.text.primary`. Gap between icon and text: `Spacing.sm`. Active/pressed: `backgroundColor: Colors.surface.active`. No shadow.
 
-- [ ] Create `/src/components/auth/AuthTerminalOutput.tsx`
+- [x] Create `/src/components/auth/AuthTerminalOutput.tsx`
   - **Wrapper:** `<View>` column + array of `TerminalText` lines
   - **Purpose:** Simulated terminal output text block at bottom of auth window. Shows decorative boot/init messages.
   - **Props Interface:**
@@ -1009,7 +1009,7 @@ Theme          Units        Nav           State Stubs
     ```
   - **Styling:** `paddingHorizontal: Spacing.md`, `paddingVertical: Spacing.sm`. Each line: `TerminalText` with optional `SyntaxText` coloring. Lines separated by line-height only.
 
-- [ ] Create `/src/components/auth/index.ts`
+- [x] Create `/src/components/auth/index.ts`
   - **Exports:** `AuthTerminalWindow`, `AuthTerminalHeader`, `AuthBrandPanel`, `GoogleSignInButton`, `AuthTerminalOutput`.
 
 ---
