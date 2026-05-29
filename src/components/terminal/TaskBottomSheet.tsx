@@ -11,7 +11,7 @@ export interface TaskBottomSheetProps {
   onCheck: () => void;
   onHint: () => void;
   isChecking?: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
