@@ -4,22 +4,23 @@ This document tracks local verification results, mismatches, and prompts for cor
 
 ---
 
-## 🔍 Phase 1.3: Part 1 (Remaining 16 Components) Verification
+## 🔍 Phase 1.3: Part 2 (Terminal & Lessons Components) Verification
 
 ### 📋 Verification Status: PASS ✅
 
-All remaining 16 components for Sub-Phases 1.3.A, 1.3.B, and 1.3.C have successfully passed validation:
+All proposed components for Sub-Phases 1.3.D (Terminal workspace components) and 1.3.E (Lessons list components) have successfully passed verification:
 
-1. **App Shell Components (1.3.A):**
-   - `TrueDarkCanvas.tsx`, `AppBackground.tsx`, `AppHeader.tsx`, `ShellXBrandMark.tsx`, `ShellXLogoText.tsx`, and the shell barrel `index.ts` compile correctly, respect the OLED true dark background style (#000000), and use `Theme` values.
-2. **Navigation Components (1.3.B):**
-   - `BottomTabBar.tsx`, `BottomTabItem.tsx`, `DesktopSideNav.tsx`, `SideNavProfileHeader.tsx`, `FocusedHeader.tsx`, and the navigation barrel `index.ts` adhere to touch target, safe area bottom insets, and header specs.
-3. **Auth Components (1.3.C):**
-   - `AuthTerminalWindow.tsx`, `AuthTerminalHeader.tsx`, `AuthBrandPanel.tsx`, and the auth barrel `index.ts` match layout constraints and simulate terminal borders cleanly.
+1. **Accessibility Compliance Check:**
+   - All interactive components (`LessonCard`, `TerminalPromptLine` input, `TaskSheetHeader` close button) correctly implement `accessibilityLabel` and `accessibilityRole`.
+   - Decorative components (`TerminalCursor`, etc.) correctly declare `accessible={false}` and `importantForAccessibility="no-hide-descendants"`.
+2. **Terminal Workspace Components (1.3.D):**
+   - Workspace chrome (`TopMetricsBar`, `VimStatusStrip`, `DeveloperKeyboardBar`) and scroll-to-bottom handling in `TerminalEditor` are structurally correct and compile against established atoms and tokens.
+   - `TerminalSyntaxText` correctly handles token maps for inline syntax highlighting.
+3. **Lessons List Components (1.3.E):**
+   - `LessonCard`, progress tracks, module sections, grids, and `AsciiProgressText` are correct, follow exact layout dimensions, and respect semantic border indicators.
 
 ---
 
 ## 🤖 Verification Log
-* **Imports Integrations:** All files correctly reference standard atoms via `../../atoms` and tokens via `../../tokens` or relative pathways.
-* **TypeScript Types:** Props interfaces are cleanly defined and exported.
-* **Shadow Rule Compliance:** Pure dark design constraints with zero shadows are preserved.
+* **Imports Integrations:** Checked all relative import path resolutions (`../../atoms`, `../../tokens`) and confirmed they are correct.
+* **OLED & Zero Shadow compliance:** Pure black colors and `...Theme.noShadow` tokens are preserved.
