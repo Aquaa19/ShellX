@@ -75,6 +75,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
         throw new Error('Sign-In cancelled by user.');
       }
     } catch (error: any) {
+      console.error('[AuthContext] Google Sign-In Error:', error);
       setAuthError(error.message || 'Failed to sign in with Google.');
     } finally {
       setIsSigningIn(false);
