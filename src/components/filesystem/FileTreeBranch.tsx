@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
-import { Theme } from '../../tokens';
 import { FolderRow } from './FolderRow';
 import { TreeIndentGuide } from './TreeIndentGuide';
 

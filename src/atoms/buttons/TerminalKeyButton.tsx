@@ -20,7 +20,7 @@ export const TerminalKeyButton: React.FC<TerminalKeyButtonProps> = ({
 }) => {
   const [isPressed, setIsPressed] = useState(false);
 
-  // Dynamic styling resolution
+  // Dynamic styling resolution for colors
   const getBackgroundColor = () => {
     if (isPressed) return Theme.colors.primary.dim;
     if (special) return Theme.colors.primary.muted;
@@ -38,12 +38,14 @@ export const TerminalKeyButton: React.FC<TerminalKeyButtonProps> = ({
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
       activeOpacity={1}
+      accessibilityRole="button"
+      accessibilityLabel={`Keyboard key ${label}`}
       style={[
         styles.base,
+        wide ? styles.wideLayout : styles.standardLayout,
         {
           backgroundColor: getBackgroundColor(),
           borderColor: getBorderColor(),
-          minWidth: wide ? 64 : Theme.layout.minTouchTarget,
         },
         style,
       ]}
@@ -70,6 +72,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: Theme.spacing.xs,
     ...Theme.noShadow,
+  },
+  standardLayout: {
+    minWidth: Theme.layout.minTouchTarget,
+  },
+  wideLayout: {
+    minWidth: 64,
   },
   content: {
     justifyContent: 'center',

@@ -1,14 +1,14 @@
 import React from 'react';
-import { View, ViewStyle, StyleSheet, StyleProp } from 'react-native';
+import { View, ViewStyle, StyleSheet } from 'react-native';
 import { Theme } from '../../tokens';
 
 export interface TrafficLightDotsProps {
   activeState?: 'none' | 'alert'; // Placeholder for possible active state modifications
-  style?: StyleProp<ViewStyle>;
+  style?: ViewStyle | ViewStyle[];
 }
 
 export const TrafficLightDots: React.FC<TrafficLightDotsProps> = ({
-  activeState = 'none',
+  activeState: _activeState = 'none',
   style,
 }) => {
   const dotSize = Theme.layout.trafficLightDotSize;

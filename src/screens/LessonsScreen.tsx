@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, SafeAreaView, FlatList, ListRenderItem } from 'react-native';
 import { Theme } from '../tokens';
 import { IconButton, MaterialIcon } from '../atoms';
@@ -28,8 +28,6 @@ const MODULES = [
 ];
 
 export const LessonsScreen: React.FC = () => {
-  const [activeFilter] = useState<'all' | 'inProgress' | 'complete'>('all');
-
   const renderModule: ListRenderItem<typeof MODULES[0]> = ({ item }) => (
     <LessonModuleSection moduleTitle={item.title}>
       <LessonCardGrid>

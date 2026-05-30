@@ -17,7 +17,7 @@ export const TerminalScreen: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [vimMode, setVimMode] = useState<VimMode>('NORMAL');
   const [isTaskSheetVisible, setIsTaskSheetVisible] = useState(false);
-  const [showLessonContext, setShowLessonContext] = useState(true);
+  const [showLessonContext] = useState(true);
   const [connectionState] = useState<'offline' | 'connected' | 'connecting'>('offline');
   const [isCheckingTask, setIsCheckingTask] = useState(false);
 

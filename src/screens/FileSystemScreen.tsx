@@ -7,7 +7,6 @@ import {
   FocusedHeader,
   FileSystemTree,
   FileTreeBranch,
-  FolderRow,
   FileRow,
   SelectedFileRow
 } from '../components';
