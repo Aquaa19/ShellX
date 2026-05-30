@@ -29,7 +29,7 @@ export const SplashScreen: React.FC = () => {
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const getAsciiBar = (progressVal: number) => {
-    const totalBars = 20;
+    const totalBars = 10;
     const filledCount = Math.round(progressVal * totalBars);
     if (filledCount === 0) {
       return '[' + ' '.repeat(totalBars) + ']';
@@ -109,6 +109,7 @@ export const SplashScreen: React.FC = () => {
               size={Theme.fontSize.codeBase}
               color={Theme.colors.syntax.green}
               weight="bold"
+              style={styles.asciiBar}
             >
               {getAsciiBar(progress)}
             </MonoText>
@@ -160,6 +161,10 @@ const styles = StyleSheet.create({
   progressBarWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  asciiBar: {
+    fontFamily: 'monospace',
+    letterSpacing: 0,
   },
   percentageText: {
     marginTop: Theme.spacing.md,
