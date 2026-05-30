@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, ScrollView, Platform, Keyboard } from 'react-native';
 import { Theme } from '../tokens';
-import { SecondaryActionButton, BodyText } from '../atoms';
+import { SecondaryActionButton, BodyText, StatusIndicatorBadge } from '../atoms';
 import { 
   AppBackground, 
   FocusedHeader,
@@ -11,10 +11,49 @@ import {
   ServerStatusSignal,
   SaveConfigurationButton
 } from '../components';
+import { useAppContext } from '../context';
+import { validateServerConfig, ServerConfigSchema } from '../services/validation';
 
 export const SettingsScreen: React.FC = () => {
-  const [ipValue, setIpValue] = useState('192.168.1.100');
-  const [portValue, setPortValue] = useState('22');
+  const { serverConfig, saveServerConfig } = useAppContext();
+  
+  const [ipValue, setIpValue] = useState(serverConfig.ip);
+  const [portValue, setPortValue] = useState(serverConfig.port);
+  const [sshUserValue, setSshUserValue] = useState(serverConfig.sshUser);
+  
+  const [errors, setErrors] = useState<Partial<Record<keyof ServerConfigSchema, string>>>({});
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  useEffect(() => {
+    setIpValue(serverConfig.ip);
+    setPortValue(serverConfig.port);
+    setSshUserValue(serverConfig.sshUser);
+  }, [serverConfig]);
+
+  const handleSave = async () => {
+    Keyboard.dismiss();
+    setIsSaving(true);
+    setErrors({});
+    
+    const config: ServerConfigSchema = {
+      ip: ipValue,
+      port: portValue,
+      sshUser: sshUserValue,
+    };
+
+    const success = await saveServerConfig(config);
+    
+    if (success) {
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2500);
+    } else {
+      const { errors: validationErrors } = validateServerConfig(config);
+      setErrors(validationErrors);
+    }
+    
+    setIsSaving(false);
+  };
 
   return (
     <AppBackground>
@@ -38,17 +77,28 @@ export const SettingsScreen: React.FC = () => {
               <ServerConfigInput
                 ipAddress={ipValue}
                 port={portValue}
+                sshUser={sshUserValue}
                 onChangeIpAddress={setIpValue}
                 onChangePort={setPortValue}
+                onChangeSshUser={setSshUserValue}
+                ipError={errors.ip}
+                portError={errors.port}
+                sshUserError={errors.sshUser}
               />
               <ServerStatusSignal
                 status="offline"
                 onTestPress={() => {}}
               />
               <SaveConfigurationButton 
-                onPress={() => {}} 
+                onPress={handleSave} 
+                isLoading={isSaving}
                 style={styles.saveBtn} 
               />
+              {saveSuccess && (
+                <View style={styles.successBadgeContainer}>
+                  <StatusIndicatorBadge label="SAVED SUCCESSFULLY" variant="success" />
+                </View>
+              )}
             </SettingsConfigCard>
 
             <SettingsConfigCard title="Preferences">
@@ -90,6 +140,10 @@ const styles = StyleSheet.create({
   },
   saveBtn: {
     marginTop: Theme.spacing.lg,
+  },
+  successBadgeContainer: {
+    marginTop: Theme.spacing.md,
+    alignItems: 'center',
   },
   prefRow: {
     flexDirection: 'row',
