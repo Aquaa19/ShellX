@@ -1,0 +1,13 @@
+- `[ ]` Define TypeScript interfaces in `src/types/terminal.ts`
+- `[ ]` Define TypeScript interfaces in `src/types/lessons.ts`
+- `[ ]` Define TypeScript interfaces in `src/types/filesystem.ts`
+- `[ ]` Add barrel exports in `src/types/index.ts`
+- `[ ]` Create `TerminalSocket.ts` service client with reconnect logic
+- `[ ]` Create one-shot TCP/WS diagnostic `PingService.ts`
+- `[ ]` Map ANSI key sequences in `AnsiSequences.ts`
+- `[ ]` Write message classification parser in `TerminalOutputParser.ts`
+- `[ ]` Create `TerminalConnectionContext.tsx` provider
+- `[ ]` Update context exports in `src/context/index.ts`
+- `[ ]` Wrap root providers in `src/App.tsx`
+- `[ ]` Wire dynamic states in `ServerStatusSignal.tsx`
+- `[ ]` Update connection diagnostic ping triggers in `SettingsScreen.tsx`
