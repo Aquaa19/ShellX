@@ -1,7 +1,8 @@
 import React from 'react';
 import { TouchableOpacity, View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { Theme } from '../../tokens';
-import { BodyText, MaterialIcon } from '../../atoms';
+import { BodyText } from '../../atoms';
 
 export interface GoogleSignInButtonProps {
   onPress: () => void;
@@ -29,7 +30,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
     >
       <View style={styles.content}>
         <View style={styles.iconContainer}>
-          <MaterialIcon name="language" size={20} color={Theme.colors.text.inverse} />
+          <Icon name="google" size={18} color={Theme.colors.text.inverse} />
         </View>
         <BodyText
           weight="semiBold"

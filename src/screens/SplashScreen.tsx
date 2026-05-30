@@ -3,7 +3,7 @@ import { View, StyleSheet, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Theme } from '../tokens';
-import { ProgressTrack, LabelCapsText, SyntaxText, MonoText } from '../atoms';
+import { LabelCapsText, SyntaxText, MonoText } from '../atoms';
 import { AppBackground, ScanlineOverlay, ShellXBrandMark } from '../components';
 import { useAuthContext } from '../context';
 
@@ -27,6 +27,20 @@ export const SplashScreen: React.FC = () => {
   const [progress, setProgress] = useState(0);
   const [bootLogs, setBootLogs] = useState<BootLog[]>([]);
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const getAsciiBar = (progressVal: number) => {
+    const totalBars = 20;
+    const filledCount = Math.round(progressVal * totalBars);
+    if (filledCount === 0) {
+      return '[' + ' '.repeat(totalBars) + ']';
+    }
+    if (filledCount === totalBars) {
+      return '[' + '='.repeat(totalBars) + ']';
+    }
+    const equals = '='.repeat(filledCount - 1);
+    const spaces = ' '.repeat(totalBars - filledCount);
+    return `[${equals}>${spaces}]`;
+  };
 
   useEffect(() => {
     const sequence = [
@@ -91,9 +105,19 @@ export const SplashScreen: React.FC = () => {
           </View>
 
           <View style={styles.progressBarWrapper}>
-            <ProgressTrack progress={progress} />
-            <MonoText size={Theme.fontSize.labelSM} color={Theme.colors.text.secondary} style={styles.percentageText}>
-              {percentage}%
+            <MonoText
+              size={Theme.fontSize.codeBase}
+              color={Theme.colors.syntax.green}
+              weight="bold"
+            >
+              {getAsciiBar(progress)}
+            </MonoText>
+            <MonoText
+              size={Theme.fontSize.labelSM}
+              color={Theme.colors.text.secondary}
+              style={styles.percentageText}
+            >
+              Loading: {percentage}%
             </MonoText>
           </View>
           
@@ -134,8 +158,8 @@ const styles = StyleSheet.create({
     marginBottom: Theme.spacing.sm,
   },
   progressBarWrapper: {
-    width: 180,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   percentageText: {
     marginTop: Theme.spacing.md,
