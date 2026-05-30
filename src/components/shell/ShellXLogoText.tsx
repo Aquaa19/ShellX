@@ -1,25 +1,28 @@
 import React from 'react';
 import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { Theme } from '../../tokens';
-import { HeadlineText } from '../../atoms';
+import { MonoText } from '../../atoms';
 
 export interface ShellXLogoTextProps {
   size?: number;
+  text?: string;
   style?: StyleProp<ViewStyle>;
 }
 
 export const ShellXLogoText: React.FC<ShellXLogoTextProps> = ({
-  size = Theme.fontSize.headlineMD,
+  size = Theme.fontSize.titleLG,
+  text = 'ShellX_Terminal',
   style,
 }) => {
   return (
     <View style={[styles.container, style]}>
-      <HeadlineText size={size} weight="bold" color={Theme.colors.text.primary}>
-        Shell
-      </HeadlineText>
-      <HeadlineText size={size} weight="bold" color={Theme.colors.primary.default}>
-        X
-      </HeadlineText>
+      <MonoText
+        size={size}
+        weight="bold"
+        color={Theme.colors.semantic.success}
+      >
+        {text}
+      </MonoText>
     </View>
   );
 };

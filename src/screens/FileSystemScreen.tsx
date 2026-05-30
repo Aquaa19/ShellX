@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 import { Theme } from '../tokens';
-import { MonoText, SecondaryActionButton } from '../atoms';
+import { MonoText, SecondaryActionButton, IconButton, MaterialIcon } from '../atoms';
 import { 
   AppBackground, 
-  FocusedHeader,
+  AppHeader,
   FileSystemTree,
   FileTreeBranch,
   FileRow,
-  SelectedFileRow
+  SelectedFileRow,
+  ShellXLogoText
 } from '../components';
 import { MOCK_FILE_TREE, FileTreeNode } from '../data';
 
@@ -71,7 +72,25 @@ export const FileSystemScreen: React.FC = () => {
     <AppBackground>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <FocusedHeader title="File System" onBackPress={() => {}} />
+          <AppHeader
+            centerSlot={
+              <ShellXLogoText text="ShellX_Files" size={Theme.fontSize.titleLG} />
+            }
+            leftSlot={
+              <IconButton
+                icon={<MaterialIcon name="terminal" size={24} color={Theme.colors.primary.default} />}
+                onPress={() => {}}
+                variant="ghost"
+              />
+            }
+            rightSlot={
+              <IconButton
+                icon={<MaterialIcon name="settings" size={24} color={Theme.colors.text.secondary} />}
+                onPress={() => {}}
+                variant="ghost"
+              />
+            }
+          />
           
           <View style={styles.breadcrumbStrip}>
             <MonoText size={Theme.fontSize.labelSM} color={Theme.colors.text.secondary}>

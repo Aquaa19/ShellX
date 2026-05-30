@@ -1,14 +1,15 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, FlatList, ListRenderItem } from 'react-native';
+import { View, StyleSheet, SafeAreaView, FlatList, ListRenderItem } from 'react-native';
 import { Theme } from '../tokens';
-import { IconButton, MaterialIcon } from '../atoms';
+import { IconButton, MaterialIcon, ConnectionBadge } from '../atoms';
 import { 
   AppBackground, 
   AppHeader,
   LessonsHeader,
   LessonModuleSection,
   LessonCardGrid,
-  LessonCard
+  LessonCard,
+  ShellXLogoText
 } from '../components';
 import { MOCK_LESSONS } from '../data';
 import type { LessonData } from '../data';
@@ -50,12 +51,16 @@ export const LessonsScreen: React.FC = () => {
     <AppBackground>
       <SafeAreaView style={styles.safeArea}>
         <AppHeader
-          title="Lessons"
+          title=""
+          leftSlot={<ShellXLogoText text="ShellX_Lessons" size={Theme.fontSize.titleLG} />}
           rightSlot={
-            <IconButton
-              icon={<MaterialIcon name="search" size={24} color={Theme.colors.text.primary} />}
-              onPress={() => {}}
-            />
+            <View style={styles.headerRight}>
+              <ConnectionBadge state="connected" style={styles.badge} />
+              <IconButton
+                icon={<MaterialIcon name="search" size={24} color={Theme.colors.text.primary} />}
+                onPress={() => {}}
+              />
+            </View>
           }
         />
         <FlatList
@@ -86,5 +91,12 @@ const styles = StyleSheet.create({
   },
   listHeader: {
     marginBottom: Theme.spacing.lg,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  badge: {
+    marginRight: Theme.spacing.sm,
   },
 });

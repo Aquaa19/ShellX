@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet, View, StyleProp, ViewStyle } from 'react-native';
 import { Theme } from '../../tokens';
 import { AppHeader } from '../shell/AppHeader';
-import { IconButton, MaterialIcon } from '../../atoms';
+import { IconButton, MaterialIcon, HeadlineText, MonoText } from '../../atoms';
 
 export interface FocusedHeaderProps {
   title: string;
@@ -19,7 +19,7 @@ export const FocusedHeader: React.FC<FocusedHeaderProps> = ({
 }) => {
   const BackIcon = (
     <MaterialIcon 
-      name="chevron-left" 
+      name="arrow-back" 
       size={24} 
       color={Theme.colors.text.primary} 
     />
@@ -27,16 +27,47 @@ export const FocusedHeader: React.FC<FocusedHeaderProps> = ({
 
   return (
     <AppHeader
-      title={title}
+      title=""
       style={style}
       leftSlot={
-        <IconButton
-          icon={BackIcon}
-          onPress={onBackPress}
-          variant="ghost"
-        />
+        <View style={styles.leftContainer}>
+          <IconButton
+            icon={BackIcon}
+            onPress={onBackPress}
+            variant="ghost"
+          />
+          {title.startsWith('ShellX_') ? (
+            <MonoText
+              size={Theme.fontSize.titleLG}
+              weight="bold"
+              color={Theme.colors.semantic.success}
+              style={styles.title}
+            >
+              {title}
+            </MonoText>
+          ) : (
+            <HeadlineText
+              size={Theme.fontSize.titleLG}
+              weight="semiBold"
+              color={Theme.colors.text.primary}
+              style={styles.title}
+            >
+              {title}
+            </HeadlineText>
+          )}
+        </View>
       }
       rightSlot={rightSlot}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  leftContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  title: {
+    marginLeft: Theme.spacing.sm,
+  },
+});

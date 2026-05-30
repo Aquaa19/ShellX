@@ -70,7 +70,7 @@ export const SettingsScreen: React.FC = () => {
   return (
     <AppBackground>
       <SafeAreaView style={styles.safeArea}>
-        <FocusedHeader title="Settings" onBackPress={() => {}} />
+        <FocusedHeader title="ShellX_Settings" onBackPress={() => {}} />
         
         <KeyboardAvoidingView 
           behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: Theme.spacing.sm,
+    marginHorizontal: 0,
   },
   signOutBtn: {
     borderColor: Theme.colors.semantic.error,

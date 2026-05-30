@@ -52,7 +52,7 @@ export const TerminalScreen: React.FC = () => {
           {/* Header */}
           <AppHeader
             title=""
-            leftSlot={<ShellXLogoText size={Theme.fontSize.titleLG} />}
+            leftSlot={<ShellXLogoText text="ShellX_Terminal" size={Theme.fontSize.titleLG} />}
             rightSlot={
               <View style={styles.headerRight}>
                 <ConnectionBadge state={connectionState} style={styles.badge} />
