@@ -166,6 +166,34 @@ Here is the exact layout of the codebase you will build on top of:
 
 ---
 
+## 🔌 Target Dependency Stack & Integration Architecture
+
+To ensure consistency and avoid hallucinations of deprecated or non-existent React Native wrappers, Roadmap 2 must strictly enforce the following technology stack:
+
+1. **State & Storage:**
+   - **Local Storage:** `@react-native-async-storage/async-storage` for caching remote configuration settings.
+   - **Global Reactive State:** React Context API (e.g., `AppContext` or `TerminalConnectionContext`) to share connection states, ping diagnostics, and active session credentials across sibling screens (Terminal, FileSystem, and Settings).
+   - **Network Uptime Tracking:** `@react-native-community/netinfo` to toggle offline mode banners when cellular/WiFi drops.
+
+2. **Authentication Infrastructure:**
+   - **Firebase App & Core:** `@react-native-firebase/app`
+   - **Firebase Authentication:** `@react-native-firebase/auth`
+   - **Google Authentication Client:** `@react-native-google-signin/google-signin`
+   - **Firebase Firestore (Progress Sync):** `@react-native-firebase/firestore`
+
+3. **Remote SSH Command Execution (PTY Wrapper):**
+   - **Connection Architecture:** Client establishes a secure WebSocket tunnel connection to an instance-side or gateway terminal server (e.g., a node-pty / xterm.js socket gateway running on AWS/Cloud VM). This is the recommended lightweight, highly responsive mobile approach, avoiding direct native SSH sockets.
+   - Alternatively, detail how client-side socket wrappers (like `react-native-tcp-socket` or `react-native-ssh-wrapper`) will be scaffolded, including proper socket closure and clean-up in the React Native lifecycle.
+
+4. **Persisted Shell Session Feed:**
+   - When entering insert mode or running vim, screen inputs must forward characters directly to the shell socket stream.
+   - The shell response parser must handle standard formatting, output wrapping, and error output lines.
+
+5. **Environment Configuration Security:**
+   - Use `react-native-config` or similar to handle staging/production keys, client IDs, and secret tokens safely outside of version-controlled code.
+
+---
+
 ## ⚙️ Suggested Build Order & Phases to Define in Roadmap 2
 
 The implementation must be broken down into chronological, logical phases:
