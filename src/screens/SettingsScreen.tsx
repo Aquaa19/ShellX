@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, ScrollView, Platform, Keyboard } from 'react-native';
+import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, ScrollView, Platform, Keyboard, Alert } from 'react-native';
 import { Theme } from '../tokens';
 import { SecondaryActionButton, BodyText, StatusIndicatorBadge } from '../atoms';
 import { 
@@ -11,11 +11,12 @@ import {
   ServerStatusSignal,
   SaveConfigurationButton
 } from '../components';
-import { useAppContext } from '../context';
+import { useAppContext, useAuthContext } from '../context';
 import { validateServerConfig, ServerConfigSchema } from '../services/validation';
 
 export const SettingsScreen: React.FC = () => {
   const { serverConfig, saveServerConfig } = useAppContext();
+  const { signOut, isSigningOut, user } = useAuthContext();
   
   const [ipValue, setIpValue] = useState(serverConfig.ip);
   const [portValue, setPortValue] = useState(serverConfig.port);
@@ -55,6 +56,17 @@ export const SettingsScreen: React.FC = () => {
     setIsSaving(false);
   };
 
+  const handleSignOut = () => {
+    Alert.alert(
+      "Sign Out",
+      "This will clear all local data and return you to the login screen.",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Sign Out", style: "destructive", onPress: () => signOut() }
+      ]
+    );
+  };
+
   return (
     <AppBackground>
       <SafeAreaView style={styles.safeArea}>
@@ -69,8 +81,9 @@ export const SettingsScreen: React.FC = () => {
             contentContainerStyle={styles.scrollContent}
           >
             <ProfileAvatarBlock 
-              name="student@shellx" 
-              email="student@local" 
+              name={user?.displayName || 'student@shellx'} 
+              email={user?.email || ''} 
+              avatarUrl={user?.photoURL || undefined}
             />
 
             <SettingsConfigCard title="Remote Server">
@@ -115,7 +128,9 @@ export const SettingsScreen: React.FC = () => {
             <SettingsConfigCard title="Account">
               <SecondaryActionButton 
                 label="SIGN OUT" 
-                onPress={() => {}} 
+                onPress={handleSignOut} 
+                loading={isSigningOut}
+                disabled={isSigningOut}
                 style={styles.signOutBtn}
               />
             </SettingsConfigCard>

@@ -7,6 +7,7 @@ export interface SecondaryActionButtonProps {
   label: string;
   onPress: () => void;
   disabled?: boolean;
+  loading?: boolean;
   fullWidth?: boolean;
   leftIcon?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
@@ -17,12 +18,14 @@ export const SecondaryActionButton: React.FC<SecondaryActionButtonProps> = ({
   label,
   onPress,
   disabled = false,
+  loading = false,
   fullWidth = false,
   leftIcon,
   style,
   testID,
 }) => {
   const [isPressed, setIsPressed] = useState(false);
+  const isEffectivelyDisabled = disabled || loading;
 
   return (
     <TouchableOpacity
@@ -30,13 +33,14 @@ export const SecondaryActionButton: React.FC<SecondaryActionButtonProps> = ({
       onPress={onPress}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
-      disabled={disabled}
-      activeOpacity={1} // We handle visual changes manually
+      disabled={isEffectivelyDisabled}
+      activeOpacity={1}
+      accessibilityRole="button"
       style={[
         styles.container,
         fullWidth && styles.fullWidth,
-        isPressed && styles.pressedContainer,
-        disabled && styles.disabled,
+        isPressed && !isEffectivelyDisabled && styles.pressedContainer,
+        isEffectivelyDisabled && styles.disabled,
         style,
       ]}
     >
@@ -47,7 +51,7 @@ export const SecondaryActionButton: React.FC<SecondaryActionButtonProps> = ({
           size={Theme.fontSize.bodySM}
           color={Theme.colors.text.primary}
         >
-          {label}
+          {loading ? 'PROCESSING...' : label}
         </BodyText>
       </View>
     </TouchableOpacity>

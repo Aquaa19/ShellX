@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1067682805461",
+    "project_id": "shellx-6cb6b",
+    "storage_bucket": "shellx-6cb6b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1067682805461:android:0cc1b1f59885f31205945c",
+        "android_client_info": {
+          "package_name": "com.shellx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1067682805461-3s51vuucqcqmqripgmn6he7he8ff5jbe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shellx",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "1067682805461-e7p279npednt95fhkrlrp5j5838tutkd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDe-C3E5PBxe3quDeuLDgaHp9VGcc0Io9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1067682805461-e7p279npednt95fhkrlrp5j5838tutkd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

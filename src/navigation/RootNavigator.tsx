@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SplashScreen, AuthScreen } from '../screens';
 import { MainTabNavigator } from './MainTabNavigator';
 import { Theme } from '../tokens';
+import { useAuthContext } from '../context';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -14,12 +15,15 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootNavigator: React.FC = () => {
+  const { user, isAuthLoading } = useAuthContext();
+
+  if (isAuthLoading) return null;
+
   return (
     <NavigationContainer
       theme={{
-        ...DarkTheme,
+        dark: true,
         colors: {
-          ...DarkTheme.colors,
           primary: Theme.colors.primary.default,
           background: Theme.colors.background.floor,
           card: Theme.colors.background.elevated,
@@ -27,6 +31,7 @@ export const RootNavigator: React.FC = () => {
           border: Theme.colors.border.subtle,
           notification: Theme.colors.semantic.error,
         },
+        fonts: DarkTheme.fonts
       }}
     >
       <Stack.Navigator
@@ -38,16 +43,19 @@ export const RootNavigator: React.FC = () => {
           component={SplashScreen} 
           options={{ animation: 'fade' }} 
         />
-        <Stack.Screen 
-          name="Auth" 
-          component={AuthScreen} 
-          options={{ animation: 'fade' }} 
-        />
-        <Stack.Screen 
-          name="Main" 
-          component={MainTabNavigator} 
-          options={{ animation: 'slide_from_right' }} 
-        />
+        {user ? (
+          <Stack.Screen 
+            name="Main" 
+            component={MainTabNavigator} 
+            options={{ animation: 'slide_from_right' }} 
+          />
+        ) : (
+          <Stack.Screen 
+            name="Auth" 
+            component={AuthScreen} 
+            options={{ animation: 'fade' }} 
+          />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

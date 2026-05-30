@@ -477,7 +477,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.2.A — Firebase & Google Sign-In Dependencies
 
-- [ ] ⚡ 🔒 Install `@react-native-firebase/app`
+- [x] ⚡ 🔒 Install `@react-native-firebase/app`
   - **Command:** `npm install @react-native-firebase/app`
   - **Android integration:**
     1. Download `google-services.json` from Firebase Console and place it at `/android/app/google-services.json`.
@@ -485,19 +485,19 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
     3. Add `classpath 'com.google.gms:google-services:4.3.15'` to `/android/build.gradle` `dependencies` block.
   - **Post-install:** `cd android && ./gradlew clean`.
 
-- [ ] ⚡ Install `@react-native-firebase/auth`
+- [x] ⚡ Install `@react-native-firebase/auth`
   - **Command:** `npm install @react-native-firebase/auth`
   - **No additional Android configuration required** — auto-linked via Firebase BoM from the app module.
   - **Post-install:** `cd android && ./gradlew clean`.
 
-- [ ] ⚡ 🔒 Install `@react-native-google-signin/google-signin`
+- [x] ⚡ 🔒 Install `@react-native-google-signin/google-signin`
   - **Command:** `npm install @react-native-google-signin/google-signin`
   - **Android integration:**
     1. Verify SHA-1 fingerprint of the debug keystore is registered in Firebase Console → Project Settings → Your App → SHA certificate fingerprints.
     2. No manual `android/app/build.gradle` changes required — auto-linked.
   - **Post-install:** `cd android && ./gradlew clean`.
 
-- [ ] Install `@react-native-firebase/firestore` (required by Phase 2.5, installed here to avoid multiple rebuild cycles)
+- [x] Install `@react-native-firebase/firestore` (required by Phase 2.5, installed here to avoid multiple rebuild cycles)
   - **Command:** `npm install @react-native-firebase/firestore`
   - **Post-install:** `cd android && ./gradlew clean`.
 
@@ -505,7 +505,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.2.B — Auth Context (`/src/context/AuthContext.tsx`)
 
-- [ ] ⚡ 🔒 🔥 Create `/src/context/AuthContext.tsx`
+- [x] ⚡ 🔒 🔥 Create `/src/context/AuthContext.tsx`
   - **Purpose:** Firebase Auth state subscriber. Provides reactive user session data to the entire component tree. Single source of truth for authentication state.
   - **Dependencies:**
     ```typescript
@@ -606,7 +606,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.2.C — Root Navigator Firebase Guard
 
-- [ ] ⚡ 🔥 ♻️ Modify `/src/navigation/RootNavigator.tsx`
+- [x] ⚡ 🔥 ♻️ Modify `/src/navigation/RootNavigator.tsx`
   - **Action:** Wire Firebase auth state to navigation. The navigator must respond to `isAuthLoading` and `user` from `useAuthContext()` to determine the initial route dynamically.
   - **New Logic Pattern:**
     ```typescript
@@ -634,7 +634,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.2.D — AuthScreen Live Integration
 
-- [ ] ⚡ 🔥 ⌨️ 📐 ♻️ Modify `/src/screens/AuthScreen.tsx`
+- [x] ⚡ 🔥 ⌨️ 📐 ♻️ Modify `/src/screens/AuthScreen.tsx`
   - **Action:** Replace the mock `onPress: () => console.log(...)` handler on `GoogleSignInButton` with the real `signInWithGoogle` flow from `AuthContext`.
   - **New imports to add:**
     ```typescript
@@ -655,7 +655,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.2.E — App.tsx Context Provider Wiring
 
-- [ ] ⚡ ♻️ Modify `/src/App.tsx`
+- [x] ⚡ ♻️ Modify `/src/App.tsx`
   - **Action:** Wrap `RootNavigator` with both `AppContextProvider` and `AuthContextProvider` in the correct order. Also add `NetworkBanner` as a globally positioned sibling inside `AppBackground`.
   - **New Code Layout:**
     ```typescript
@@ -691,7 +691,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.2.F — Settings Sign-Out Handler
 
-- [ ] 🔥 ♻️ Modify `/src/screens/SettingsScreen.tsx`
+- [x] 🔥 ♻️ Modify `/src/screens/SettingsScreen.tsx`
   - **Action:** Replace the stub `SecondaryActionButton "SIGN OUT"` with a real sign-out flow.
   - **New imports to add:**
     ```typescript

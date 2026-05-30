@@ -5,9 +5,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Theme } from '../tokens';
 import { ProgressTrack, LabelCapsText, SyntaxText, MonoText } from '../atoms';
 import { AppBackground, ScanlineOverlay, ShellXBrandMark } from '../components';
-import { StorageService, StorageKeys } from '../services/storage';
+import { useAuthContext } from '../context';
 
-// Assuming RootStackParamList exists in your navigation setup
 type RootStackParamList = {
   Splash: undefined;
   Auth: undefined;
@@ -24,6 +23,7 @@ interface BootLog {
 
 export const SplashScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
+  const { user } = useAuthContext();
   const [progress, setProgress] = useState(0);
   const [bootLogs, setBootLogs] = useState<BootLog[]>([]);
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -36,7 +36,6 @@ export const SplashScreen: React.FC = () => {
       { delay: 1200, log: { id: '4', tag: '[ WAIT ]', tagRole: 'keyword' as const, message: ' Booting VM instance...' } },
     ];
 
-    // Start progress animation
     const interval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 1) {
@@ -47,7 +46,6 @@ export const SplashScreen: React.FC = () => {
       });
     }, 75);
 
-    // Sequence logs
     sequence.forEach(({ delay, log }) => {
       const timeout = setTimeout(() => {
         setBootLogs(prev => [...prev, log]);
@@ -55,17 +53,14 @@ export const SplashScreen: React.FC = () => {
       timeoutsRef.current.push(timeout);
     });
 
-    // Check auth and route after delay
-    const routingTimeout = setTimeout(async () => {
-      // TODO: import auth from '@react-native-firebase/auth' in Phase 2.2
-      // Check auth().currentUser or cached UID to decide route: 'Main' or 'Auth'
-      const uid = await StorageService.get<string>(StorageKeys.AUTH_USER_UID);
-      if (uid) {
+    const routingTimeout = setTimeout(() => {
+      if (user) {
         navigation.replace('Main');
       } else {
         navigation.replace('Auth');
       }
     }, 2000);
+    
     timeoutsRef.current.push(routingTimeout);
 
     const timeouts = timeoutsRef.current;
@@ -73,7 +68,7 @@ export const SplashScreen: React.FC = () => {
       clearInterval(interval);
       timeouts.forEach(clearTimeout);
     };
-  }, [navigation]);
+  }, [navigation, user]);
 
   const percentage = Math.min(Math.round(progress * 100), 100);
 
@@ -132,7 +127,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     width: '100%',
     maxWidth: 320,
-    minHeight: 120, // Prevents layout jump
+    minHeight: 120,
   },
   bootLine: {
     flexDirection: 'row',

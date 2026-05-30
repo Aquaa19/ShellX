@@ -1,13 +1,14 @@
-# Coder AI Prompt — Phase 2.2: Live Authentication Integration (Firebase Auth & Google OAuth)
+# Coder AI Prompt — Phase 2.3: SSH Socket Connection Layer & Diagnostic Engine
 
-Act as an elite Mobile System Architect and Lead React Native Developer. Your task is to implement the changes and new files required for **Phase 2.2** of the ShellX application.
+Act as an elite Mobile System Architect and Lead React Native Developer. Your task is to implement the changes and new files required for **Phase 2.3** of the ShellX application.
 
 This phase focuses on:
-1. Setting up Firebase App, Firebase Auth, and Google Sign-in dependencies.
-2. Building the reactive `AuthContext` as the single source of truth for session states (signing-in, signing-out, and auth user cached metadata in `AsyncStorage`).
-3. Configuring a secure conditional auth guard rendering mechanism inside `RootNavigator.tsx`.
-4. Integrating functional login with loaders and error layouts inside `AuthScreen.tsx`.
-5. Wiring a dynamic confirmation alert and storage cache purge on log-out inside `SettingsScreen.tsx`.
+1. Creating the `TerminalSocket.ts` service singleton to manage the secure WebSocket tunnel connection.
+2. Creating the `PingService.ts` to perform lightweight TCP/WebSocket server status diagnostics.
+3. Defining Ansi Escape sequences and parsers to strip color codes and classify terminal outputs.
+4. Setting up shared TypeScript types for the terminal, lesson structures, and filesystem trees.
+5. Creating the reactive `TerminalConnectionContext` to manage connection states, latency, and a capped 500-line rolling buffer of command feeds.
+6. Wiring the live "Test Connection" ping trigger and status signals inside `SettingsScreen.tsx` and `ServerStatusSignal.tsx`.
 
 ---
 
@@ -17,89 +18,161 @@ This phase focuses on:
 3. Adhere strictly to the design system tokens:
    - OLED True Dark background: `#000000` (`Theme.colors.background.floor`).
    - Zero-shadow rule (`Theme.noShadow`).
+   - 1px borders (`Theme.borderWidth.hairline`).
    - Interactive elements must satisfy the minimum 44×44dp touch target constraint.
    - Monospace typography constraints (`Theme.fontFamily.mono`) for code/terminal elements.
 
 ---
 
-### 📂 Phase 2.2 Targets
+### 📂 Phase 2.3 Targets
 
 Here are the precise specifications for the files to create and modify:
 
-#### 1. [NEW] `/src/context/AuthContext.tsx`
-Create the authentication context to subscribe to Firebase Auth state updates and orchestrate Google Sign-In:
-- On mount, configure `GoogleSignin.configure({ webClientId: AppEnv.google.webClientId })`.
-- Wire `auth().onAuthStateChanged` to catch user credentials.
-- When user is logged in: map `{ uid, displayName, email, photoURL }` and cache values in `StorageService` (`StorageKeys.AUTH_USER_UID`, etc.).
-- When user is logged out: clear state and clear cached values (`StorageService.remove(StorageKeys.AUTH_USER_UID)`).
-- Implement `signInWithGoogle` using `GoogleSignin.signIn()` and `auth().signInWithCredential`.
-- Implement `signOut` which revokes Google credentials access, logs out of Firebase, and invokes `StorageService.clearAll()`.
-- Export `AuthContext`, `AuthContextProvider`, and the `useAuthContext()` hook (with a null context check).
+#### 1. [NEW] `/src/services/terminal/TerminalSocket.ts`
+Implement a singleton WebSocket tunnel manager:
+- Gateway URL: `wss://{ip}:{wsPort}/terminal?user={sshUser}&uid={firebaseUID}&sshPort={port}` where `wsPort` comes from `AppEnv.ws.port` (defaults to `8080`).
+- Reconnection logic: Exponential backoff with delay `AppEnv.ws.reconnectDelayMs * (2 ** attempts)` capped at 30000ms. Max attempts is `AppEnv.ws.maxReconnectAttempts` (defaults to 5).
+- Socket functions: `connect(ip, port, sshUser, uid, callbacks)`, `disconnect()`, `send(data)`, `sendRaw(bytes)`.
+- Export a single instance: `export const terminalSocket = new TerminalSocketClient();`.
 
-#### 2. [MODIFY] `/src/navigation/RootNavigator.tsx`
-Wire the Navigator to conditionally render child screens using the reactive `AuthContext` state to prevent routing flicker:
-- Extract `user` and `isAuthLoading` from `useAuthContext()`.
-- If `isAuthLoading === true`, return `null` (the `SplashScreen` handles the boot window).
-- Conditionally render child stack screens (Never conditionally render the `<Stack.Navigator>` itself):
-  ```typescript
-  {user ? (
-    <Stack.Screen name="Main" component={MainTabNavigator} />
-  ) : (
-    <Stack.Screen name="Auth" component={AuthScreen} />
-  )}
-  <Stack.Screen name="Splash" component={SplashScreen} />
-  ```
-
-#### 3. [MODIFY] `/src/screens/AuthScreen.tsx`
-Integrate the live authentication trigger and capture loading states:
-- Extract `signInWithGoogle`, `isSigningIn`, and `authError` from `useAuthContext()`.
-- Bind `GoogleSignInButton` trigger to `signInWithGoogle` and pass `loading={isSigningIn}` / `disabled={isSigningIn}`.
-- During `isSigningIn`, replace the G logo inside `GoogleSignInButton` with an animated rotating refresh icon from `MaterialIcon`.
-- If `authError !== null`, render an error banner row below the button using `StatusDot variant="error"` and `TerminalText` displaying `authError`. (Style it using `backgroundColor: Theme.colors.semantic.errorDim`, `padding: Theme.spacing.sm`, and `borderRadius: Theme.borderRadius.default`).
-
-#### 4. [MODIFY] `/src/screens/SettingsScreen.tsx`
-Replace the mock Sign Out action with a fully functional log-out sequence:
-- Extract `signOut`, `isSigningOut`, and `user` from `useAuthContext()`.
-- Populate `ProfileAvatarBlock` props using the real `user` credentials (fallback name to `"student@shellx"`, email to empty string).
-- In `handleSignOut`, display `Alert.alert` confirmation dialog:
-  - Title: `"Sign Out"`
-  - Message: `"This will clear all local data and return you to the login screen."`
-  - Option Buttons: `"Cancel"` (do nothing) and `"Sign Out"` (fire `signOut()`).
-- Bind the button in the Account section to trigger the confirmation handler, passing `loading={isSigningOut}` and `disabled={isSigningOut}`.
-
-#### 5. [MODIFY] `/src/screens/SplashScreen.tsx`
-Refactor the boot routing sequence to consult Firebase Auth or local storage UIDs:
-- Since Firebase Auth listener resolver `onAuthStateChanged` is asynchronous, check `StorageKeys.AUTH_USER_UID` from storage cache to make immediate, flicker-free routing decisions.
-- If a UID exists in cache, route to `'Main'`. Otherwise, route to `'Auth'`.
-
-#### 6. [MODIFY] `/src/App.tsx`
-Wire the provider trees sequentially in this exact nesting order:
+#### 2. [NEW] `/src/services/terminal/PingService.ts`
+Implement a one-shot WebSocket ping client (always resolves, never rejects):
 ```typescript
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AppBackground } from './components/shell';
-import { RootNavigator } from './navigation';
-import { AppContextProvider, NetworkBanner } from './context';
-import { AuthContextProvider } from './context/AuthContext';
+import { AppEnv } from '../../config/env';
 
-const App = () => {
-  return (
-    <SafeAreaProvider>
-      <AppContextProvider>
-        <AuthContextProvider>
-          <AppBackground>
-            <View style={styles.root}>
-              <RootNavigator />
-              <NetworkBanner />
-            </View>
-          </AppBackground>
-        </AuthContextProvider>
-      </AppContextProvider>
-    </SafeAreaProvider>
-  );
-};
+export interface PingResult {
+  reachable: boolean;
+  latencyMs: number | null;
+  error: string | null;
+}
+
+export async function pingServer(
+  ip: string,
+  port: string,
+  timeoutMs: number = AppEnv.ws.pingTimeoutMs,
+): Promise<PingResult> {
+  const startTime = Date.now();
+  return new Promise((resolve) => {
+    const probeUrl = `${AppEnv.ws.scheme}://${ip}:${AppEnv.ws.port}/ping`;
+    let settled = false;
+
+    const settle = (result: PingResult) => {
+      if (settled) return;
+      settled = true;
+      try { ws.close(1000); } catch {}
+      resolve(result);
+    };
+
+    const timer = setTimeout(() => settle({
+      reachable: false, latencyMs: null, error: 'Connection timed out.',
+    }), timeoutMs);
+
+    const ws = new WebSocket(probeUrl);
+    ws.onopen = () => settle({ reachable: true, latencyMs: Date.now() - startTime, error: null });
+    ws.onerror = () => settle({ reachable: false, latencyMs: null, error: 'Host unreachable.' });
+    ws.onclose = (e) => {
+      if (!settled && e.code !== 1000) {
+        settle({ reachable: false, latencyMs: null, error: `Connection closed (code ${e.code}).` });
+      }
+      clearTimeout(timer);
+    };
+  });
+}
 ```
+
+#### 3. [NEW] `/src/services/terminal/AnsiSequences.ts`
+Define standard ANSI escape characters:
+```typescript
+export const ANSI = {
+  ARROW_UP:    '\x1b[A',
+  ARROW_DOWN:  '\x1b[B',
+  ARROW_RIGHT: '\x1b[C',
+  ARROW_LEFT:  '\x1b[D',
+  ESC:         '\x1b',
+  TAB:         '\t',
+  CTRL_C:      '\x03',
+  CTRL_D:      '\x04',
+  CTRL_Z:      '\x1a',
+  CTRL_L:      '\x0c',
+  CTRL_A:      '\x01',
+  CTRL_E:      '\x05',
+  CTRL_U:      '\x15',
+  CTRL_K:      '\x0b',
+  CTRL_W:      '\x17',
+  CTRL_R:      '\x12',
+  BACKSPACE:   '\x7f',
+  DELETE:      '\x1b[3~',
+  HOME:        '\x1b[H',
+  END:         '\x1b[F',
+  PAGE_UP:     '\x1b[5~',
+  PAGE_DOWN:   '\x1b[6~',
+  PIPE:        '|',
+  TILDE:       '~',
+  FSLASH:      '/',
+  BSLASH:      '\\',
+  AMPERSAND:   '&',
+  SEMICOLON:   ';',
+  SPACE:       ' ',
+} as const;
+
+export type AnsiKey = keyof typeof ANSI;
+```
+
+#### 4. [NEW] `/src/services/terminal/TerminalOutputParser.ts`
+Implement ANSI text processing and type classification logic:
+- `stripAnsiCodes(raw: string): string` ➔ strips `\x1b[...m` colors and cursor sequences using `/\x1b\[[0-9;]*[a-zA-Z]/g`.
+- `classifyOutputLine(line: string): 'command' | 'output' | 'error' | 'system'` ➔ returns `'error'` if line begins with common bash error strings (e.g. `bash:`, `command not found`, `Error:`).
+- `parseTerminalOutput(raw: string): TerminalLine[]` ➔ splits text by `\r\n` and `\n`, generating objects with unique IDs and stripped content.
+
+#### 5. [NEW] `/src/services/terminal/index.ts`
+Re-export all socket, ping, ANSI, and parser definitions.
+
+#### 6. [NEW] Shared Types (`/src/types/`)
+Create three files defining standard data schemas across the app:
+* `/src/types/terminal.ts` (defines `TerminalLineType`, `TerminalLine`, `ConnectionState`, `VimMode`, `ServerConfig`)
+* `/src/types/lessons.ts` (defines `LessonState`, `LessonData`, `LessonModule`)
+* `/src/types/filesystem.ts` (defines `FileNodeType`, `FileTreeNode`)
+* `/src/types/index.ts` (clean re-export of all files)
+
+#### 7. [NEW] `/src/context/TerminalConnectionContext.tsx`
+Orchestrate active socket flows and output states:
+- Subscribes to `terminalSocket` callbacks on mount.
+- Connection States: `'connected' | 'connecting' | 'disconnected' | 'error' | 'offline'`.
+- Rolling Buffer: Caches received command feeds inside `outputLines: TerminalLine[]`, keeping a maximum cap of **500 lines** (evicts older lines from array slice when new ones arrive).
+- Actions: `connect()`, `disconnect()`, `sendCommand()` (appends a command line optimistically and writes `command + '\n'`), `sendRawKey()` (writes ANSI code).
+
+#### 8. [MODIFY] `/src/context/index.ts`
+Export context hook:
+```typescript
+export * from './AppContext';
+export * from './NetworkBanner';
+export * from './AuthContext';
+export * from './TerminalConnectionContext';
+```
+
+#### 9. [MODIFY] `/src/App.tsx`
+Add Provider to context wrapper hierarchy:
+```typescript
+<AppContextProvider>
+  <AuthContextProvider>
+    <TerminalConnectionContextProvider>
+      <AppBackground>
+        {...}
+      </AppBackground>
+    </TerminalConnectionContextProvider>
+  </AuthContextProvider>
+</AppContextProvider>
+```
+
+#### 10. [MODIFY] `/src/components/settings/ServerStatusSignal.tsx`
+Bind settings loader and status indicators:
+- Props support: `state: ConnectionState`, `latencyMs: number | null`, `onTest: () => Promise<void>`, `isTesting: boolean`.
+- When `isTesting === true`, replace `StatusDot` with an animated rotating refresh `MaterialIcon`.
+- Render `MonoText` with latency offset if connected.
+
+#### 11. [MODIFY] `/src/screens/SettingsScreen.tsx`
+- Import `pingServer` and bind "Test Connection" button click.
+- Capture testing status loaders, mapping errors, and status dot variations.
 
 ---
 
