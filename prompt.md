@@ -13,6 +13,159 @@ You do not have direct access to our local files. **DO NOT guess, assume, or hal
 
 ---
 
+## 📂 Existing Project Tree Structure
+
+Here is the exact layout of the codebase you will build on top of:
+
+```
+/src
+├── App.tsx
+├── atoms
+│   ├── index.ts
+│   ├── badges
+│   │   ├── ConnectionBadge.tsx
+│   │   ├── index.ts
+│   │   ├── LessonStateBadge.tsx
+│   │   ├── StatusDot.tsx
+│   │   ├── StatusIndicatorBadge.tsx
+│   │   └── TrafficLightDots.tsx
+│   ├── buttons
+│   │   ├── IconButton.tsx
+│   │   ├── index.ts
+│   │   ├── NavButton.tsx
+│   │   ├── PrimaryActionButton.tsx
+│   │   ├── SecondaryActionButton.tsx
+│   │   └── TerminalKeyButton.tsx
+│   ├── containers
+│   │   ├── BorderedSurface.tsx
+│   │   ├── Divider.tsx
+│   │   ├── index.ts
+│   │   ├── ProgressTrack.tsx
+│   │   ├── SectionHeader.tsx
+│   │   ├── Surface.tsx
+│   │   └── TerminalPanel.tsx
+│   ├── icons
+│   │   ├── FileTypeIcon.tsx
+│   │   ├── FolderIcon.tsx
+│   │   ├── index.ts
+│   │   ├── MaterialIcon.tsx
+│   │   └── TerminalIcon.tsx
+│   ├── inputs
+│   │   ├── ConfigInputField.tsx
+│   │   ├── IconTextInput.tsx
+│   │   ├── index.ts
+│   │   └── TerminalTextInput.tsx
+│   └── text
+│       ├── BodyText.tsx
+│       ├── HeadlineText.tsx
+│       ├── index.ts
+│       ├── LabelCapsText.tsx
+│       ├── MonoText.tsx
+│       ├── SafeText.tsx
+│       ├── SyntaxText.tsx
+│       └── TerminalText.tsx
+├── components
+│   ├── index.ts
+│   ├── auth
+│   │   ├── AuthBrandPanel.tsx
+│   │   ├── AuthTerminalHeader.tsx
+│   │   ├── AuthTerminalOutput.tsx
+│   │   ├── AuthTerminalWindow.tsx
+│   │   ├── GoogleSignInButton.tsx
+│   │   └── index.ts
+│   ├── filesystem
+│   │   ├── FileRow.tsx
+│   │   ├── FileSystemTree.tsx
+│   │   ├── FileTreeBranch.tsx
+│   │   ├── FileTreeRow.tsx
+│   │   ├── FolderRow.tsx
+│   │   ├── index.ts
+│   │   ├── SelectedFileRow.tsx
+│   │   └── TreeIndentGuide.tsx
+│   ├── lessons
+│   │   ├── AsciiProgressText.tsx
+│   │   ├── index.ts
+│   │   ├── LessonCard.tsx
+│   │   ├── LessonCardGrid.tsx
+│   │   ├── LessonCardHeader.tsx
+│   │   ├── LessonModuleSection.tsx
+│   │   ├── LessonProgressBar.tsx
+│   │   ├── LessonProgressMeta.tsx
+│   │   ├── LessonsHeader.tsx
+│   │   └── LessonStatusIcon.tsx
+│   ├── navigation
+│   │   ├── BottomTabBar.tsx
+│   │   ├── BottomTabItem.tsx
+│   │   ├── DesktopSideNav.tsx
+│   │   ├── FocusedHeader.tsx
+│   │   ├── index.ts
+│   │   ├── SideNavItem.tsx
+│   │   └── SideNavProfileHeader.tsx
+│   ├── settings
+│   │   ├── index.ts
+│   │   ├── ProfileAvatarBlock.tsx
+│   │   ├── SaveConfigurationButton.tsx
+│   │   ├── ServerConfigInput.tsx
+│   │   ├── ServerStatusSignal.tsx
+│   │   └── SettingsConfigCard.tsx
+│   ├── shell
+│   │   ├── AppBackground.tsx
+│   │   ├── AppHeader.tsx
+│   │   ├── DottedGridOverlay.tsx
+│   │   ├── index.ts
+│   │   ├── ScanlineOverlay.tsx
+│   │   ├── ShellXBrandMark.tsx
+│   │   ├── ShellXLogoText.tsx
+│   │   └── TrueDarkCanvas.tsx
+│   └── terminal
+│       ├── DeveloperKeyboardBar.tsx
+│       ├── DeveloperKeyboardRow.tsx
+│       ├── index.ts
+│       ├── KeyboardDivider.tsx
+│       ├── LessonContextHeader.tsx
+│       ├── TaskBottomSheet.tsx
+│       ├── TaskSheetActions.tsx
+│       ├── TaskSheetHeader.tsx
+│       ├── TerminalCodeLine.tsx
+│       ├── TerminalCursor.tsx
+│       ├── TerminalEditor.tsx
+│       ├── TerminalPromptLine.tsx
+│       ├── TerminalSyntaxText.tsx
+│       ├── TerminalWorkspace.tsx
+│       ├── TopMetricsBar.tsx
+│       └── VimStatusStrip.tsx
+├── data
+│   ├── index.ts
+│   ├── mockAuth.ts
+│   ├── mockFileTree.ts
+│   ├── mockLessons.ts
+│   └── mockTerminalLines.ts
+├── navigation
+│   ├── index.ts
+│   ├── MainTabNavigator.tsx
+│   └── RootNavigator.tsx
+├── screens
+│   ├── AuthScreen.tsx
+│   ├── FileSystemScreen.tsx
+│   ├── index.ts
+│   ├── LessonsScreen.tsx
+│   ├── SettingsScreen.tsx
+│   ├── SplashScreen.tsx
+│   └── TerminalScreen.tsx
+└── tokens
+    ├── borders.ts
+    ├── colors.ts
+    ├── index.ts
+    ├── layout.ts
+    ├── shadows.ts
+    ├── spacing.ts
+    ├── theme.ts
+    ├── typography.ts
+    └── zIndex.ts
+```
+
+---
+
 ## ⚙️ Suggested Build Order & Phases to Define in Roadmap 2
 
 The implementation must be broken down into chronological, logical phases:
@@ -48,7 +201,7 @@ The implementation must be broken down into chronological, logical phases:
   - Connect lesson card grid items to active states (completed, locked, and in-progress). Selecting an unlocked card loads the lesson details into the terminal context and opens the `TaskBottomSheet`.
   - Implement the "Run Check" script validator: executes a validation command on the remote Linux terminal. If it passes, updates user progress, unlocks the subsequent lesson card, and synchronizes the complete state to Firebase Firestore.
 
-### Phase 2.6: Active FileSystem Browser Sync
+### Phase 2.6: Active FileSystem Explorer Sync
 - **Objectives:**
   - Replace `MOCK_FILE_TREE` with a dynamic traversal layer: runs a command (e.g. recursive listing or individual directory inspections) to fetch folder details.
   - Toggle folder nodes dynamically to fetch and insert nested child arrays in tree branches.
