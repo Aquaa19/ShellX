@@ -11,11 +11,17 @@ import {
   AuthTerminalOutput 
 } from '../components';
 import { MOCK_AUTH_TERMINAL_OUTPUT } from '../data';
+import { useAuthContext } from '../context';
 
 export const AuthScreen: React.FC = () => {
-  const handleGoogleSignIn = () => {
-    // Phase 1.4 static stub
-    console.log('Initiating Google Sign-In...');
+  const { signInWithGoogle, isSigningIn } = useAuthContext();
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      console.error('Google Sign-In error:', err);
+    }
   };
 
   return (
@@ -26,8 +32,7 @@ export const AuthScreen: React.FC = () => {
       <View 
         style={styles.glowBlob} 
         accessible={false} 
-        importantForAccessibility="no-hide-descendants" 
-      />
+        importantForAccessibility="no-hide-descendants" />
 
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -41,7 +46,7 @@ export const AuthScreen: React.FC = () => {
             <AuthBrandPanel />
             
             <View style={styles.actionSection}>
-              <GoogleSignInButton onPress={handleGoogleSignIn} disabled={false} />
+              <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isSigningIn} />
             </View>
 
             <View style={styles.dividerContainer}>
