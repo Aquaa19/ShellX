@@ -19,6 +19,8 @@ interface AuthContextState {
   authError: string | null;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string, displayName: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextState | null>(null);
@@ -82,6 +84,52 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
+  const signInWithEmail = async (email: string, password: string) => {
+    setIsSigningIn(true);
+    setAuthError(null);
+    try {
+      await auth().signInWithEmailAndPassword(email.trim(), password);
+    } catch (error: any) {
+      console.error('[AuthContext] Email Sign-In Error:', error);
+      setAuthError(error.message || 'Failed to sign in with email.');
+      throw error;
+    } finally {
+      setIsSigningIn(false);
+    }
+  };
+
+  const signUpWithEmail = async (email: string, password: string, displayName: string) => {
+    setIsSigningIn(true);
+    setAuthError(null);
+    try {
+      const cleanName = displayName.trim();
+      const credential = await auth().createUserWithEmailAndPassword(email.trim(), password);
+      
+      if (credential.user) {
+        await credential.user.updateProfile({ displayName: cleanName });
+        
+        const userData: AuthUser = {
+          uid: credential.user.uid,
+          displayName: cleanName,
+          email: credential.user.email,
+          photoURL: credential.user.photoURL,
+        };
+        setUser(userData);
+        
+        // Cache credentials locally
+        await StorageService.set(StorageKeys.AUTH_USER_UID, userData.uid);
+        await StorageService.set(StorageKeys.AUTH_USER_DISPLAY_NAME, cleanName);
+        if (userData.email) await StorageService.set(StorageKeys.AUTH_USER_EMAIL, userData.email);
+      }
+    } catch (error: any) {
+      console.error('[AuthContext] Email Sign-Up Error:', error);
+      setAuthError(error.message || 'Failed to create account.');
+      throw error;
+    } finally {
+      setIsSigningIn(false);
+    }
+  };
+
   const signOut = async () => {
     setIsSigningOut(true);
     try {
@@ -105,6 +153,8 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
         authError,
         signInWithGoogle,
         signOut,
+        signInWithEmail,
+        signUpWithEmail,
       }}
     >
       {children}

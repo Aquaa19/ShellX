@@ -11,6 +11,7 @@ export interface IconTextInputProps {
   focused?: boolean;
   error?: boolean;
   disabled?: boolean;
+  secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions;
   style?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<TextStyle>;
@@ -26,6 +27,7 @@ export const IconTextInput: React.FC<IconTextInputProps> = ({
   focused: externalFocused,
   error = false,
   disabled = false,
+  secureTextEntry = false,
   keyboardType = 'default',
   style,
   inputStyle,
@@ -60,6 +62,7 @@ export const IconTextInput: React.FC<IconTextInputProps> = ({
         placeholderTextColor={Theme.colors.text.placeholder}
         editable={!disabled}
         keyboardType={keyboardType}
+        secureTextEntry={secureTextEntry}
         onFocus={() => setInternalFocused(true)}
         onBlur={() => setInternalFocused(false)}
         autoCapitalize="none"
