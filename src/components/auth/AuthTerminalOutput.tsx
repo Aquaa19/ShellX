@@ -65,9 +65,32 @@ export const AuthTerminalOutput: React.FC<AuthTerminalOutputProps> = ({
   lines,
   style,
 }) => {
+  const [visibleCount, setVisibleCount] = useState(1);
+
+  useEffect(() => {
+    // Reset visible count if lines change
+    setVisibleCount(1);
+
+    if (lines.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setVisibleCount(prev => {
+        if (prev >= lines.length) {
+          clearInterval(interval);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 500); // 500ms sequential print delay
+
+    return () => clearInterval(interval);
+  }, [lines]);
+
+  const visibleLines = lines.slice(0, visibleCount);
+
   return (
     <View style={[styles.container, style]}>
-      {lines.map((line, index) => {
+      {visibleLines.map((line, index) => {
         const isOlderLine = index !== lines.length - 1;
         const isAwaitingLine = line.text.startsWith('Awaiting user verification');
 
@@ -110,6 +133,7 @@ const styles = StyleSheet.create({
     borderWidth: Theme.borderWidth.hairline,
     borderColor: Theme.colors.border.subtle,
     ...Theme.noShadow,
+    minHeight: 140, // Prevent terminal height jumping as lines load
   },
   dimmedSyntaxText: {
     opacity: 0.7,
