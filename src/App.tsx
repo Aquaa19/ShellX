@@ -4,19 +4,21 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AppBackground } from './components/shell';
 import { RootNavigator } from './navigation';
-import { AppContextProvider, AuthContextProvider, NetworkBanner } from './context';
+import { AppContextProvider, AuthContextProvider, TerminalConnectionContextProvider, NetworkBanner } from './context';
 
 const App = () => {
   return (
     <SafeAreaProvider>
       <AppContextProvider>
         <AuthContextProvider>
-          <AppBackground>
-            <View style={styles.root}>
-              <RootNavigator />
-              <NetworkBanner />
-            </View>
-          </AppBackground>
+          <TerminalConnectionContextProvider>
+            <AppBackground>
+              <View style={styles.root}>
+                <RootNavigator />
+                <NetworkBanner />
+              </View>
+            </AppBackground>
+          </TerminalConnectionContextProvider>
         </AuthContextProvider>
       </AppContextProvider>
     </SafeAreaProvider>

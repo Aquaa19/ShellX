@@ -727,7 +727,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.3.A — WebSocket Terminal Bridge Architecture (`/src/services/terminal/`)
 
-- [ ] ⚡ 🔒 🔌 Create `/src/services/terminal/TerminalSocket.ts`
+- [x] ⚡ 🔒 🔌 Create `/src/services/terminal/TerminalSocket.ts`
   - **Purpose:** Manages the WebSocket connection lifecycle to a remote `node-pty`/xterm.js socket gateway. This service is the sole owner of the `WebSocket` instance. All send/receive operations go through this service.
   - **Connection URL Construction:**
     ```typescript
@@ -773,7 +773,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
   - **`send` Implementation:** If `ws?.readyState !== WebSocket.OPEN`, log warning and return without throwing. Otherwise call `ws.send(data)`.
   - **Export:** `export const terminalSocket = new TerminalSocketClient();` (singleton).
 
-- [ ] 🔒 🔌 Create `/src/services/terminal/PingService.ts`
+- [x] 🔒 🔌 Create `/src/services/terminal/PingService.ts`
   - **Purpose:** Lightweight TCP/WebSocket reachability probe. Used exclusively by `ServerStatusSignal` "Test Connection" button. Does NOT use `terminalSocket` — creates a one-shot WebSocket probe instead.
   - **Interface:**
     ```typescript
@@ -821,7 +821,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
     ```
   - **Constraint:** `pingServer` must always resolve (never reject). Callers must not wrap in try-catch. The settled flag prevents double-resolution.
 
-- [ ] Create `/src/services/terminal/AnsiSequences.ts`
+- [x] Create `/src/services/terminal/AnsiSequences.ts`
   - **Purpose:** Named constants for ANSI/VT100 escape sequences sent by the `DeveloperKeyboardBar`. Prevents raw escape string literals scattered throughout the codebase.
   - **Required Sequences:**
     ```typescript
@@ -864,7 +864,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
     export type AnsiKey = keyof typeof ANSI;
     ```
 
-- [ ] Create `/src/services/terminal/TerminalOutputParser.ts`
+- [x] Create `/src/services/terminal/TerminalOutputParser.ts`
   - **Purpose:** Parses raw WebSocket message strings from the terminal gateway into structured `TerminalLine` objects for display in `TerminalEditor`. Handles ANSI color code stripping, line splitting, and output type classification.
   - **Interface:**
     ```typescript
@@ -885,7 +885,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.3.B — Shared TypeScript Types (`/src/types/`)
 
-- [ ] ⚡ 🔒 Create `/src/types/terminal.ts`
+- [x] ⚡ 🔒 Create `/src/types/terminal.ts`
   - **Purpose:** Shared TypeScript interfaces for terminal domain objects. Imported by both components and services — no React Native imports allowed here.
   - **Code Layout:**
     ```typescript
@@ -915,7 +915,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
     }
     ```
 
-- [ ] 🔒 Create `/src/types/lessons.ts`
+- [x] 🔒 Create `/src/types/lessons.ts`
   - **Purpose:** Shared TypeScript interfaces for the lesson domain. Matches Firestore document schema (Phase 2.5).
   - **Code Layout:**
     ```typescript
@@ -944,7 +944,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
     }
     ```
 
-- [ ] 🔒 Create `/src/types/filesystem.ts`
+- [x] 🔒 Create `/src/types/filesystem.ts`
   - **Purpose:** Shared TypeScript interfaces for filesystem tree nodes.
   - **Code Layout:**
     ```typescript
@@ -962,14 +962,14 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
     }
     ```
 
-- [ ] Create `/src/types/index.ts`
+- [x] Create `/src/types/index.ts`
   - **Exports:** Re-exports from `terminal.ts`, `lessons.ts`, `filesystem.ts`.
 
 ---
 
 ## Sub-Phase 2.3.C — Terminal Connection Context (`/src/context/TerminalConnectionContext.tsx`)
 
-- [ ] ⚡ 🔒 🔌 Create `/src/context/TerminalConnectionContext.tsx`
+- [x] ⚡ 🔒 🔌 Create `/src/context/TerminalConnectionContext.tsx`
   - **Purpose:** Reactive context wrapping the `terminalSocket` singleton. Broadcasts connection state, latency, and error signals to all consumers (`TerminalScreen`, `FileSystemScreen`, `TopMetricsBar`, `ConnectionBadge`).
   - **State Shape:**
     ```typescript
@@ -1018,10 +1018,10 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
     - **`useEffect` cleanup:** `terminalSocket.disconnect()`.
   - **Exports:** `TerminalConnectionContextProvider`, `useTerminalConnection` hook.
 
-- [ ] ♻️ Modify `/src/context/index.ts`
+- [x] ♻️ Modify `/src/context/index.ts`
   - **Action:** Add `TerminalConnectionContextProvider` and `useTerminalConnection` to exports.
 
-- [ ] ♻️ Modify `/src/App.tsx`
+- [x] ♻️ Modify `/src/App.tsx`
   - **Action:** Add `TerminalConnectionContextProvider` inside `AuthContextProvider`, wrapping `AppBackground`.
   - **Provider Tree Order:**
     ```
@@ -1037,7 +1037,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.3.D — ServerStatusSignal Live Wiring
 
-- [ ] 🔌 📐 ♻️ Modify `/src/components/settings/ServerStatusSignal.tsx`
+- [x] 🔌 📐 ♻️ Modify `/src/components/settings/ServerStatusSignal.tsx`
   - **Action:** Wire the `onTest` prop to accept an async handler that calls `pingServer` and updates UI state reactively.
   - **New Props to support:**
     ```typescript
@@ -1053,7 +1053,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
   - **Latency display:** When `latencyMs !== null`, render `MonoText` `${latencyMs}ms` in `Colors.semantic.success` next to the dot.
   - **Constraint:** Touch target for `onTest` must remain ≥ 44dp even when `isTesting` spinner replaces the dot.
 
-- [ ] 🔌 ♻️ Modify `/src/screens/SettingsScreen.tsx`
+- [x] 🔌 ♻️ Modify `/src/screens/SettingsScreen.tsx`
   - **Action:** Wire `ServerStatusSignal` to a real ping handler.
   - **New state:**
     ```typescript

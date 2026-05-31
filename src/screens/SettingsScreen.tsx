@@ -11,12 +11,14 @@ import {
   ServerStatusSignal,
   SaveConfigurationButton
 } from '../components';
-import { useAppContext, useAuthContext } from '../context';
+import { useAppContext, useAuthContext, useTerminalConnection } from '../context';
 import { validateServerConfig, ServerConfigSchema } from '../services/validation';
+import type { ConnectionState } from '../types';
 
 export const SettingsScreen: React.FC = () => {
   const { serverConfig, saveServerConfig } = useAppContext();
   const { signOut, isSigningOut, user } = useAuthContext();
+  const { pingServer } = useTerminalConnection();
   
   const [ipValue, setIpValue] = useState(serverConfig.ip);
   const [portValue, setPortValue] = useState(serverConfig.port);
@@ -25,6 +27,11 @@ export const SettingsScreen: React.FC = () => {
   const [errors, setErrors] = useState<Partial<Record<keyof ServerConfigSchema, string>>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // Ping Diagnostic States
+  const [isTesting, setIsTesting] = useState(false);
+  const [signalState, setSignalState] = useState<ConnectionState>('offline');
+  const [signalLatency, setSignalLatency] = useState<number | null>(null);
 
   useEffect(() => {
     setIpValue(serverConfig.ip);
@@ -54,6 +61,36 @@ export const SettingsScreen: React.FC = () => {
     }
     
     setIsSaving(false);
+  };
+
+  const handleTestConnection = async () => {
+    Keyboard.dismiss();
+    const config: ServerConfigSchema = {
+      ip: ipValue,
+      port: portValue,
+      sshUser: sshUserValue,
+    };
+
+    const { valid, errors: validationErrors } = validateServerConfig(config);
+    if (!valid) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
+    setIsTesting(true);
+    setSignalState('connecting');
+    setSignalLatency(null);
+
+    const result = await pingServer({
+      ip: ipValue.trim(),
+      port: portValue.trim(),
+      sshUser: sshUserValue.trim()
+    });
+
+    setSignalState(result.reachable ? 'connected' : 'error');
+    setSignalLatency(result.latencyMs);
+    setIsTesting(false);
   };
 
   const handleSignOut = () => {
@@ -99,8 +136,10 @@ export const SettingsScreen: React.FC = () => {
                 sshUserError={errors.sshUser}
               />
               <ServerStatusSignal
-                status="offline"
-                onTestPress={() => {}}
+                state={signalState}
+                latencyMs={signalLatency}
+                onTest={handleTestConnection}
+                isTesting={isTesting}
               />
               <SaveConfigurationButton 
                 onPress={handleSave} 

@@ -1,49 +1,100 @@
-import React from 'react';
-import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { View, StyleSheet, StyleProp, ViewStyle, Animated, Easing } from 'react-native';
 import { Theme } from '../../tokens';
 import { StatusDot, MonoText, SecondaryActionButton } from '../../atoms';
-import type { DotVariant } from '../../atoms'; // Extracted from Phase 1.2 StatusDot
+import { MaterialIcon } from '../../atoms/icons';
+import type { DotVariant } from '../../atoms';
+import type { ConnectionState } from '../../types';
 
 export interface ServerStatusSignalProps {
-  status: 'online' | 'offline' | 'checking';
-  pingMs?: number;
-  onTestPress: () => void;
+  state: ConnectionState;
+  latencyMs?: number | null;
+  onTest?: () => Promise<void>;
+  isTesting?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
 export const ServerStatusSignal: React.FC<ServerStatusSignalProps> = ({
-  status,
-  pingMs,
-  onTestPress,
+  state,
+  latencyMs,
+  onTest,
+  isTesting = false,
   style,
 }) => {
+  const spinValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    let animation: Animated.CompositeAnimation | null = null;
+    if (isTesting) {
+      animation = Animated.loop(
+        Animated.timing(spinValue, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        })
+      );
+      animation.start();
+    } else {
+      spinValue.setValue(0);
+    }
+    return () => {
+      if (animation) {
+        animation.stop();
+      }
+    };
+  }, [isTesting, spinValue]);
+
+  const spin = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
   const getVariant = (): DotVariant => {
-    switch (status) {
-      case 'online': return 'success';
-      case 'checking': return 'warning';
+    switch (state) {
+      case 'connected': return 'success';
+      case 'connecting': return 'warning';
+      case 'error': return 'error';
       case 'offline':
+      case 'disconnected':
       default: return 'error';
     }
   };
 
   const getStatusText = () => {
-    if (status === 'checking') return 'Checking connection...';
-    if (status === 'offline') return 'Connection failed / Offline';
-    return pingMs ? `Connected (${pingMs}ms latency)` : 'Connected';
+    if (isTesting) return 'Testing connection...';
+    if (state === 'connecting') return 'Connecting...';
+    if (state === 'offline' || state === 'disconnected') return 'Disconnected / Offline';
+    if (state === 'error') return 'Connection failed / Error';
+    return 'Connected';
   };
 
   return (
     <View style={[styles.container, style]}>
       <View style={styles.statusRow}>
-        <StatusDot variant={getVariant()} />
+        {isTesting ? (
+          <View style={styles.iconWrapper}>
+            <Animated.View style={{ transform: [{ rotate: spin }] }}>
+              <MaterialIcon name="refresh" size={18} color={Theme.colors.semantic.warning} />
+            </Animated.View>
+          </View>
+        ) : (
+          <StatusDot variant={getVariant()} />
+        )}
         <MonoText size={Theme.fontSize.labelSM} color={Theme.colors.text.secondary} style={styles.text}>
           {getStatusText()}
         </MonoText>
+        {!isTesting && latencyMs !== null && latencyMs !== undefined && (
+          <MonoText size={Theme.fontSize.labelSM} color={Theme.colors.semantic.success} style={styles.latency}>
+            ({latencyMs}ms)
+          </MonoText>
+        )}
       </View>
       <SecondaryActionButton 
         label="Test Connection" 
-        onPress={onTestPress} 
-        disabled={status === 'checking'}
+        onPress={() => onTest?.()} 
+        disabled={isTesting || state === 'connecting'}
+        style={styles.testBtn}
       />
     </View>
   );
@@ -64,9 +115,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
+  iconWrapper: {
+    width: 18,
+    height: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   text: {
     marginLeft: Theme.spacing.sm,
-    marginRight: Theme.spacing.sm,
+    marginRight: Theme.spacing.xs,
     flexShrink: 1,
+  },
+  latency: {
+    fontFamily: Theme.fontFamily.mono,
+  },
+  testBtn: {
+    minHeight: 44, // 44x44dp hit target minimum
   },
 });

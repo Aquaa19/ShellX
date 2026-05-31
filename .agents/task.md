@@ -1,13 +1,7 @@
-- `[ ]` Define TypeScript interfaces in `src/types/terminal.ts`
-- `[ ]` Define TypeScript interfaces in `src/types/lessons.ts`
-- `[ ]` Define TypeScript interfaces in `src/types/filesystem.ts`
-- `[ ]` Add barrel exports in `src/types/index.ts`
-- `[ ]` Create `TerminalSocket.ts` service client with reconnect logic
-- `[ ]` Create one-shot TCP/WS diagnostic `PingService.ts`
-- `[ ]` Map ANSI key sequences in `AnsiSequences.ts`
-- `[ ]` Write message classification parser in `TerminalOutputParser.ts`
-- `[ ]` Create `TerminalConnectionContext.tsx` provider
-- `[ ]` Update context exports in `src/context/index.ts`
-- `[ ]` Wrap root providers in `src/App.tsx`
-- `[ ]` Wire dynamic states in `ServerStatusSignal.tsx`
-- `[ ]` Update connection diagnostic ping triggers in `SettingsScreen.tsx`
+- `[ ]` Modify `src/screens/TerminalScreen.tsx` to bind to connection context.
+- `[ ]` Refactor `src/components/terminal/TerminalCodeLine.tsx` to memoize rendering.
+- `[ ]` Rewrite `src/components/terminal/TerminalEditor.tsx` with a FlatList and scroll triggers.
+- `[ ]` Implement KeyDef mapping in `src/components/terminal/DeveloperKeyboardBar.tsx`.
+- `[ ]` Map keyboard events in `src/components/terminal/DeveloperKeyboardRow.tsx`.
+- `[ ]` Refactor status indicators in `src/components/terminal/VimStatusStrip.tsx`.
+- `[ ]` Update bindings in `src/components/terminal/TerminalWorkspace.tsx`.
