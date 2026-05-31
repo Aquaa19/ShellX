@@ -6,6 +6,7 @@ export interface TerminalTextInputProps {
   value: string;
   onChangeText: (text: string) => void;
   onSubmitEditing?: (event: any) => void;
+  onKeyPress?: (event: any) => void;
   placeholder?: string;
   autoFocus?: boolean;
   editable?: boolean;
@@ -18,6 +19,7 @@ export const TerminalTextInput = React.forwardRef<TextInput, TerminalTextInputPr
   value,
   onChangeText,
   onSubmitEditing,
+  onKeyPress,
   placeholder,
   autoFocus = false,
   editable = true,
@@ -32,6 +34,7 @@ export const TerminalTextInput = React.forwardRef<TextInput, TerminalTextInputPr
       value={value}
       onChangeText={onChangeText}
       onSubmitEditing={onSubmitEditing}
+      onKeyPress={onKeyPress}
       placeholder={placeholder}
       placeholderTextColor={Theme.colors.text.placeholder}
       autoFocus={autoFocus}

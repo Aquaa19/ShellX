@@ -13,3 +13,4 @@ export * from './TaskSheetHeader';
 export * from './TaskSheetActions';
 export * from './TaskBottomSheet';
 export * from './TerminalWorkspace';
+export * from './TerminalFileEditor';

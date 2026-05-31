@@ -97,7 +97,7 @@ class TerminalSocketClient {
     if (this.ws) {
       try {
         this.ws.close(1000, 'Client disconnect');
-      } catch (e) {
+      } catch {
         // Suppress close errors
       }
       this.ws = null;

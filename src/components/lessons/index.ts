@@ -7,3 +7,4 @@ export * from './LessonCardGrid';
 export * from './LessonModuleSection';
 export * from './AsciiProgressText';
 export * from './LessonsHeader';
+export * from './LessonPracticeModal';

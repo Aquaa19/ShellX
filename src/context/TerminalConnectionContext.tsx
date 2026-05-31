@@ -2,7 +2,8 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { 
   terminalSocket, 
   pingServer as servicePingServer, 
-  parseTerminalOutput 
+  parseTerminalOutput,
+  stripAnsiCodes
 } from '../services/terminal';
 import type { 
   ConnectionState, 
@@ -22,6 +23,7 @@ interface TerminalConnectionContextState {
   sendCommand:      (command: string) => void;
   sendRawKey:       (ansiSequence: string) => void;
   pingServer:       (config: ServerConfig) => Promise<PingResult>;
+  executeBackgroundCommand: (command: string) => Promise<string>;
   // Terminal output stream
   outputLines:      TerminalLine[];
   clearOutput:      () => void;
@@ -31,7 +33,7 @@ const TerminalConnectionContext = createContext<TerminalConnectionContextState |
 
 export const TerminalConnectionContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [connectionState, setConnectionState] = useState<ConnectionState>('offline');
-  const [latencyMs, setLatencyMs] = useState<number | null>(null);
+  const [latencyMs, _setLatencyMs] = useState<number | null>(null);
   const [lastError, setLastError] = useState<string | null>(null);
   const [isReconnecting, setIsReconnecting] = useState(false);
   const [outputLines, setOutputLines] = useState<TerminalLine[]>([]);
@@ -40,6 +42,12 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
   const configRef = useRef<ServerConfig | null>(null);
   const uidRef = useRef<string | null>(null);
   const lastSentCommandRef = useRef<string | null>(null);
+
+  // Background execution management refs
+  const activeBackgroundId = useRef<string | null>(null);
+  const backgroundBuffer = useRef<string>('');
+  const backgroundPromise = useRef<{ resolve: (data: string) => void; reject: (err: any) => void } | null>(null);
+  const backgroundTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const disconnect = useCallback(() => {
     terminalSocket.disconnect();
@@ -61,11 +69,43 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
         setIsReconnecting(false);
       },
       onMessage: (data) => {
+        // Intercept and buffer background execution stream
+        if (activeBackgroundId.current) {
+          backgroundBuffer.current += data;
+          const startMarker = `START_${activeBackgroundId.current}`;
+          const endMarker = `END_${activeBackgroundId.current}`;
+
+          if (backgroundBuffer.current.includes(endMarker)) {
+            if (backgroundTimeout.current) {
+              clearTimeout(backgroundTimeout.current);
+              backgroundTimeout.current = null;
+            }
+            const bufferText = backgroundBuffer.current;
+            const startIdx = bufferText.indexOf(startMarker);
+            const endIdx = bufferText.indexOf(endMarker);
+
+            let content = '';
+            if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+              content = bufferText.substring(startIdx + startMarker.length, endIdx);
+            } else {
+              content = bufferText;
+            }
+
+            const cleanContent = stripAnsiCodes(content).trim();
+            backgroundPromise.current?.resolve(cleanContent);
+
+            activeBackgroundId.current = null;
+            backgroundBuffer.current = '';
+            backgroundPromise.current = null;
+          }
+          return; // Prevents background logs from polluting terminal lists
+        }
+
         const parsed = parseTerminalOutput(data, '');
         const filtered = parsed.filter((line) => {
           const trimmedLine = line.content.trim();
           if (lastSentCommandRef.current && trimmedLine === lastSentCommandRef.current) {
-            lastSentCommandRef.current = null; // Reset after filtering once to avoid false positives later
+            lastSentCommandRef.current = null;
             return false;
           }
           return true;
@@ -80,9 +120,23 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
       },
       onError: () => {
         setLastError('Socket error occurred.');
+        if (activeBackgroundId.current) {
+          if (backgroundTimeout.current) clearTimeout(backgroundTimeout.current);
+          backgroundPromise.current?.reject(new Error('Socket error occurred during background execution.'));
+          activeBackgroundId.current = null;
+          backgroundBuffer.current = '';
+          backgroundPromise.current = null;
+        }
       },
       onClose: (code) => {
         setConnectionState(code === 1000 ? 'disconnected' : 'error');
+        if (activeBackgroundId.current) {
+          if (backgroundTimeout.current) clearTimeout(backgroundTimeout.current);
+          backgroundPromise.current?.reject(new Error('Socket closed during background execution.'));
+          activeBackgroundId.current = null;
+          backgroundBuffer.current = '';
+          backgroundPromise.current = null;
+        }
         if (code !== 1000) {
           setIsReconnecting(true);
         } else {
@@ -97,7 +151,7 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
     if (trimmed === 'clear') {
       setOutputLines([]);
       lastSentCommandRef.current = 'clear';
-      terminalSocket.send(command + '\n');
+      terminalSocket.send(command + '\r');
       return;
     }
 
@@ -137,7 +191,7 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
       return copy.length > 500 ? copy.slice(-500) : copy;
     });
 
-    terminalSocket.send(command + '\n');
+    terminalSocket.send(command + '\r');
   }, []);
 
   const sendRawKey = useCallback((ansiSequence: string) => {
@@ -150,6 +204,45 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
   const pingServer = useCallback(async (config: ServerConfig): Promise<PingResult> => {
     return servicePingServer(config.ip, config.port);
   }, []);
+
+  const executeBackgroundCommand = useCallback((command: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      if (connectionState !== 'connected') {
+        reject(new Error('Terminal is not connected.'));
+        return;
+      }
+
+      if (activeBackgroundId.current) {
+        reject(new Error('A background command is already executing.'));
+        return;
+      }
+
+      const id = `BG_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+      activeBackgroundId.current = id;
+      backgroundBuffer.current = '';
+      backgroundPromise.current = { resolve, reject };
+
+      backgroundTimeout.current = setTimeout(() => {
+        if (activeBackgroundId.current === id) {
+          reject(new Error('Background command execution timed out.'));
+          activeBackgroundId.current = null;
+          backgroundBuffer.current = '';
+          backgroundPromise.current = null;
+        }
+      }, 15000);
+
+      // Check if command is multi-line
+      const isMultiLine = command.includes('\n') || command.includes('\r');
+      let wrapped = '';
+      if (isMultiLine) {
+        const cleanCommand = command.replace(/\r?\n/g, '\r');
+        wrapped = `echo 'START'_"${id}"\r${cleanCommand}\recho 'END'_"${id}"\r`;
+      } else {
+        wrapped = `echo 'START'_"${id}" ; ${command} ; echo 'END'_"${id}"\r`;
+      }
+      terminalSocket.send(wrapped);
+    });
+  }, [connectionState]);
 
   const clearOutput = useCallback(() => {
     setOutputLines([]);
@@ -174,6 +267,7 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
         sendCommand,
         sendRawKey,
         pingServer,
+        executeBackgroundCommand,
         outputLines,
         clearOutput,
       }}

@@ -13,8 +13,11 @@ export interface KeyDef {
 }
 
 export const DEFAULT_KEYS: KeyDef[] = [
+  { label: 'CTRL',  sequence: 'CTRL_TOGGLE',    special: true  },
+  { label: 'ALT',   sequence: 'ALT_TOGGLE',     special: true  },
   { label: 'ESC',   sequence: ANSI.ESC,         special: true  },
   { label: 'TAB',   sequence: ANSI.TAB                         },
+  { label: 'ENTER', sequence: '\r',             special: true  },
   { label: 'CTRL+C',sequence: ANSI.CTRL_C,       special: true  },
   { label: 'CTRL+D',sequence: ANSI.CTRL_D,       special: true  },
   { label: 'CTRL+Z',sequence: ANSI.CTRL_Z,       special: true  },
@@ -34,17 +37,26 @@ export const DEFAULT_KEYS: KeyDef[] = [
 
 export interface DeveloperKeyboardBarProps {
   onKeyPress: (sequence: string) => void;
+  isCtrlActive?: boolean;
+  isAltActive?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
 export const DeveloperKeyboardBar: React.FC<DeveloperKeyboardBarProps> = ({
   onKeyPress,
+  isCtrlActive = false,
+  isAltActive = false,
   style,
 }) => {
   return (
     <View style={[styles.container, style]}>
       <KeyboardDivider />
-      <DeveloperKeyboardRow keys={DEFAULT_KEYS} onKeyPress={onKeyPress} />
+      <DeveloperKeyboardRow
+        keys={DEFAULT_KEYS}
+        onKeyPress={onKeyPress}
+        isCtrlActive={isCtrlActive}
+        isAltActive={isAltActive}
+      />
     </View>
   );
 };

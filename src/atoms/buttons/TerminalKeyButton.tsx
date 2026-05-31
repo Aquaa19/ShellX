@@ -8,6 +8,7 @@ export interface TerminalKeyButtonProps {
   onPress: () => void;
   wide?: boolean;
   special?: boolean;
+  active?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -16,18 +17,21 @@ export const TerminalKeyButton: React.FC<TerminalKeyButtonProps> = ({
   onPress,
   wide = false,
   special = false,
+  active = false,
   style,
 }) => {
   const [isPressed, setIsPressed] = useState(false);
 
   // Dynamic styling resolution for colors
   const getBackgroundColor = () => {
+    if (active) return Theme.colors.primary.default;
     if (isPressed) return Theme.colors.primary.dim;
     if (special) return Theme.colors.primary.muted;
     return Theme.colors.surface.raised;
   };
 
   const getBorderColor = () => {
+    if (active) return Theme.colors.primary.default;
     if (isPressed) return Theme.colors.primary.default;
     return Theme.colors.border.subtle;
   };
@@ -53,7 +57,7 @@ export const TerminalKeyButton: React.FC<TerminalKeyButtonProps> = ({
       <View style={styles.content}>
         <MonoText
           size={Theme.fontSize.labelSM}
-          color={isPressed ? Theme.colors.text.primary : Theme.colors.text.secondary}
+          color={(isPressed || active) ? Theme.colors.text.primary : Theme.colors.text.secondary}
           style={styles.label}
         >
           {label}

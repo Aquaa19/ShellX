@@ -7,12 +7,16 @@ import type { KeyDef } from './DeveloperKeyboardBar';
 export interface DeveloperKeyboardRowProps {
   keys: KeyDef[];
   onKeyPress: (sequence: string) => void;
+  isCtrlActive?: boolean;
+  isAltActive?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
 export const DeveloperKeyboardRow: React.FC<DeveloperKeyboardRowProps> = ({
   keys,
   onKeyPress,
+  isCtrlActive = false,
+  isAltActive = false,
   style,
 }) => {
   return (
@@ -23,15 +27,21 @@ export const DeveloperKeyboardRow: React.FC<DeveloperKeyboardRowProps> = ({
       style={[styles.container, style]}
       contentContainerStyle={styles.contentContainer}
     >
-      {keys.map((key) => (
-        <View key={key.label} style={styles.keyWrapper}>
-          <TerminalKeyButton
-            label={key.label}
-            special={key.special}
-            onPress={() => onKeyPress(key.sequence)}
-          />
-        </View>
-      ))}
+      {keys.map((key) => {
+        const isKeyActive =
+          (key.sequence === 'CTRL_TOGGLE' && isCtrlActive) ||
+          (key.sequence === 'ALT_TOGGLE' && isAltActive);
+        return (
+          <View key={key.label} style={styles.keyWrapper}>
+            <TerminalKeyButton
+              label={key.label}
+              special={key.special}
+              active={isKeyActive}
+              onPress={() => onKeyPress(key.sequence)}
+            />
+          </View>
+        );
+      })}
     </ScrollView>
   );
 };

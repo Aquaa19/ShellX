@@ -17,7 +17,7 @@ export async function pingServer(
       settled = true;
       try {
         ws.close(1000);
-      } catch (e) {
+      } catch {
         // Ignore close error on one-shot probe
       }
       resolve(result);

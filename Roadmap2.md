@@ -1297,7 +1297,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.5.A — Firestore Data Schema
 
-- [ ] ⚡ 🔒 🔥 Create `/src/services/firestore/FirestoreSchema.ts`
+- [x] ⚡ 🔒 🔥 Create `/src/services/firestore/FirestoreSchema.ts`
   - **Purpose:** Defines the exact Firestore collection/document path structure. Single source of truth for all database paths and document shapes. Prevents inconsistent path strings.
   - **Collection Structure:**
     ```
@@ -1354,7 +1354,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.5.B — Lesson Service Layer (`/src/services/lessons/`)
 
-- [ ] ⚡ 🔥 Create `/src/services/lessons/LessonService.ts`
+- [x] ⚡ 🔥 Create `/src/services/lessons/LessonService.ts`
   - **Purpose:** All Firestore read operations for lessons and user progress. Returns typed objects. No React imports.
   - **Dependencies:**
     ```typescript
@@ -1382,7 +1382,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
   - **Error handling:** All functions wrapped in try-catch. On error, log `console.warn` and return safe fallback (`[]` or `null`). Never throw from a service function.
 
-- [ ] 🔥 Create `/src/services/lessons/ProgressService.ts`
+- [x] 🔥 Create `/src/services/lessons/ProgressService.ts`
   - **Purpose:** All Firestore write operations for user lesson progress.
   - **Functions to implement:**
 
@@ -1402,14 +1402,14 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
     **`recordLessonCheckAttempt(uid: string, lessonId: string, passed: boolean, output: string): Promise<void>`**
     - Increments `attempts` counter using `firestore.FieldValue.increment(1)`. Sets `passed` and `lastOutput`. If `passed`, sets `completedAt`.
 
-- [ ] Create `/src/services/lessons/index.ts`
+- [x] Create `/src/services/lessons/index.ts`
   - **Exports:** `LessonService`, `ProgressService`.
 
 ---
 
 ## Sub-Phase 2.5.C — Lessons Context (`/src/context/LessonsContext.tsx`)
 
-- [ ] ⚡ 🔥 Create `/src/context/LessonsContext.tsx`
+- [x] ⚡ 🔥 Create `/src/context/LessonsContext.tsx`
   - **Purpose:** Reactive context for lesson data. Subscribes to Firestore lesson fetches and user progress updates. Provides lesson selection, task sheet state, and validation trigger.
   - **State Shape:**
     ```typescript
@@ -1442,14 +1442,14 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
       7. Sets `isValidating = false`.
   - **Exports:** `LessonsContextProvider`, `useLessonsContext` hook.
 
-- [ ] ♻️ Modify `/src/App.tsx`
+- [x] ♻️ Modify `/src/App.tsx`
   - **Action:** Add `LessonsContextProvider` inside `TerminalConnectionContextProvider`.
 
 ---
 
 ## Sub-Phase 2.5.D — LessonsScreen Live Integration
 
-- [ ] 🔥 📐 📱 ♻️ Modify `/src/screens/LessonsScreen.tsx`
+- [x] 🔥 📐 📱 ♻️ Modify `/src/screens/LessonsScreen.tsx`
   - **Action:** Replace `MOCK_LESSONS` with live `useLessonsContext().modules` data.
   - **New imports:**
     ```typescript
@@ -1463,7 +1463,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
   - **`onLessonPress`:** Call `selectLesson(lesson)`, then `navigation.navigate('Terminal')` to bring the terminal screen to the foreground. The `TaskBottomSheet` opens automatically via `LessonsContext`.
   - **Empty state:** When `modules.length === 0` and `!isLoading`, render a centered column: `TerminalText` `"No lessons available."` + `SecondaryActionButton` `"REFRESH"` calling `refreshLessons()`.
 
-- [ ] 🔥 ♻️ Modify `/src/screens/TerminalScreen.tsx`
+- [x] 🔥 ♻️ Modify `/src/screens/TerminalScreen.tsx`
   - **Action:** Wire `TaskBottomSheet` and `LessonContextHeader` to `LessonsContext`.
   - **New imports:**
     ```typescript
@@ -1483,7 +1483,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
   - **Wire `LessonContextHeader`:** `lessonTitle={activeLessonData?.title}`, `progress={activeLessonData?.progress ?? 0}`.
   - **Validation result display:** Inside `TaskBottomSheet` content area, when `lastValidationResult !== null`, render a `StatusIndicatorBadge`: `variant={lastValidationResult.passed ? 'success' : 'error'}`, `label={lastValidationResult.passed ? 'PASSED' : 'FAILED'}`. Below it, `TerminalText` showing the output snippet (max 3 lines).
 
-- [ ] ♻️ Modify `/src/components/terminal/TaskSheetActions.tsx`
+- [x] ♻️ Modify `/src/components/terminal/TaskSheetActions.tsx`
   - **Action:** Add `isValidating` prop. When `true`, show loading spinner on "Run Check" button and disable both buttons.
   - **New props:** `onRunCheck?: () => void`, `onShowHint?: () => void`, `isValidating?: boolean`.
 
