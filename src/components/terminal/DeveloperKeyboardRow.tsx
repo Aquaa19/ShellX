@@ -2,15 +2,16 @@ import React from 'react';
 import { ScrollView, StyleSheet, StyleProp, ViewStyle, View } from 'react-native';
 import { Theme } from '../../tokens';
 import { TerminalKeyButton } from '../../atoms';
+import type { KeyDef } from './DeveloperKeyboardBar';
 
 export interface DeveloperKeyboardRowProps {
-  onKeyPress: (key: string) => void;
+  keys: KeyDef[];
+  onKeyPress: (sequence: string) => void;
   style?: StyleProp<ViewStyle>;
 }
 
-const KEYS = ['ESC', 'TAB', 'CTRL', 'ALT', '|', '/', '\\', '-', '~', 'UP', 'DOWN', 'LEFT', 'RIGHT'];
-
 export const DeveloperKeyboardRow: React.FC<DeveloperKeyboardRowProps> = ({
+  keys,
   onKeyPress,
   style,
 }) => {
@@ -22,18 +23,15 @@ export const DeveloperKeyboardRow: React.FC<DeveloperKeyboardRowProps> = ({
       style={[styles.container, style]}
       contentContainerStyle={styles.contentContainer}
     >
-      {KEYS.map((key) => {
-        const isSpecial = ['ESC', 'TAB', 'CTRL', 'ALT', 'UP', 'DOWN', 'LEFT', 'RIGHT'].includes(key);
-        return (
-          <View key={key} style={styles.keyWrapper}>
-            <TerminalKeyButton
-              label={key}
-              special={isSpecial}
-              onPress={() => onKeyPress(key)}
-            />
-          </View>
-        );
-      })}
+      {keys.map((key) => (
+        <View key={key.label} style={styles.keyWrapper}>
+          <TerminalKeyButton
+            label={key.label}
+            special={key.special}
+            onPress={() => onKeyPress(key.sequence)}
+          />
+        </View>
+      ))}
     </ScrollView>
   );
 };

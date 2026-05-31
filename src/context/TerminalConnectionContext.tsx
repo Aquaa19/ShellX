@@ -39,6 +39,7 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
   // Persistent reference to reuse credentials in auto-reconnect loops
   const configRef = useRef<ServerConfig | null>(null);
   const uidRef = useRef<string | null>(null);
+  const lastSentCommandRef = useRef<string | null>(null);
 
   const disconnect = useCallback(() => {
     terminalSocket.disconnect();
@@ -61,10 +62,21 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
       },
       onMessage: (data) => {
         const parsed = parseTerminalOutput(data, '');
-        setOutputLines((prev) => {
-          const combined = [...prev, ...parsed];
-          return combined.length > 500 ? combined.slice(-500) : combined;
+        const filtered = parsed.filter((line) => {
+          const trimmedLine = line.content.trim();
+          if (lastSentCommandRef.current && trimmedLine === lastSentCommandRef.current) {
+            lastSentCommandRef.current = null; // Reset after filtering once to avoid false positives later
+            return false;
+          }
+          return true;
         });
+
+        if (filtered.length > 0) {
+          setOutputLines((prev) => {
+            const combined = [...prev, ...filtered];
+            return combined.length > 500 ? combined.slice(-500) : combined;
+          });
+        }
       },
       onError: () => {
         setLastError('Socket error occurred.');
@@ -81,20 +93,57 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
   }, []);
 
   const sendCommand = useCallback((command: string) => {
-    const commandLine: TerminalLine = {
-      id: `local-cmd-${Date.now()}-${Math.random()}`,
-      type: 'command',
-      content: command,
-      timestamp: Date.now(),
-    };
+    const trimmed = command.trim();
+    if (trimmed === 'clear') {
+      setOutputLines([]);
+      lastSentCommandRef.current = 'clear';
+      terminalSocket.send(command + '\n');
+      return;
+    }
+
+    lastSentCommandRef.current = trimmed;
+
     setOutputLines((prev) => {
-      const combined = [...prev, commandLine];
-      return combined.length > 500 ? combined.slice(-500) : combined;
+      if (prev.length === 0) {
+        return [{
+          id: `local-cmd-${Date.now()}-${Math.random()}`,
+          type: 'command',
+          content: `$ ${command}`,
+          timestamp: Date.now(),
+        }];
+      }
+
+      const copy = [...prev];
+      const lastIndex = copy.length - 1;
+      const lastItem = copy[lastIndex];
+      const isPrompt = (lastItem.content.trim().endsWith('$') || lastItem.content.trim().endsWith('#')) && lastItem.content.includes('@');
+
+      if (isPrompt) {
+        copy[lastIndex] = {
+          id: `local-cmd-${Date.now()}-${Math.random()}`,
+          type: 'command',
+          content: `${lastItem.content.trim()} ${command}`,
+          timestamp: Date.now(),
+        };
+      } else {
+        copy.push({
+          id: `local-cmd-${Date.now()}-${Math.random()}`,
+          type: 'command',
+          content: `$ ${command}`,
+          timestamp: Date.now(),
+        });
+      }
+
+      return copy.length > 500 ? copy.slice(-500) : copy;
     });
+
     terminalSocket.send(command + '\n');
   }, []);
 
   const sendRawKey = useCallback((ansiSequence: string) => {
+    if (ansiSequence === '\x0c') {
+      setOutputLines([]);
+    }
     terminalSocket.send(ansiSequence);
   }, []);
 

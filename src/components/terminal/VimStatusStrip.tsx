@@ -2,46 +2,56 @@ import React from 'react';
 import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { Theme } from '../../tokens';
 import { LabelCapsText, MonoText } from '../../atoms';
-
-export type VimMode = 'NORMAL' | 'INSERT' | 'VISUAL';
+import type { VimMode } from '../../types';
 
 export interface VimStatusStripProps {
-  mode: VimMode;
-  filename: string;
-  cursorRow: number;
-  cursorCol: number;
-  style?: StyleProp<ViewStyle>;
+  mode:       VimMode;            // 'NORMAL' | 'INSERT' | 'VISUAL' | 'COMMAND'
+  filename?:  string;
+  cursorLine: number;             // 1-based line number
+  cursorCol:  number;             // 1-based column number
+  lineCount:  number;             // Total lines in terminal output
+  style?:     StyleProp<ViewStyle>;
 }
 
 export const VimStatusStrip: React.FC<VimStatusStripProps> = ({
   mode,
   filename,
-  cursorRow,
+  cursorLine,
   cursorCol,
+  lineCount,
   style,
 }) => {
-  const getModeColor = () => {
+  const getModeBgColor = () => {
     switch (mode) {
-      case 'INSERT': return Theme.colors.syntax.blue;
-      case 'VISUAL': return Theme.colors.syntax.orange;
-      case 'NORMAL':
-      default: return Theme.colors.semantic.success;
+      case 'NORMAL': return Theme.colors.surface.raised;
+      case 'INSERT': return Theme.colors.primary.default;
+      case 'VISUAL': return Theme.colors.semantic.warning;
+      case 'COMMAND': return Theme.colors.semantic.info;
+      default: return Theme.colors.surface.raised;
     }
+  };
+
+  const getModeTextColor = () => {
+    if (mode === 'INSERT') return Theme.colors.text.inverse;
+    return Theme.colors.text.primary;
   };
 
   return (
     <View style={[styles.container, style]}>
-      <View style={[styles.modeBlock, { backgroundColor: getModeColor() }]}>
-        <LabelCapsText color={Theme.colors.background.floor}>{mode}</LabelCapsText>
+      <View style={[styles.modeBlock, { backgroundColor: getModeBgColor() }]}>
+        <LabelCapsText color={getModeTextColor()}>{mode}</LabelCapsText>
       </View>
       <View style={styles.fileBlock}>
         <MonoText size={Theme.fontSize.labelSM} color={Theme.colors.text.secondary}>
-          {filename}
+          {filename || 'untitled'}
         </MonoText>
       </View>
-      <View style={styles.cursorBlock}>
-        <MonoText size={Theme.fontSize.labelSM} color={Theme.colors.text.primary}>
-          {cursorRow}:{cursorCol}
+      <View style={styles.rightBlock}>
+        <MonoText size={Theme.fontSize.labelXS} color={Theme.colors.text.secondary} style={styles.metrics}>
+          Ln {cursorLine}, Col {cursorCol}
+        </MonoText>
+        <MonoText size={Theme.fontSize.labelXS} color={Theme.colors.text.secondary} style={styles.metrics}>
+          {lineCount}L
         </MonoText>
       </View>
     </View>
@@ -67,9 +77,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: Theme.spacing.sm,
   },
-  cursorBlock: {
+  rightBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: Theme.spacing.sm,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
+  },
+  metrics: {
+    marginLeft: Theme.spacing.sm,
   },
 });

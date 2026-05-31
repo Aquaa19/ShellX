@@ -3,15 +3,14 @@ import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { Theme } from '../../tokens';
 import { TopMetricsBar } from './TopMetricsBar';
 import { TerminalEditor } from './TerminalEditor';
-import { VimStatusStrip, VimMode } from './VimStatusStrip';
+import { VimStatusStrip } from './VimStatusStrip';
 import { DeveloperKeyboardBar } from './DeveloperKeyboardBar';
-import type { ConnectionState } from '../../atoms';
-import type { TerminalCodeLineProps } from './TerminalCodeLine';
+import type { ConnectionState, TerminalLine, VimMode } from '../../types';
 
 export interface TerminalWorkspaceProps {
   filepath: string;
   connectionState: ConnectionState;
-  lines: TerminalCodeLineProps[];
+  lines: TerminalLine[];
   currentInput: string;
   onInputChange: (text: string) => void;
   onSubmit: () => void;
@@ -19,6 +18,7 @@ export interface TerminalWorkspaceProps {
   cursorRow: number;
   cursorCol: number;
   onKeyPress: (key: string) => void;
+  promptPrefix?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -33,6 +33,7 @@ export const TerminalWorkspace: React.FC<TerminalWorkspaceProps> = ({
   cursorRow,
   cursorCol,
   onKeyPress,
+  promptPrefix,
   style,
 }) => {
   return (
@@ -45,14 +46,16 @@ export const TerminalWorkspace: React.FC<TerminalWorkspaceProps> = ({
           currentInput={currentInput}
           onInputChange={onInputChange}
           onSubmit={onSubmit}
+          promptPrefix={promptPrefix}
         />
       </View>
       
       <VimStatusStrip
         mode={vimMode}
         filename={filepath}
-        cursorRow={cursorRow}
+        cursorLine={cursorRow}
         cursorCol={cursorCol}
+        lineCount={lines.length}
       />
       <DeveloperKeyboardBar onKeyPress={onKeyPress} />
     </View>

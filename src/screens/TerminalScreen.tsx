@@ -10,16 +10,27 @@ import {
   LessonContextHeader,
   TaskBottomSheet
 } from '../components';
-import { MOCK_TERMINAL_LINES } from '../data';
-import type { VimMode } from '../components';
+import { useAppContext, useAuthContext, useTerminalConnection } from '../context';
+import type { VimMode, LessonData } from '../types';
 
 export const TerminalScreen: React.FC = () => {
+  const { user } = useAuthContext();
+  const { serverConfig } = useAppContext();
+  const {
+    connectionState,
+    outputLines,
+    sendCommand,
+    sendRawKey,
+    connect,
+  } = useTerminalConnection();
+
   const [inputText, setInputText] = useState('');
   const [vimMode, setVimMode] = useState<VimMode>('NORMAL');
   const [isTaskSheetVisible, setIsTaskSheetVisible] = useState(false);
   const [showLessonContext] = useState(true);
-  const [connectionState] = useState<'offline' | 'connected' | 'connecting'>('offline');
   const [isCheckingTask, setIsCheckingTask] = useState(false);
+  // activeLesson populated by LessonsScreen navigation param in Phase 2.5
+  const [activeLesson, setActiveLesson] = useState<LessonData | null>(null);
 
   // Animation for the Bottom Sheet
   const sheetTranslateY = useRef(new Animated.Value(1000)).current;
@@ -32,15 +43,49 @@ export const TerminalScreen: React.FC = () => {
     }).start();
   }, [isTaskSheetVisible, sheetTranslateY]);
 
+  // Initiate connection on mount
+  useEffect(() => {
+    if (user && serverConfig.ip) {
+      connect(serverConfig, user.uid);
+    }
+  }, [connect, serverConfig, user]);
+
+  // Dynamic Vim mode detection by parsing output lines
+  useEffect(() => {
+    const last = outputLines[outputLines.length - 1];
+    if (!last) return;
+    if (last.content.includes('-- INSERT --')) {
+      setVimMode('INSERT');
+    } else if (last.content.includes('-- VISUAL --')) {
+      setVimMode('VISUAL');
+    } else if (last.content.includes('-- COMMAND --')) {
+      setVimMode('COMMAND');
+    } else if (last.type === 'command') {
+      setVimMode('NORMAL');
+    }
+  }, [outputLines]);
+
+  const handleSubmitCommand = () => {
+    if (!inputText.trim() && vimMode === 'NORMAL') return;
+    sendCommand(inputText);
+    setInputText('');
+  };
+
   const handleKeyPress = (key: string) => {
-    if (key === 'ESC') setVimMode('NORMAL');
-    if (key === 'i' || key === 'INSERT') setVimMode('INSERT');
+    sendRawKey(key); // key is an ANSI sequence (AnsiSequences.ts)
   };
 
   const handleTaskCheck = () => {
     setIsCheckingTask(true);
     setTimeout(() => setIsCheckingTask(false), 1500); // Mock check
   };
+
+  // Check if the last line of outputLines is a shell prompt to render it dynamically in the input field
+  const lastLine = outputLines[outputLines.length - 1];
+  const isPrompt = lastLine && (lastLine.content.trim().endsWith('$') || lastLine.content.trim().endsWith('#')) && lastLine.content.includes('@');
+
+  const displayLines = isPrompt ? outputLines.slice(0, -1) : outputLines;
+  const promptPrefix = isPrompt ? lastLine.content.trim() + ' ' : '$ ';
 
   return (
     <AppBackground>
@@ -76,14 +121,15 @@ export const TerminalScreen: React.FC = () => {
           <TerminalWorkspace
             filepath="/home/student/project/script.sh"
             connectionState={connectionState}
-            lines={MOCK_TERMINAL_LINES}
+            lines={displayLines}
             currentInput={inputText}
             onInputChange={setInputText}
-            onSubmit={() => setInputText('')}
+            onSubmit={handleSubmitCommand}
             vimMode={vimMode}
-            cursorRow={12}
-            cursorCol={4}
+            cursorRow={displayLines.length}
+            cursorCol={inputText.length + 1}
             onKeyPress={handleKeyPress}
+            promptPrefix={promptPrefix}
           />
 
           {/* Floating Task Bottom Sheet */}

@@ -2,8 +2,9 @@ import React from 'react';
 import { ViewStyle, StyleProp } from 'react-native';
 import { StatusIndicatorBadge } from './StatusIndicatorBadge';
 import { DotVariant } from './StatusDot';
+import type { ConnectionState } from '../../types';
 
-export type ConnectionState = 'connected' | 'offline' | 'connecting' | 'error';
+export type { ConnectionState };
 
 export interface ConnectionBadgeProps {
   state: ConnectionState;
@@ -17,10 +18,11 @@ export const ConnectionBadge: React.FC<ConnectionBadgeProps> = ({
   const getProps = (): { variant: DotVariant; label: string } => {
     switch (state) {
       case 'connected': return { variant: 'success', label: 'CONNECTED' };
-      case 'offline': return { variant: 'error', label: 'OFFLINE' };
       case 'connecting': return { variant: 'warning', label: 'CONNECTING' };
+      case 'offline': return { variant: 'error', label: 'OFFLINE' };
       case 'error': return { variant: 'error', label: 'ERROR' };
-      default: return { variant: 'error', label: 'OFFLINE' };
+      case 'disconnected':
+      default: return { variant: 'inactive', label: 'OFFLINE' };
     }
   };
 

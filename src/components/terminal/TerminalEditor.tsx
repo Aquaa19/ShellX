@@ -1,15 +1,16 @@
-import React, { useRef } from 'react';
-import { ScrollView, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
+import { FlatList, StyleSheet, StyleProp, ViewStyle, Pressable, TextInput } from 'react-native';
 import { Theme } from '../../tokens';
 import { TerminalCodeLine } from './TerminalCodeLine';
 import { TerminalPromptLine } from './TerminalPromptLine';
-import type { TerminalCodeLineProps } from './TerminalCodeLine';
+import type { TerminalLine } from '../../types';
 
 export interface TerminalEditorProps {
-  lines: TerminalCodeLineProps[];
+  lines: TerminalLine[];
   currentInput: string;
   onInputChange: (text: string) => void;
   onSubmit: () => void;
+  promptPrefix?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -18,32 +19,59 @@ export const TerminalEditor: React.FC<TerminalEditorProps> = ({
   currentInput,
   onInputChange,
   onSubmit,
+  promptPrefix,
   style,
 }) => {
-  const scrollViewRef = useRef<ScrollView>(null);
+  const flatListRef = useRef<FlatList<TerminalLine>>(null);
+  const inputRef = useRef<TextInput>(null);
+  const [viewportHeight, setViewportHeight] = useState(0);
+
+  // Auto-scroll on new lines
+  useEffect(() => {
+    if (lines.length > 0) {
+      flatListRef.current?.scrollToEnd({ animated: true });
+    }
+  }, [lines.length]);
+
+  // Measure viewport height and auto-scroll on resize
+  const handleLayout = useCallback((event: any) => {
+    const { height } = event.nativeEvent.layout;
+    setViewportHeight(height);
+    flatListRef.current?.scrollToEnd({ animated: true });
+  }, []);
+
+  const renderItem = useCallback(({ item }: { item: TerminalLine }) => (
+    <TerminalCodeLine line={item} />
+  ), []);
+
+  const itemsHeight = lines.length * Theme.lineHeight.terminal;
+  const footerHeight = Math.max(50, viewportHeight - itemsHeight - Theme.spacing.md * 2);
 
   return (
-    <ScrollView
-      ref={scrollViewRef}
+    <FlatList
+      ref={flatListRef}
+      data={lines}
+      keyExtractor={(item) => item.id}
+      renderItem={renderItem}
       style={[styles.container, style]}
       contentContainerStyle={styles.contentContainer}
-      onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: false })}
-      keyboardShouldPersistTaps="handled"
-    >
-      {lines.map((line, index) => (
-        <TerminalCodeLine
-          key={index}
-          text={line.text}
-          type={line.type}
-          lineNumber={line.lineNumber}
-        />
-      ))}
-      <TerminalPromptLine
-        value={currentInput}
-        onChangeText={onInputChange}
-        onSubmitEditing={onSubmit}
-      />
-    </ScrollView>
+      showsVerticalScrollIndicator={false}
+      onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
+      onLayout={handleLayout}
+      keyboardShouldPersistTaps="always"
+      ListFooterComponentStyle={{ height: footerHeight }}
+      ListFooterComponent={
+        <Pressable style={styles.footerPressable} onPress={() => inputRef.current?.focus()}>
+          <TerminalPromptLine
+            ref={inputRef}
+            value={currentInput}
+            onChangeText={onInputChange}
+            onSubmitEditing={onSubmit}
+            promptPrefix={promptPrefix}
+          />
+        </Pressable>
+      }
+    />
   );
 };
 
@@ -54,6 +82,11 @@ const styles = StyleSheet.create({
     ...Theme.noShadow,
   },
   contentContainer: {
-    padding: Theme.spacing.md,
+    paddingVertical: Theme.spacing.md,
+    paddingHorizontal: Theme.spacing.md,
+  },
+  footerPressable: {
+    height: '100%',
+    justifyContent: 'flex-start',
   },
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { View, StyleSheet, StyleProp, ViewStyle, TextInput } from 'react-native';
 import { Theme } from '../../tokens';
 import { MonoText, TerminalTextInput } from '../../atoms';
 import { TerminalCursor } from './TerminalCursor';
@@ -13,32 +13,40 @@ export interface TerminalPromptLineProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export const TerminalPromptLine: React.FC<TerminalPromptLineProps> = ({
+export const TerminalPromptLine = React.forwardRef<TextInput, TerminalPromptLineProps>(({
   value,
   onChangeText,
   onSubmitEditing,
   promptPrefix = '$',
   isFocused = true,
   style,
-}) => {
+}, ref) => {
   return (
     <View style={[styles.container, style]}>
       <MonoText size={Theme.fontSize.codeBase} color={Theme.colors.syntax.green} style={styles.prefix}>
         {promptPrefix}
       </MonoText>
       
-      <TerminalTextInput
-        value={value}
-        onChangeText={onChangeText}
-        onSubmitEditing={onSubmitEditing}
-        autoFocus={isFocused}
-        style={styles.input}
-      />
-      
-      {isFocused && <TerminalCursor active={true} />}
+      <View style={styles.inputContainer}>
+        <TerminalTextInput
+          ref={ref}
+          value={value}
+          onChangeText={onChangeText}
+          onSubmitEditing={onSubmitEditing}
+          autoFocus={isFocused}
+          style={styles.inlineInput}
+        />
+        
+        <View style={styles.textOverlay} pointerEvents="none">
+          <MonoText size={Theme.fontSize.codeBase} color={Theme.colors.syntax.white}>
+            {value}
+          </MonoText>
+          {isFocused && <TerminalCursor active={true} />}
+        </View>
+      </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -49,10 +57,25 @@ const styles = StyleSheet.create({
   prefix: {
     marginRight: Theme.spacing.xs,
   },
-  input: {
-    flexShrink: 1, // Allows input to take up space without pushing cursor off-screen
-    minWidth: 10,
-    color: 'transparent', // The TextInput handles logic, we overlay it or let it type natively if desired.
-    // Assuming TerminalTextInput handles internal styles based on Phase 1.2
+  inputContainer: {
+    flex: 1,
+    position: 'relative',
+  },
+  inlineInput: {
+    width: '100%',
+    color: 'transparent',
+    backgroundColor: 'transparent',
+    padding: 0,
+    margin: 0,
+    height: Theme.lineHeight.terminal,
+  },
+  textOverlay: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

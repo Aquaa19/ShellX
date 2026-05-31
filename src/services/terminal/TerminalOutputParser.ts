@@ -1,8 +1,8 @@
 import { TerminalLine, TerminalLineType } from '../../types';
 
 export function stripAnsiCodes(raw: string): string {
-  // Strips color codes and common terminal escape parameters
-  return raw.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '');
+  // Strips color codes, common terminal escape parameters, and carriage returns
+  return raw.replace(/\x1b\[[?0-9;]*[a-zA-Z]/g, '').replace(/\r/g, '');
 }
 
 export function classifyOutputLine(line: string): TerminalLineType {

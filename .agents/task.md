@@ -1,7 +1,7 @@
-- `[ ]` Modify `src/screens/TerminalScreen.tsx` to bind to connection context.
-- `[ ]` Refactor `src/components/terminal/TerminalCodeLine.tsx` to memoize rendering.
-- `[ ]` Rewrite `src/components/terminal/TerminalEditor.tsx` with a FlatList and scroll triggers.
-- `[ ]` Implement KeyDef mapping in `src/components/terminal/DeveloperKeyboardBar.tsx`.
-- `[ ]` Map keyboard events in `src/components/terminal/DeveloperKeyboardRow.tsx`.
-- `[ ]` Refactor status indicators in `src/components/terminal/VimStatusStrip.tsx`.
-- `[ ]` Update bindings in `src/components/terminal/TerminalWorkspace.tsx`.
+- [x] Modify `src/screens/TerminalScreen.tsx` to bind to connection context.
+- [x] Refactor `src/components/terminal/TerminalCodeLine.tsx` to memoize rendering.
+- [x] Rewrite `src/components/terminal/TerminalEditor.tsx` with a FlatList and scroll triggers.
+- [x] Implement KeyDef mapping in `src/components/terminal/DeveloperKeyboardBar.tsx`.
+- [x] Map keyboard events in `src/components/terminal/DeveloperKeyboardRow.tsx`.
+- [x] Refactor status indicators in `src/components/terminal/VimStatusStrip.tsx`.
+- [x] Update bindings in `src/components/terminal/TerminalWorkspace.tsx`.

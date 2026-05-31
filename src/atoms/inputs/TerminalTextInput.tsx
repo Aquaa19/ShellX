@@ -14,7 +14,7 @@ export interface TerminalTextInputProps {
   testID?: string;
 }
 
-export const TerminalTextInput: React.FC<TerminalTextInputProps> = ({
+export const TerminalTextInput = React.forwardRef<TextInput, TerminalTextInputProps>(({
   value,
   onChangeText,
   onSubmitEditing,
@@ -24,9 +24,10 @@ export const TerminalTextInput: React.FC<TerminalTextInputProps> = ({
   multiline = false,
   style,
   testID,
-}) => {
+}, ref) => {
   return (
     <TextInput
+      ref={ref}
       testID={testID}
       value={value}
       onChangeText={onChangeText}
@@ -39,12 +40,16 @@ export const TerminalTextInput: React.FC<TerminalTextInputProps> = ({
       autoCapitalize="none"
       autoCorrect={false}
       spellCheck={false}
-      caretHidden={false}
-      selectionColor={Theme.colors.primary.default}
+      keyboardType="visible-password"
+      autoComplete="off"
+      importantForAutofill="no"
+      textContentType="none"
+      caretHidden={true}
+      selectionColor="transparent"
       style={[styles.input, style]}
     />
   );
-};
+});
 
 const styles = StyleSheet.create({
   input: {

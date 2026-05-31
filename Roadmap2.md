@@ -878,7 +878,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
   - **`classifyOutputLine`:** Returns `'error'` if line starts with common error prefixes (`bash: `, `command not found`, `-bash: `, `Error:`, `Permission denied`). Returns `'system'` for login banners. Returns `'output'` otherwise.
   - **`parseTerminalOutput`:** Splits `raw` by `\r\n` and `\n`. For each non-empty line, creates a `TerminalLine` with a unique `id` (`Date.now() + '-' + index + '-' + Math.random()`), `type` from `classifyOutputLine`, and `content` from `stripAnsiCodes`.
 
-- [ ] Create `/src/services/terminal/index.ts`
+- [x] Create `/src/services/terminal/index.ts`
   - **Exports:** `terminalSocket`, `pingServer`, `ANSI`, `AnsiKey`, `parseTerminalOutput`, `stripAnsiCodes`.
 
 ---
@@ -1093,7 +1093,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.4.A — TerminalScreen Live Integration
 
-- [ ] ⚡ 🔌 ⌨️ 📱 ♻️ Modify `/src/screens/TerminalScreen.tsx`
+- [x] ⚡ 🔌 ⌨️ 📱 ♻️ Modify `/src/screens/TerminalScreen.tsx`
   - **Action:** Full replacement of static state stubs with live `TerminalConnectionContext` data.
   - **New imports to add:**
     ```typescript
@@ -1170,7 +1170,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.4.B — TerminalEditor Live Data & Auto-Scroll
 
-- [ ] 🔌 📱 ♻️ Modify `/src/components/terminal/TerminalEditor.tsx`
+- [x] 🔌 📱 ♻️ Modify `/src/components/terminal/TerminalEditor.tsx`
   - **Action:** Replace `ScrollView` + `map` with `FlatList` for virtualized rendering. Add auto-scroll-to-bottom on new lines. Accept live `TerminalLine[]` prop.
   - **Props interface change:**
     ```typescript
@@ -1209,7 +1209,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
   - **`maintainVisibleContentPosition`:** Critical for OLED terminal UX — prevents jarring scroll position resets when new content arrives while the user is scrolled up reviewing history.
   - **Constraint:** `FlatList` must not re-render all items on each new line. Wrap `TerminalCodeLine` in `React.memo`. The `renderItem` function must be defined with `useCallback`.
 
-- [ ] ♻️ Modify `/src/components/terminal/TerminalCodeLine.tsx`
+- [x] ♻️ Modify `/src/components/terminal/TerminalCodeLine.tsx`
   - **Action:** Update props interface to accept a single `TerminalLine` object instead of individual string props. Wrap component in `React.memo`.
   - **New props:**
     ```typescript
@@ -1224,7 +1224,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.4.C — Developer Keyboard ANSI Injection
 
-- [ ] 🔌 📐 ♻️ Modify `/src/components/terminal/DeveloperKeyboardBar.tsx`
+- [x] 🔌 📐 ♻️ Modify `/src/components/terminal/DeveloperKeyboardBar.tsx`
   - **Action:** Update `onKeyPress` callback to pass ANSI sequence strings instead of plain key label strings.
   - **New `KeyDef` type:**
     ```typescript
@@ -1263,7 +1263,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.4.D — VimStatusStrip Dynamic Sync
 
-- [ ] ♻️ Modify `/src/components/terminal/VimStatusStrip.tsx`
+- [x] ♻️ Modify `/src/components/terminal/VimStatusStrip.tsx`
   - **Action:** Accept `VimMode` type instead of plain `string`. Add cursor position props.
   - **Updated props:**
     ```typescript
@@ -1281,7 +1281,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
   - **Mode background color map:** `NORMAL → Colors.surface.raised`, `INSERT → Colors.primary.default`, `VISUAL → Colors.semantic.warning`, `COMMAND → Colors.semantic.info`.
   - **Mode text color:** When `INSERT`, text must be `Colors.text.inverse` (dark on blue background). When `NORMAL`, text is `Colors.text.primary`.
 
-- [ ] ♻️ Modify `/src/components/terminal/TerminalWorkspace.tsx`
+- [x] ♻️ Modify `/src/components/terminal/TerminalWorkspace.tsx`
   - **Action:** Pass through `vimMode`, `cursorLine`, `cursorCol`, `lineCount`, `outputLines`, `inputValue`, `onInputChange`, `onSubmit`, `onKeyPress` as props from `TerminalScreen`.
   - **Constraint:** `TerminalWorkspace` is a layout compositor only — no business logic, no context calls. All data flows down from `TerminalScreen`.
 
@@ -1868,7 +1868,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 - [ ] `/src/components/terminal/TerminalCodeLine.tsx` (React.memo + TerminalLine type)
 - [ ] `/src/components/terminal/DeveloperKeyboardBar.tsx` (KeyDef ANSI map)
 - [ ] `/src/components/terminal/VimStatusStrip.tsx` (VimMode type + cursor pos)
-- [ ] `/src/components/terminal/TerminalWorkspace.tsx` (live prop passthrough)
+- [x] `/src/components/terminal/TerminalWorkspace.tsx` (live prop passthrough)
 - [ ] `/src/components/terminal/TaskSheetActions.tsx` (isValidating prop)
 - [ ] `/src/components/filesystem/FileSystemTree.tsx` (full node callback)
 - [ ] `/src/components/filesystem/FolderRow.tsx` (isLoading spinner)
