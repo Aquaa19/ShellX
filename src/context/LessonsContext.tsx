@@ -50,6 +50,7 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
   // Manage subscription lifecycle refs to prevent duplicate subscription triggers on identical lists
   const unsubscribersRef = useRef<(() => void)[]>([]);
   const subscribedModuleIdsRef = useRef<Set<string>>(new Set());
+  const isFirstLoadRef = useRef(true);
 
   // Monitor outputLines to settle validation command execution output
   useEffect(() => {
@@ -90,7 +91,18 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
 
   const refreshLessons = useCallback(async () => {
     setIsLoading(true);
+    const startTime = Date.now();
     await refreshLessonsSilent();
+
+    if (isFirstLoadRef.current) {
+      const elapsed = Date.now() - startTime;
+      const minimumDelay = 2200; // Let the custom scanner play for ~2.2 seconds on cold startup
+      if (elapsed < minimumDelay) {
+        await new Promise((resolve) => setTimeout(() => resolve(undefined), minimumDelay - elapsed));
+      }
+      isFirstLoadRef.current = false;
+    }
+
     setIsLoading(false);
   }, [refreshLessonsSilent]);
 

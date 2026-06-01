@@ -14,19 +14,16 @@ import {
   ScanlineOverlay,
   DottedGridOverlay
 } from '../components';
-import { useAppContext, useAuthContext, useTerminalConnection, useFileSystemContext } from '../context';
+import { useTerminalConnection, useFileSystemContext } from '../context';
 import type { VimMode } from '../types';
 import { ANSI } from '../services/terminal';
 
 export const TerminalScreen: React.FC = () => {
-  const { user } = useAuthContext();
-  const { serverConfig } = useAppContext();
   const {
     connectionState,
     outputLines,
     sendCommand,
     sendRawKey,
-    connect,
   } = useTerminalConnection();
 
   const { selectedPath, rootPath } = useFileSystemContext();
@@ -49,12 +46,7 @@ export const TerminalScreen: React.FC = () => {
     }
   }, [selectedPath]);
 
-  // Initiate connection on mount
-  useEffect(() => {
-    if (user && serverConfig.ip) {
-      connect(serverConfig, user.uid);
-    }
-  }, [connect, serverConfig, user]);
+
 
   // Dynamic Vim mode detection by parsing output lines
   useEffect(() => {
@@ -134,6 +126,27 @@ export const TerminalScreen: React.FC = () => {
     } else if (key === 'ALT_TOGGLE') {
       setIsAltActive((prev) => !prev);
       setIsCtrlActive(false);
+    } else if (
+      key === ANSI.PIPE ||
+      key === ANSI.TILDE ||
+      key === ANSI.FSLASH ||
+      key === ANSI.BSLASH ||
+      key === ANSI.AMPERSAND ||
+      key === ANSI.SEMICOLON
+    ) {
+      setInputText((prev) => prev + key);
+      setIsCtrlActive(false);
+      setIsAltActive(false);
+    } else if (
+      key === ANSI.CTRL_L ||
+      key === ANSI.CTRL_C ||
+      key === ANSI.CTRL_D ||
+      key === ANSI.CTRL_R
+    ) {
+      sendRawKey(key);
+      setInputText('');
+      setIsCtrlActive(false);
+      setIsAltActive(false);
     } else if (key === ANSI.ARROW_UP) {
       if (commandHistory.length === 0) return;
       const newIndex = historyIndex === -1 ? commandHistory.length - 1 : Math.max(0, historyIndex - 1);
@@ -159,6 +172,7 @@ export const TerminalScreen: React.FC = () => {
       setIsAltActive(false);
     }
   };
+
 
   const handleClearHistory = () => {
     setCommandHistory([]);

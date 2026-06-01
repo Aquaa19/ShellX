@@ -11,6 +11,8 @@ import type {
   PingResult, 
   TerminalLine 
 } from '../types';
+import { useAppContext } from './AppContext';
+import { useAuthContext } from './AuthContext';
 
 interface TerminalConnectionContextState {
   connectionState:  ConnectionState;
@@ -32,6 +34,9 @@ interface TerminalConnectionContextState {
 const TerminalConnectionContext = createContext<TerminalConnectionContextState | null>(null);
 
 export const TerminalConnectionContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { serverConfig } = useAppContext();
+  const { user } = useAuthContext();
+
   const [connectionState, setConnectionState] = useState<ConnectionState>('offline');
   const [latencyMs, _setLatencyMs] = useState<number | null>(null);
   const [lastError, setLastError] = useState<string | null>(null);
@@ -247,6 +252,26 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
   const clearOutput = useCallback(() => {
     setOutputLines([]);
   }, []);
+
+  // Auto-connect on startup when user & config are available, or disconnect on logout
+  useEffect(() => {
+    if (user && serverConfig.ip) {
+      const isNewConfig = !configRef.current || 
+        configRef.current.ip !== serverConfig.ip || 
+        configRef.current.port !== serverConfig.port || 
+        configRef.current.sshUser !== serverConfig.sshUser;
+      
+      const isDisconnectedState = connectionState === 'offline' || 
+        connectionState === 'disconnected' || 
+        connectionState === 'error';
+
+      if (isDisconnectedState || isNewConfig) {
+        connect(serverConfig, user.uid);
+      }
+    } else if (!user && connectionState !== 'offline' && connectionState !== 'disconnected') {
+      disconnect();
+    }
+  }, [connect, disconnect, serverConfig, user, connectionState]);
 
   // Safe teardown when context goes out of scope
   useEffect(() => {

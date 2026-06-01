@@ -45,18 +45,18 @@ export const DashboardScreen: React.FC = () => {
 
   // System Logs adapting to active state
   const logs = useMemo(() => {
-    const lines = [
-      { type: 'OK', text: `Connected to VM: ${serverConfig.ip || 'offline'}` },
-      { type: 'INFO', text: `Loaded ${allLessons.length || 12} interactive CLI modules` },
-    ];
+    const lines = [];
     if (user?.email) {
-      lines.unshift({ type: 'OK', text: `Authenticated session: ${user.email}` });
+      lines.push({ type: 'OK', text: `Authenticated session: ${user.email}` });
     }
-    if (!isOnline) {
-      lines.push({ type: 'WARN', text: 'Server connection is offline. Connect in settings.' });
-    } else {
+    if (isOnline) {
+      lines.push({ type: 'OK', text: `Connected to VM: ${serverConfig.ip || 'offline'}` });
       lines.push({ type: 'OK', text: `Secure terminal sandbox active for user: ${serverConfig.sshUser}` });
+    } else {
+      lines.push({ type: 'WARN', text: `VM connection offline: ${serverConfig.ip || 'offline'}` });
+      lines.push({ type: 'WARN', text: 'Server connection is offline. Connect in settings.' });
     }
+    lines.push({ type: 'INFO', text: `Loaded ${allLessons.length || 12} interactive CLI modules` });
     return lines;
   }, [serverConfig, allLessons, user, isOnline]);
 

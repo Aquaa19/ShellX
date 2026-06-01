@@ -22,7 +22,7 @@ import type { ConnectionState } from '../types';
 export const SettingsScreen: React.FC = () => {
   const { serverConfig, saveServerConfig } = useAppContext();
   const { signOut, isSigningOut, user } = useAuthContext();
-  const { pingServer } = useTerminalConnection();
+  const { pingServer, connectionState, latencyMs } = useTerminalConnection();
   
   const [ipValue, setIpValue] = useState(serverConfig.ip);
   const [portValue, setPortValue] = useState(serverConfig.port);
@@ -42,6 +42,17 @@ export const SettingsScreen: React.FC = () => {
     setPortValue(serverConfig.port);
     setSshUserValue(serverConfig.sshUser);
   }, [serverConfig]);
+
+  useEffect(() => {
+    if (!isTesting) {
+      setSignalState(connectionState);
+      if (connectionState === 'connected') {
+        setSignalLatency(latencyMs);
+      } else {
+        setSignalLatency(null);
+      }
+    }
+  }, [connectionState, latencyMs, isTesting]);
 
   const handleSave = async () => {
     Keyboard.dismiss();

@@ -19,15 +19,15 @@ export const ShellXSpinner: React.FC<ShellXSpinnerProps> = ({
       Animated.sequence([
         Animated.timing(animValue, {
           toValue: 1,
-          duration: 700,
+          duration: 750,
           easing: Easing.inOut(Easing.ease),
-          useNativeDriver: false,
+          useNativeDriver: true,
         }),
         Animated.timing(animValue, {
           toValue: 0,
-          duration: 700,
+          duration: 750,
           easing: Easing.inOut(Easing.ease),
-          useNativeDriver: false,
+          useNativeDriver: true,
         }),
       ])
     );
@@ -38,10 +38,9 @@ export const ShellXSpinner: React.FC<ShellXSpinnerProps> = ({
   const isSmall = size === 'small';
   const charCount = label.length;
   
-  // Calculate dynamic dimensions to prevent text overflow for longer labels
   const fontSize = isSmall ? 14 : (charCount > 10 ? 20 : 32);
   const paddingHorizontal = isSmall ? 12 : 28;
-  const charWidth = fontSize * 0.62; // Est. monospace char aspect ratio
+  const charWidth = fontSize * 0.62;
   const containerWidth = Math.max(isSmall ? 80 : 150, charCount * charWidth + paddingHorizontal * 2);
   
   const lineHeight = isSmall ? 32 : 64;
@@ -50,23 +49,28 @@ export const ShellXSpinner: React.FC<ShellXSpinnerProps> = ({
   const dotMinHeight = isSmall ? 3 : 8;
   const dotMaxWidth = isSmall ? 12 : 30;
 
-  // Horizontal position interpolation
-  const leftPosition = animValue.interpolate({
+  const translateX = animValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0, containerWidth - dotSize],
   });
 
-  // Width interpolation
-  const dotWidth = animValue.interpolate({
+  const scaleX = animValue.interpolate({
     inputRange: [0, 0.5, 1],
-    outputRange: [dotSize, dotMaxWidth, dotSize],
+    outputRange: [1, dotMaxWidth / dotSize, 1],
   });
 
-  // Height interpolation
-  const dotHeight = animValue.interpolate({
+  const scaleY = animValue.interpolate({
     inputRange: [0, 0.5, 1],
-    outputRange: [dotMaxHeight, dotMinHeight, dotMaxHeight],
+    outputRange: [1, dotMinHeight / dotMaxHeight, 1],
   });
+
+  const animatedDotStyle = {
+    transform: [
+      { translateX },
+      { scaleX },
+      { scaleY },
+    ],
+  };
 
   return (
     <View style={[styles.container, { width: containerWidth }]}>
@@ -75,10 +79,10 @@ export const ShellXSpinner: React.FC<ShellXSpinnerProps> = ({
           styles.dot,
           styles.dotTop,
           {
-            left: leftPosition,
-            width: dotWidth,
-            height: dotHeight,
+            width: dotSize,
+            height: dotMaxHeight,
           },
+          animatedDotStyle,
         ]}
       />
       <MonoText 
@@ -94,10 +98,10 @@ export const ShellXSpinner: React.FC<ShellXSpinnerProps> = ({
           styles.dot,
           styles.dotBottom,
           {
-            left: leftPosition,
-            width: dotWidth,
-            height: dotHeight,
+            width: dotSize,
+            height: dotMaxHeight,
           },
+          animatedDotStyle,
         ]}
       />
     </View>
@@ -113,6 +117,7 @@ const styles = StyleSheet.create({
   },
   dot: {
     position: 'absolute',
+    left: 0,
     backgroundColor: '#FFFFFF',
     borderRadius: 1,
   },
@@ -126,3 +131,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+

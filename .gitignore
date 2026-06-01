@@ -76,3 +76,10 @@ yarn-error.log
 
 # Environment variables
 .env
+
+# ShellX-Nexus (Web Dashboard)
+/ShellX-Nexus/node_modules/
+/ShellX-Nexus/dist/
+/ShellX-Nexus/dist-ssr/
+/ShellX-Nexus/*.local
+

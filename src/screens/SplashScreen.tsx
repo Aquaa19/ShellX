@@ -114,16 +114,27 @@ svg {
 @keyframes shellReveal {
     0% {
         stroke-dashoffset: 2500;
-        transform: translateX(40px) rotate(35deg);
+        transform: translateX(80px) translateY(-40px) rotate(180deg) scale(0.6);
         opacity: 0;
     }
-    60% {
-        transform: translateX(-8px) rotate(-4deg);
+    35% {
+        stroke-dashoffset: 1600;
+        transform: translateX(-30px) translateY(15px) rotate(-75deg) scale(1.15);
+        opacity: 0.6;
+    }
+    65% {
+        stroke-dashoffset: 800;
+        transform: translateX(15px) translateY(-5px) rotate(20deg) scale(0.95);
+        opacity: 0.9;
+    }
+    85% {
+        stroke-dashoffset: 200;
+        transform: translateX(-5px) translateY(2px) rotate(-6deg) scale(1.02);
         opacity: 1;
     }
     100% {
         stroke-dashoffset: 0;
-        transform: translateX(0) rotate(0deg);
+        transform: translateX(0) translateY(0) rotate(0deg) scale(1);
         opacity: 1;
     }
 }

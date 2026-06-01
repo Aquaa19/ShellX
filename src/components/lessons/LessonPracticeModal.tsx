@@ -12,6 +12,7 @@ import {
 } from '../../components';
 import { useTerminalConnection, useLessonsContext } from '../../context';
 import type { VimMode } from '../../types';
+import { ANSI } from '../../services/terminal';
 
 interface LessonPracticeModalProps {
   visible: boolean;
@@ -100,6 +101,27 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
     } else if (key === 'ALT_TOGGLE') {
       setIsAltActive((prev) => !prev);
       setIsCtrlActive(false);
+    } else if (
+      key === ANSI.PIPE ||
+      key === ANSI.TILDE ||
+      key === ANSI.FSLASH ||
+      key === ANSI.BSLASH ||
+      key === ANSI.AMPERSAND ||
+      key === ANSI.SEMICOLON
+    ) {
+      setInputText((prev) => prev + key);
+      setIsCtrlActive(false);
+      setIsAltActive(false);
+    } else if (
+      key === ANSI.CTRL_L ||
+      key === ANSI.CTRL_C ||
+      key === ANSI.CTRL_D ||
+      key === ANSI.CTRL_R
+    ) {
+      sendRawKey(key);
+      setInputText('');
+      setIsCtrlActive(false);
+      setIsAltActive(false);
     } else {
       sendRawKey(key);
       setIsCtrlActive(false);
