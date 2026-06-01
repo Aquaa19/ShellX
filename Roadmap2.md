@@ -1704,8 +1704,8 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 - [ ] **Google Sign-In network error:** Airplane mode active. Tap sign-in. `authError` is set with a user-readable error string. Error banner displays below the button.
 - [ ] **Sign Out happy path:** Tap "Sign Out", confirm dialog, sign out completes. `StorageService.clearAll()` fires. `onAuthStateChanged` fires with `null`. `RootNavigator` transitions to `AuthScreen`. All cached user data cleared.
 - [ ] **`ProfileAvatarBlock`** displays the Firebase user's Google photo URL as the avatar when available.
-- [ ] **`isSigningIn` loading state:** Google button shows spinner and is `disabled` during the sign-in flow. Confirmed by adding a 2-second artificial delay to `GoogleSignin.signIn()` in development.
-- [ ] **`isSigningOut` loading state:** Sign-out button shows spinner and is `disabled` during the sign-out flow.
+- [x] **`isSigningIn` loading state:** Google button shows spinner and is `disabled` during the sign-in flow. Confirmed by adding a 2-second artificial delay to `GoogleSignin.signIn()` in development.
+- [x] **`isSigningOut` loading state:** Sign-out button shows spinner and is `disabled` during the sign-out flow.
 
 ---
 

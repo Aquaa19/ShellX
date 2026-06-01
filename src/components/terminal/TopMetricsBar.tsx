@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { Theme } from '../../tokens';
-import { MonoText, ConnectionBadge } from '../../atoms';
+import { MonoText } from '../../atoms';
 import type { ConnectionState } from '../../atoms'; // Assuming exported from atoms/badges
 
 export interface TopMetricsBarProps {
@@ -12,7 +12,7 @@ export interface TopMetricsBarProps {
 
 export const TopMetricsBar: React.FC<TopMetricsBarProps> = ({
   filepath,
-  connectionState,
+  connectionState: _connectionState,
   style,
 }) => {
   return (
@@ -20,7 +20,6 @@ export const TopMetricsBar: React.FC<TopMetricsBarProps> = ({
       <MonoText size={Theme.fontSize.labelSM} color={Theme.colors.text.secondary}>
         {filepath}
       </MonoText>
-      <ConnectionBadge state={connectionState} />
     </View>
   );
 };

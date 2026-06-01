@@ -9,7 +9,11 @@ import {
   SettingsConfigCard,
   ServerConfigInput,
   ServerStatusSignal,
-  SaveConfigurationButton
+  SaveConfigurationButton,
+  ShellXSpinner,
+  TrueDarkCanvas,
+  ScanlineOverlay,
+  DottedGridOverlay
 } from '../components';
 import { useAppContext, useAuthContext, useTerminalConnection } from '../context';
 import { validateServerConfig, ServerConfigSchema } from '../services/validation';
@@ -177,6 +181,25 @@ export const SettingsScreen: React.FC = () => {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
+
+      {(isTesting || isSaving || isSigningOut) && (
+        <View style={[StyleSheet.absoluteFill, styles.spinnerOverlay]}>
+          <TrueDarkCanvas />
+          <DottedGridOverlay />
+          <ScanlineOverlay />
+          <View style={styles.fullscreenSpinnerContainer}>
+            <ShellXSpinner 
+              label={
+                isTesting 
+                  ? "Testing Connection" 
+                  : isSaving 
+                    ? "Saving Config" 
+                    : "Signing Out"
+              } 
+            />
+          </View>
+        </View>
+      )}
     </AppBackground>
   );
 };
@@ -208,5 +231,17 @@ const styles = StyleSheet.create({
   },
   signOutBtn: {
     borderColor: Theme.colors.semantic.error,
+  },
+  spinnerOverlay: {
+    zIndex: 999,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullscreenSpinnerContainer: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
 });

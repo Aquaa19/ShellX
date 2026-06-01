@@ -5,3 +5,4 @@ export * from './DottedGridOverlay';
 export * from './AppHeader';
 export * from './ShellXBrandMark';
 export * from './ShellXLogoText';
+export * from './ShellXSpinner';

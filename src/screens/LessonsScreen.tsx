@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, SafeAreaView, FlatList, ListRenderItem, Animated } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, SafeAreaView, FlatList, ListRenderItem } from 'react-native';
 import { Theme } from '../tokens';
-import { IconButton, MaterialIcon, ConnectionBadge, BorderedSurface, TerminalText, SecondaryActionButton } from '../atoms';
+import { IconButton, MaterialIcon, ConnectionBadge, TerminalText, SecondaryActionButton } from '../atoms';
 import { 
   AppBackground, 
   AppHeader,
@@ -10,61 +10,18 @@ import {
   LessonCardGrid,
   LessonCard,
   ShellXLogoText,
-  LessonPracticeModal
+  LessonPracticeModal,
+  ShellXSpinner
 } from '../components';
 import { useLessonsContext, useTerminalConnection } from '../context';
 import type { LessonData, LessonModule } from '../types';
-
-const SkeletonPlaceholder: React.FC<{ opacity: Animated.Value }> = ({ opacity }) => {
-  return (
-    <Animated.View style={{ opacity, marginBottom: Theme.spacing.md }}>
-      <BorderedSurface
-        level="default"
-        borderColor={Theme.colors.border.subtle}
-        style={styles.skeletonCard}
-      >
-        <View style={styles.skeletonHeader} />
-        <View style={styles.skeletonMeta} />
-        <View style={styles.skeletonProgress} />
-      </BorderedSurface>
-    </Animated.View>
-  );
-};
 
 export const LessonsScreen: React.FC = () => {
   const { modules, isLoading, selectLesson, refreshLessons } = useLessonsContext();
   const { connectionState } = useTerminalConnection();
   const [modalVisible, setModalVisible] = useState(false);
 
-  const opacityAnim = useRef(new Animated.Value(0.7)).current;
 
-  useEffect(() => {
-    let anim: Animated.CompositeAnimation | null = null;
-    if (isLoading) {
-      anim = Animated.loop(
-        Animated.sequence([
-          Animated.timing(opacityAnim, {
-            toValue: 0.3,
-            duration: 700,
-            useNativeDriver: true,
-          }),
-          Animated.timing(opacityAnim, {
-            toValue: 0.7,
-            duration: 700,
-            useNativeDriver: true,
-          }),
-        ])
-      );
-      anim.start();
-    } else {
-      opacityAnim.setValue(1.0);
-    }
-    return () => {
-      if (anim) {
-        anim.stop();
-      }
-    };
-  }, [isLoading, opacityAnim]);
 
   // Calculate dynamic overall progress based on loaded modules
   const allLessons = modules.flatMap((m) => m.lessons);
@@ -95,10 +52,8 @@ export const LessonsScreen: React.FC = () => {
   const renderContent = () => {
     if (isLoading) {
       return (
-        <View style={styles.skeletonContainer}>
-          {[1, 2, 3, 4].map((key) => (
-            <SkeletonPlaceholder key={key} opacity={opacityAnim} />
-          ))}
+        <View style={styles.centeredContainer}>
+          <ShellXSpinner label="Loading Lessons" />
         </View>
       );
     }
@@ -182,35 +137,10 @@ const styles = StyleSheet.create({
   badge: {
     marginRight: Theme.spacing.sm,
   },
-  skeletonContainer: {
-    paddingHorizontal: Theme.spacing.md,
-    paddingTop: Theme.spacing.md,
-  },
-  skeletonCard: {
-    padding: Theme.spacing.md,
-    minHeight: Theme.layout.lessonCardMinHeight,
-    backgroundColor: Theme.colors.background.elevated,
-    borderRadius: Theme.borderRadius.lg,
-  },
-  skeletonHeader: {
-    height: 18,
-    width: '60%',
-    backgroundColor: Theme.colors.border.subtle,
-    borderRadius: Theme.borderRadius.sm,
-    marginBottom: Theme.spacing.sm,
-  },
-  skeletonMeta: {
-    height: 12,
-    width: '40%',
-    backgroundColor: Theme.colors.border.subtle,
-    borderRadius: Theme.borderRadius.sm,
-    marginBottom: Theme.spacing.md,
-  },
-  skeletonProgress: {
-    height: 8,
-    width: '100%',
-    backgroundColor: Theme.colors.border.subtle,
-    borderRadius: Theme.borderRadius.sm,
+  centeredContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyContainer: {
     flex: 1,

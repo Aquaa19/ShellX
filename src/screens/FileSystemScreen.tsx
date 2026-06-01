@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, Clipboard, Animated, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, SafeAreaView, Clipboard, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Theme } from '../tokens';
 import { MonoText, SecondaryActionButton, IconButton, MaterialIcon, StatusIndicatorBadge, BodyText } from '../atoms';
@@ -8,27 +8,10 @@ import {
   AppHeader,
   FileSystemTree,
   ShellXLogoText,
-  TerminalFileEditor
+  TerminalFileEditor,
+  ShellXSpinner
 } from '../components';
 import { useFileSystemContext, useTerminalConnection } from '../context';
-
-const SkeletonRow: React.FC<{ opacity: Animated.Value; depth: number }> = ({ opacity, depth }) => {
-  return (
-    <Animated.View
-      style={[
-        styles.skeletonRow,
-        {
-          opacity,
-          paddingLeft: depth * Theme.spacing.md + Theme.spacing.sm,
-        },
-      ]}
-    >
-      <View style={styles.skeletonChevron} />
-      <View style={styles.skeletonIcon} />
-      <View style={styles.skeletonText} />
-    </Animated.View>
-  );
-};
 
 export const FileSystemScreen: React.FC = () => {
   const navigation = useNavigation<any>();
@@ -50,7 +33,6 @@ export const FileSystemScreen: React.FC = () => {
   const [isCopied, setIsCopied] = useState(false);
   const [editorFilePath, setEditorFilePath] = useState('');
   const [isEditorVisible, setIsEditorVisible] = useState(false);
-  const opacityAnim = useRef(new Animated.Value(0.7)).current;
 
   const getDirectoryPath = (path: string): string => {
     const lastSlashIdx = path.lastIndexOf('/');
@@ -65,33 +47,6 @@ export const FileSystemScreen: React.FC = () => {
       initialize();
     }
   }, [connectionState, initialize]);
-
-  // Skeleton loading pulse anims
-  useEffect(() => {
-    let anim: Animated.CompositeAnimation | null = null;
-    if (isRootLoading) {
-      anim = Animated.loop(
-        Animated.sequence([
-          Animated.timing(opacityAnim, {
-            toValue: 0.3,
-            duration: 700,
-            useNativeDriver: true,
-          }),
-          Animated.timing(opacityAnim, {
-            toValue: 0.7,
-            duration: 700,
-            useNativeDriver: true,
-          }),
-        ])
-      );
-      anim.start();
-    } else {
-      opacityAnim.setValue(1.0);
-    }
-    return () => {
-      if (anim) anim.stop();
-    };
-  }, [isRootLoading, opacityAnim]);
 
   const handleOpenPress = () => {
     if (!selectedNode) return;
@@ -117,7 +72,7 @@ export const FileSystemScreen: React.FC = () => {
           }
         },
         {
-          text: "Code Editor",
+          text: "ShellX Editor",
           onPress: () => {
             setEditorFilePath(selectedNode.path);
             setIsEditorVisible(true);
@@ -176,11 +131,8 @@ export const FileSystemScreen: React.FC = () => {
               </BodyText>
             </View>
           ) : isRootLoading ? (
-            <View style={styles.skeletonContainer}>
-              <SkeletonRow opacity={opacityAnim} depth={0} />
-              <SkeletonRow opacity={opacityAnim} depth={1} />
-              <SkeletonRow opacity={opacityAnim} depth={1} />
-              <SkeletonRow opacity={opacityAnim} depth={2} />
+            <View style={styles.centeredContainer}>
+              <ShellXSpinner label="Loading Files" />
             </View>
           ) : (
             <FileSystemTree
@@ -252,38 +204,7 @@ const styles = StyleSheet.create({
     marginTop: Theme.spacing.md,
     textAlign: 'center',
   },
-  skeletonContainer: {
-    flex: 1,
-    backgroundColor: Theme.colors.background.floor,
-    paddingVertical: Theme.spacing.sm,
-  },
-  skeletonRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: Theme.layout.minTouchTarget,
-    paddingRight: Theme.spacing.md,
-  },
-  skeletonChevron: {
-    width: 20,
-    height: 20,
-    borderRadius: Theme.borderRadius.default,
-    backgroundColor: Theme.colors.border.subtle,
-    marginRight: Theme.spacing.xs,
-  },
-  skeletonIcon: {
-    width: 20,
-    height: 20,
-    borderRadius: Theme.borderRadius.default,
-    backgroundColor: Theme.colors.border.subtle,
-    marginRight: Theme.spacing.sm,
-  },
-  skeletonText: {
-    flex: 1,
-    height: 14,
-    borderRadius: Theme.borderRadius.default,
-    backgroundColor: Theme.colors.border.subtle,
-    maxWidth: 150,
-  },
+
   actionBar: {
     flexDirection: 'row',
     padding: Theme.spacing.md,

@@ -5,7 +5,6 @@ import {
   Modal, 
   SafeAreaView, 
   TextInput, 
-  ActivityIndicator, 
   KeyboardAvoidingView, 
   Platform,
   Alert,
@@ -15,6 +14,7 @@ import { Theme } from '../../tokens';
 import { useTerminalConnection } from '../../context';
 import { IconButton, MaterialIcon, PrimaryActionButton, SecondaryActionButton } from '../../atoms';
 import { BodyText } from '../../atoms/text/BodyText';
+import { ShellXSpinner } from '../shell';
 
 interface TerminalFileEditorProps {
   visible: boolean;
@@ -190,7 +190,7 @@ export const TerminalFileEditor: React.FC<TerminalFileEditorProps> = ({
               style={styles.closeButton}
             />
             <BodyText weight="bold" size={Theme.fontSize.titleLG} style={styles.headerTitle}>
-              Remote File Editor
+              ShellX Editor
             </BodyText>
             <View style={styles.saveButtonContainer}>
               <PrimaryActionButton
@@ -261,7 +261,7 @@ export const TerminalFileEditor: React.FC<TerminalFileEditorProps> = ({
             
             {isLoading && (
               <View style={styles.spinnerContainer}>
-                <ActivityIndicator size="large" color={Theme.colors.primary.default} />
+                <ShellXSpinner label="Loading File" size="small" />
               </View>
             )}
           </View>

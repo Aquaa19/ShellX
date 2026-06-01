@@ -47,6 +47,10 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
 
   const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Manage subscription lifecycle refs to prevent duplicate subscription triggers on identical lists
+  const unsubscribersRef = useRef<(() => void)[]>([]);
+  const subscribedModuleIdsRef = useRef<Set<string>>(new Set());
+
   // Monitor outputLines to settle validation command execution output
   useEffect(() => {
     if (validationPromise) {
@@ -69,9 +73,8 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     };
   }, [outputLines, validationPromise]);
 
-  const refreshLessons = useCallback(async () => {
+  const refreshLessonsSilent = useCallback(async () => {
     if (!user) return;
-    setIsLoading(true);
     const data = await LessonService.fetchLessonModules(user.uid);
     setModules(data);
 
@@ -83,8 +86,13 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
         setActiveLessonData(updated);
       }
     }
-    setIsLoading(false);
   }, [user, activeLessonData]);
+
+  const refreshLessons = useCallback(async () => {
+    setIsLoading(true);
+    await refreshLessonsSilent();
+    setIsLoading(false);
+  }, [refreshLessonsSilent]);
 
   // Initial load
   useEffect(() => {
@@ -93,21 +101,40 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, [user, refreshLessons]);
 
-  // Subscribe to real-time progress updates for each module
+  // Subscribe to real-time progress updates for each module (with check-guards to avoid infinite loops)
   useEffect(() => {
     if (!user || modules.length === 0) return;
 
-    const unsubscribers = modules.map((m) =>
+    const moduleIds = modules.map((m) => m.id);
+    const currentSubscribed = subscribedModuleIdsRef.current;
+    const hasChanged = moduleIds.length !== currentSubscribed.size ||
+      moduleIds.some((id) => !currentSubscribed.has(id));
+
+    if (!hasChanged) return;
+
+    // Unsubscribe from previous modules
+    unsubscribersRef.current.forEach((unsub) => unsub());
+    unsubscribersRef.current = [];
+
+    // Subscribe to new modules
+    unsubscribersRef.current = modules.map((m) =>
       LessonService.subscribeToUserProgress(user.uid, m.id, () => {
-        // Trigger a background refresh to recalculate unlocked states
-        refreshLessons();
+        // Trigger a silent background refresh to recalculate unlocked states
+        refreshLessonsSilent();
       })
     );
 
+    subscribedModuleIdsRef.current = new Set(moduleIds);
+  }, [user, modules, refreshLessonsSilent]);
+
+  // Clean up all subscriptions on unmount or user change
+  useEffect(() => {
     return () => {
-      unsubscribers.forEach((unsub) => unsub());
+      unsubscribersRef.current.forEach((unsub) => unsub());
+      unsubscribersRef.current = [];
+      subscribedModuleIdsRef.current = new Set();
     };
-  }, [user, modules, refreshLessons]);
+  }, [user]);
 
   const selectLesson = useCallback(async (lesson: LessonData) => {
     if (!user) return;

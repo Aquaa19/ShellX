@@ -8,7 +8,11 @@ import {
   AppHeader, 
   ShellXLogoText, 
   TerminalWorkspace,
-  TerminalFileEditor
+  TerminalFileEditor,
+  ShellXSpinner,
+  TrueDarkCanvas,
+  ScanlineOverlay,
+  DottedGridOverlay
 } from '../components';
 import { useAppContext, useAuthContext, useTerminalConnection, useFileSystemContext } from '../context';
 import type { VimMode } from '../types';
@@ -257,7 +261,7 @@ export const TerminalScreen: React.FC = () => {
                 >
                   <MaterialIcon name="edit" size={20} color={Theme.colors.text.primary} style={styles.menuItemIcon} />
                   <BodyText size={Theme.fontSize.bodyMD} color={Theme.colors.text.primary}>
-                    Remote File Editor
+                    ShellX Editor
                   </BodyText>
                 </TouchableOpacity>
 
@@ -365,6 +369,17 @@ export const TerminalScreen: React.FC = () => {
 
         </KeyboardAvoidingView>
       </SafeAreaView>
+
+      {connectionState === 'connecting' && (
+        <View style={[StyleSheet.absoluteFill, styles.spinnerOverlay]}>
+          <TrueDarkCanvas />
+          <DottedGridOverlay />
+          <ScanlineOverlay />
+          <View style={styles.fullscreenSpinnerContainer}>
+            <ShellXSpinner label="Connecting" />
+          </View>
+        </View>
+      )}
     </AppBackground>
   );
 };
@@ -472,4 +487,16 @@ const styles = StyleSheet.create({
     borderRightColor: Theme.colors.border.subtle,
   },
   historyCloseBtn: {},
+  spinnerOverlay: {
+    zIndex: 999,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullscreenSpinnerContainer: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
 });

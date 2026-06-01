@@ -18,6 +18,7 @@ export interface LessonData {
   validationExpected: string;         // Expected console output substring
   instructions:       string;         // Detailed markdown or plain text instruction content
   order:              number;         // Chronological order within module
+  prerequisiteId?:    string;
   starterFiles?:      StarterFile[];
 }
 

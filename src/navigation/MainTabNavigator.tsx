@@ -1,11 +1,12 @@
 import React from 'react';
 import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { TerminalScreen, LessonsScreen, FileSystemScreen, SettingsScreen } from '../screens';
+import { DashboardScreen, TerminalScreen, LessonsScreen, FileSystemScreen, SettingsScreen } from '../screens';
 import { BottomTabBar, BottomTabItem } from '../components';
 import { MaterialIcon } from '../atoms';
 import { Theme } from '../tokens';
 
 export type MainTabParamList = {
+  Dashboard: undefined;
   Terminal: undefined;
   Lessons: undefined;
   Files: undefined;
@@ -16,7 +17,7 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const CustomTabBar = ({ state, navigation }: BottomTabBarProps) => {
   return (
-    <BottomTabBar>
+    <BottomTabBar activeIndex={state.index} totalTabs={state.routes.length}>
       {state.routes.map((route, index) => {
         const isFocused = state.index === index;
         
@@ -24,6 +25,7 @@ const CustomTabBar = ({ state, navigation }: BottomTabBarProps) => {
         let label = route.name;
 
         switch (route.name) {
+          case 'Dashboard': iconName = 'dashboard'; break;
           case 'Terminal': iconName = 'terminal'; break;
           case 'Lessons': iconName = 'school'; break;
           case 'Files': iconName = 'folder'; break;
@@ -62,6 +64,7 @@ export const MainTabNavigator: React.FC = () => {
       screenOptions={{ headerShown: false }}
       tabBar={CustomTabBar}
     >
+      <Tab.Screen name="Dashboard" component={DashboardScreen} />
       <Tab.Screen name="Terminal" component={TerminalScreen} />
       <Tab.Screen name="Lessons" component={LessonsScreen} />
       <Tab.Screen name="Files" component={FileSystemScreen} />

@@ -11,7 +11,10 @@ import {
   AuthBrandPanel, 
   GoogleSignInButton, 
   AuthTerminalOutput,
-  OutputLine
+  OutputLine,
+  ShellXSpinner,
+  TrueDarkCanvas,
+  ScanlineOverlay
 } from '../components';
 import { MOCK_AUTH_TERMINAL_OUTPUT } from '../data';
 import { useAuthContext } from '../context';
@@ -190,6 +193,17 @@ export const AuthScreen: React.FC = () => {
           </MonoText>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {isSigningIn && (
+        <View style={[StyleSheet.absoluteFill, styles.spinnerOverlay]}>
+          <TrueDarkCanvas />
+          <DottedGridOverlay />
+          <ScanlineOverlay />
+          <View style={styles.fullscreenSpinnerContainer}>
+            <ShellXSpinner label="Authenticating" />
+          </View>
+        </View>
+      )}
     </AppBackground>
   );
 };
@@ -243,5 +257,17 @@ const styles = StyleSheet.create({
   },
   footerText: {
     marginTop: Theme.spacing.xl,
+  },
+  spinnerOverlay: {
+    zIndex: 999,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullscreenSpinnerContainer: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
 });
