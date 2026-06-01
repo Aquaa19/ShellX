@@ -8,6 +8,7 @@ export interface FileTreeBranchProps {
   depth: number;
   isOpen: boolean;
   onToggle: () => void;
+  isLoading?: boolean;
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 }
@@ -17,6 +18,7 @@ export const FileTreeBranch: React.FC<FileTreeBranchProps> = ({
   depth,
   isOpen,
   onToggle,
+  isLoading = false,
   children,
   style,
 }) => {
@@ -27,6 +29,7 @@ export const FileTreeBranch: React.FC<FileTreeBranchProps> = ({
         depth={depth}
         isOpen={isOpen}
         onPress={onToggle}
+        isLoading={isLoading}
       />
       {isOpen && children && (
         <View style={styles.childrenWrapper}>

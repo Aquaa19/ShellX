@@ -1,5 +1,10 @@
 export type LessonState = 'complete' | 'inProgress' | 'locked';
 
+export interface StarterFile {
+  name: string;
+  content: string;
+}
+
 export interface LessonData {
   id:                 string;
   moduleId:           string;
@@ -13,6 +18,7 @@ export interface LessonData {
   validationExpected: string;         // Expected console output substring
   instructions:       string;         // Detailed markdown or plain text instruction content
   order:              number;         // Chronological order within module
+  starterFiles?:      StarterFile[];
 }
 
 export interface LessonModule {

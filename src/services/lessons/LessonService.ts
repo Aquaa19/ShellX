@@ -71,6 +71,7 @@ export const LessonService = {
             validationExpected: card.validationExpected,
             instructions: card.instructions,
             order: card.order,
+            starterFiles: card.starterFiles,
           };
         });
 

@@ -18,7 +18,7 @@ export const FolderIcon: React.FC<FolderIconProps> = ({
 }) => {
   return (
     <MaterialIcon
-      name={open ? 'folder_open' : 'folder'}
+      name={open ? 'folder-open' : 'folder'}
       size={size}
       color={color}
       style={style}

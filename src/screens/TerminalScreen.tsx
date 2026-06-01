@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Modal, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Modal, TouchableOpacity, FlatList } from 'react-native';
 import { Theme } from '../tokens';
-import { IconButton, MaterialIcon, ConnectionBadge } from '../atoms';
+import { IconButton, MaterialIcon, ConnectionBadge, MonoText } from '../atoms';
 import { BodyText } from '../atoms/text/BodyText';
 import { 
   AppBackground, 
@@ -10,8 +10,9 @@ import {
   TerminalWorkspace,
   TerminalFileEditor
 } from '../components';
-import { useAppContext, useAuthContext, useTerminalConnection } from '../context';
+import { useAppContext, useAuthContext, useTerminalConnection, useFileSystemContext } from '../context';
 import type { VimMode } from '../types';
+import { ANSI } from '../services/terminal';
 
 export const TerminalScreen: React.FC = () => {
   const { user } = useAuthContext();
@@ -24,13 +25,25 @@ export const TerminalScreen: React.FC = () => {
     connect,
   } = useTerminalConnection();
 
+  const { selectedPath, rootPath } = useFileSystemContext();
+
   const [inputText, setInputText] = useState('');
   const [vimMode, setVimMode] = useState<VimMode>('NORMAL');
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isFileEditorVisible, setIsFileEditorVisible] = useState(false);
-  const [editingFilePath, setEditingFilePath] = useState('/home/student/project/a.txt');
+  const [editingFilePath, setEditingFilePath] = useState(selectedPath ?? (rootPath + '/a.txt'));
   const [isCtrlActive, setIsCtrlActive] = useState(false);
   const [isAltActive, setIsAltActive] = useState(false);
+  const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState<number>(-1);
+  const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
+
+  // Sync editingFilePath with selected file path from file system tree
+  useEffect(() => {
+    if (selectedPath) {
+      setEditingFilePath(selectedPath);
+    }
+  }, [selectedPath]);
 
   // Initiate connection on mount
   useEffect(() => {
@@ -72,6 +85,14 @@ export const TerminalScreen: React.FC = () => {
       return;
     }
 
+    if (inputText.trim()) {
+      setCommandHistory((prev) => {
+        if (prev[prev.length - 1] === inputText) return prev;
+        return [...prev, inputText];
+      });
+      setHistoryIndex(-1);
+    }
+
     sendCommand(inputText);
     setInputText('');
   };
@@ -109,6 +130,25 @@ export const TerminalScreen: React.FC = () => {
     } else if (key === 'ALT_TOGGLE') {
       setIsAltActive((prev) => !prev);
       setIsCtrlActive(false);
+    } else if (key === ANSI.ARROW_UP) {
+      if (commandHistory.length === 0) return;
+      const newIndex = historyIndex === -1 ? commandHistory.length - 1 : Math.max(0, historyIndex - 1);
+      setHistoryIndex(newIndex);
+      setInputText(commandHistory[newIndex]);
+      setIsCtrlActive(false);
+      setIsAltActive(false);
+    } else if (key === ANSI.ARROW_DOWN) {
+      if (historyIndex === -1) return;
+      const newIndex = historyIndex + 1;
+      if (newIndex >= commandHistory.length) {
+        setHistoryIndex(-1);
+        setInputText('');
+      } else {
+        setHistoryIndex(newIndex);
+        setInputText(commandHistory[newIndex]);
+      }
+      setIsCtrlActive(false);
+      setIsAltActive(false);
     } else {
       sendRawKey(key);
       setIsCtrlActive(false);
@@ -116,12 +156,41 @@ export const TerminalScreen: React.FC = () => {
     }
   };
 
-  // Check if the last line of outputLines is a shell prompt to render it dynamically in the input field
-  const lastLine = outputLines[outputLines.length - 1];
-  const isPrompt = lastLine && (lastLine.content.trim().endsWith('$') || lastLine.content.trim().endsWith('#')) && lastLine.content.includes('@');
+  const handleClearHistory = () => {
+    setCommandHistory([]);
+    setHistoryIndex(-1);
+  };
 
-  const displayLines = isPrompt ? outputLines.slice(0, -1) : outputLines;
-  const promptPrefix = isPrompt ? lastLine.content.trim() + ' ' : '$ ';
+  // Intercept and filter filesystem request sentinel lines cleanly
+  const filteredLines = React.useMemo(() => {
+    const result: typeof outputLines = [];
+    let inFsBlock = false;
+    for (const line of outputLines) {
+      const content = line.content;
+      if (line.type === 'command' && (content.includes('FS_START:') || content.includes('FS_END:'))) {
+        continue;
+      }
+      if (content.includes('FS_START:')) {
+        inFsBlock = true;
+        continue;
+      }
+      if (content.includes('FS_END:')) {
+        inFsBlock = false;
+        continue;
+      }
+      if (inFsBlock) {
+        continue;
+      }
+      result.push(line);
+    }
+    return result;
+  }, [outputLines]);
+
+  const lastFilteredLine = filteredLines[filteredLines.length - 1];
+  const isPromptFiltered = lastFilteredLine && (lastFilteredLine.content.trim().endsWith('$') || lastFilteredLine.content.trim().endsWith('#')) && lastFilteredLine.content.includes('@');
+
+  const displayLines = isPromptFiltered ? filteredLines.slice(0, -1) : filteredLines;
+  const promptPrefix = isPromptFiltered ? lastFilteredLine.content.trim() + ' ' : '$ ';
 
   return (
     <AppBackground>
@@ -147,7 +216,7 @@ export const TerminalScreen: React.FC = () => {
 
           {/* Main Terminal Workspace */}
           <TerminalWorkspace
-            filepath="/home/student/project/script.sh"
+            filepath={selectedPath ?? rootPath}
             connectionState={connectionState}
             lines={displayLines}
             currentInput={inputText}
@@ -193,6 +262,19 @@ export const TerminalScreen: React.FC = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity 
+                  style={styles.menuItem} 
+                  onPress={() => {
+                    setIsMenuVisible(false);
+                    setIsHistoryModalVisible(true);
+                  }}
+                >
+                  <MaterialIcon name="history" size={20} color={Theme.colors.text.primary} style={styles.menuItemIcon} />
+                  <BodyText size={Theme.fontSize.bodyMD} color={Theme.colors.text.primary}>
+                    Command History
+                  </BodyText>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
                   style={[styles.menuItem, styles.cancelItem]} 
                   onPress={() => setIsMenuVisible(false)}
                 >
@@ -202,6 +284,76 @@ export const TerminalScreen: React.FC = () => {
                 </TouchableOpacity>
               </View>
             </TouchableOpacity>
+          </Modal>
+
+          {/* Command History Modal */}
+          <Modal
+            visible={isHistoryModalVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setIsHistoryModalVisible(false)}
+          >
+            <SafeAreaView style={styles.historyModalContainer}>
+              <View style={styles.historyHeader}>
+                <BodyText size={Theme.fontSize.titleMD} color={Theme.colors.text.primary} weight="bold">
+                  Command History
+                </BodyText>
+              </View>
+
+              <FlatList
+                data={commandHistory}
+                keyExtractor={(item, index) => `history-${index}-${item}`}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.historyRow}
+                    onPress={() => {
+                      setInputText(item);
+                      setHistoryIndex(-1);
+                      setIsHistoryModalVisible(false);
+                    }}
+                  >
+                    <MonoText size={Theme.fontSize.codeBase} color={Theme.colors.syntax.green} style={styles.historyRowPrompt}>
+                      $
+                    </MonoText>
+                    <MonoText size={Theme.fontSize.codeBase} color={Theme.colors.text.primary} style={styles.historyRowText}>
+                      {item}
+                    </MonoText>
+                  </TouchableOpacity>
+                )}
+                ListEmptyComponent={
+                  <View style={styles.historyEmptyContainer}>
+                    <BodyText size={Theme.fontSize.bodyMD} color={Theme.colors.text.secondary}>
+                      No command history yet.
+                    </BodyText>
+                  </View>
+                }
+                contentContainerStyle={styles.historyListContent}
+              />
+
+              <View style={styles.historyFooter}>
+                <TouchableOpacity
+                  style={[styles.historyFooterBtn, styles.historyClearBtn]}
+                  onPress={handleClearHistory}
+                  disabled={commandHistory.length === 0}
+                >
+                  <BodyText
+                    size={Theme.fontSize.labelMD}
+                    color={commandHistory.length === 0 ? Theme.colors.text.tertiary : Theme.colors.semantic.error}
+                    weight="semiBold"
+                  >
+                    CLEAR HISTORY
+                  </BodyText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.historyFooterBtn, styles.historyCloseBtn]}
+                  onPress={() => setIsHistoryModalVisible(false)}
+                >
+                  <BodyText size={Theme.fontSize.labelMD} color={Theme.colors.text.primary} weight="semiBold">
+                    CLOSE
+                  </BodyText>
+                </TouchableOpacity>
+              </View>
+            </SafeAreaView>
           </Modal>
 
           {/* Remote File Editor Modal */}
@@ -268,4 +420,56 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     marginTop: Theme.spacing.sm,
   },
+  historyModalContainer: {
+    flex: 1,
+    backgroundColor: Theme.colors.background.floor,
+    borderTopWidth: Theme.borderWidth.hairline,
+    borderTopColor: Theme.colors.border.subtle,
+  },
+  historyHeader: {
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomWidth: Theme.borderWidth.hairline,
+    borderBottomColor: Theme.colors.border.subtle,
+  },
+  historyListContent: {
+    paddingVertical: Theme.spacing.sm,
+  },
+  historyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: Theme.layout.minTouchTarget,
+    paddingHorizontal: Theme.spacing.md,
+    borderBottomWidth: Theme.borderWidth.hairline,
+    borderBottomColor: Theme.colors.border.subtle,
+  },
+  historyRowPrompt: {
+    marginRight: Theme.spacing.sm,
+  },
+  historyRowText: {
+    flex: 1,
+  },
+  historyEmptyContainer: {
+    flex: 1,
+    paddingVertical: Theme.spacing.xl,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  historyFooter: {
+    flexDirection: 'row',
+    borderTopWidth: Theme.borderWidth.hairline,
+    borderTopColor: Theme.colors.border.subtle,
+    height: Theme.layout.minTouchTarget + Theme.spacing.md,
+  },
+  historyFooterBtn: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  historyClearBtn: {
+    borderRightWidth: Theme.borderWidth.hairline,
+    borderRightColor: Theme.colors.border.subtle,
+  },
+  historyCloseBtn: {},
 });

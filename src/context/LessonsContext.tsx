@@ -118,12 +118,22 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     // Call service layer to mark in progress
     await ProgressService.markLessonInProgress(user.uid, lesson.moduleId, lesson.id);
 
-    // Silently cd to the lesson workspace directory
+    // Silently cd to the lesson workspace directory and write starter files
     try {
       const lessonPath = `/home/${serverConfig.sshUser}/lessons/${lesson.id}`;
-      await executeBackgroundCommand(`mkdir -p "${lessonPath}" && cd "${lessonPath}"`);
+      let cmd = `mkdir -p "${lessonPath}"`;
+
+      if (lesson.starterFiles && lesson.starterFiles.length > 0) {
+        for (const file of lesson.starterFiles) {
+          const b64 = utf8ToBase64(file.content);
+          cmd += ` && echo "${b64}" | base64 -d > "${lessonPath}/${file.name}"`;
+        }
+      }
+
+      cmd += ` && cd "${lessonPath}"`;
+      await executeBackgroundCommand(cmd);
     } catch (e) {
-      console.warn('[LessonsContext] Silent workspace setup cd failed:', e);
+      console.warn('[LessonsContext] Silent workspace setup cd/write failed:', e);
     }
   }, [user, serverConfig.sshUser, executeBackgroundCommand]);
 
@@ -203,3 +213,44 @@ export const useLessonsContext = () => {
   }
   return context;
 };
+
+// Robust self-contained UTF-8 string to base64 encoder to avoid global Buffer/btoa dependency
+function utf8ToBase64(str: string): string {
+  const bytes = [];
+  for (let i = 0; i < str.length; i++) {
+    let code = str.charCodeAt(i);
+    if (code < 0x80) {
+      bytes.push(code);
+    } else if (code < 0x800) {
+      bytes.push(0xc0 | (code >> 6), 0x80 | (code & 0x3f));
+    } else if (code < 0xd800 || code >= 0xe000) {
+      bytes.push(0xe0 | (code >> 12), 0x80 | ((code >> 6) & 0x3f), 0x80 | (code & 0x3f));
+    } else {
+      i++;
+      code = 0x10000 + (((code & 0x3ff) << 10) | (str.charCodeAt(i) & 0x3ff));
+      bytes.push(
+        0xf0 | (code >> 18),
+        0x80 | ((code >> 12) & 0x3f),
+        0x80 | ((code >> 6) & 0x3f),
+        0x80 | (code & 0x3f)
+      );
+    }
+  }
+
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  let result = '';
+  let i = 0;
+  while (i < bytes.length) {
+    const b1 = bytes[i++];
+    const b2 = i < bytes.length ? bytes[i++] : NaN;
+    const b3 = i < bytes.length ? bytes[i++] : NaN;
+
+    const enc1 = b1 >> 2;
+    const enc2 = ((b1 & 3) << 4) | (isNaN(b2) ? 0 : b2 >> 4);
+    const enc3 = isNaN(b2) ? 64 : ((b2 & 15) << 2) | (isNaN(b3) ? 0 : b3 >> 6);
+    const enc4 = isNaN(b3) ? 64 : b3 & 63;
+
+    result += chars.charAt(enc1) + chars.charAt(enc2) + chars.charAt(enc3) + chars.charAt(enc4);
+  }
+  return result;
+}

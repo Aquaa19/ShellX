@@ -1,5 +1,10 @@
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
+export interface StarterFile {
+  name: string;
+  content: string;
+}
+
 export interface LessonCardDocument {
   id:                 string;
   moduleId:           string;
@@ -12,6 +17,7 @@ export interface LessonCardDocument {
   instructions:       string;
   order:              number;
   prerequisiteId?:    string; // lessonId that must be complete first
+  starterFiles?:      StarterFile[];
 }
 
 export interface UserModuleProgressDocument {

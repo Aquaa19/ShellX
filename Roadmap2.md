@@ -1499,7 +1499,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## Sub-Phase 2.6.A — FileSystem Command Layer (`/src/services/filesystem/`)
 
-- [ ] ⚡ 🔒 Create `/src/services/filesystem/FileSystemCommands.ts`
+- [x] ⚡ 🔒 Create `/src/services/filesystem/FileSystemCommands.ts`
   - **Purpose:** Encapsulates all shell commands used to interrogate the remote filesystem. Pure string-building functions. No React imports.
   - **Functions:**
     ```typescript
@@ -1531,7 +1531,7 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
     }
     ```
 
-- [ ] 🔒 Create `/src/services/filesystem/FileSystemParser.ts`
+- [x] 🔒 Create `/src/services/filesystem/FileSystemParser.ts`
   - **Purpose:** Parses the raw shell output of `buildListCommand` into `FileTreeNode[]` arrays. Pure functions.
   - **`parseLsOutput(rawOutput: string, parentPath: string): FileTreeNode[]`:**
     - Splits output by `\n`. Skips empty lines.
@@ -1547,14 +1547,14 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
   - **`parseStatOutput(rawOutput: string): Partial<FileTreeNode> | null`:**
     - Splits on `|`. Returns `{ name, size, type }` if format is valid, else `null`.
 
-- [ ] Create `/src/services/filesystem/index.ts`
+- [x] Create `/src/services/filesystem/index.ts`
   - **Exports:** `buildListCommand`, `buildStatCommand`, `buildReadFileCommand`, `buildHomeDirCommand`, `FileSystemParser`.
 
 ---
 
 ## Sub-Phase 2.6.B — FileSystem Context (`/src/context/FileSystemContext.tsx`)
 
-- [ ] ⚡ 🔌 Create `/src/context/FileSystemContext.tsx`
+- [x] ⚡ 🔌 Create `/src/context/FileSystemContext.tsx`
   - **Purpose:** Manages the reactive filesystem tree state. Sends commands via `useTerminalConnection` to populate and expand tree nodes. Decouples the terminal output stream from the UI tree.
   - **State Shape:**
     ```typescript
@@ -1607,14 +1607,14 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
   - **Recursion depth guard:** `updateNodeInTree` must track depth. If depth exceeds 10, log a warning and return nodes unchanged. Prevents infinite recursion on malformed server responses.
   - **Exports:** `FileSystemContextProvider`, `useFileSystemContext` hook.
 
-- [ ] ♻️ Modify `/src/App.tsx`
+- [x] ♻️ Modify `/src/App.tsx`
   - **Action:** Add `FileSystemContextProvider` inside `LessonsContextProvider`.
 
 ---
 
 ## Sub-Phase 2.6.C — FileSystemScreen Live Integration
 
-- [ ] 🔌 📐 📱 ♻️ Modify `/src/screens/FileSystemScreen.tsx`
+- [x] 🔌 📐 📱 ♻️ Modify `/src/screens/FileSystemScreen.tsx`
   - **Action:** Replace `MOCK_FILE_TREE` and static state with `useFileSystemContext`.
   - **New imports:**
     ```typescript
@@ -1644,11 +1644,11 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
   - **Wire bottom action bar:** `"OPEN"` button `onPress={() => selectedPath && openFileInTerminal(selectedPath)}`. `"COPY PATH"` button uses `Clipboard.setString(selectedPath ?? '')`.
   - **Breadcrumb:** Replace static `'/home/student'` with `selectedPath ?? rootPath`.
 
-- [ ] 📐 ♻️ Modify `/src/components/filesystem/FileSystemTree.tsx`
+- [x] 📐 ♻️ Modify `/src/components/filesystem/FileSystemTree.tsx`
   - **Action:** Update `onFolderToggle` callback to pass the full `FileTreeNode` instead of just `path`, so the caller can check `isExpanded`.
   - **Update `FolderRow` integration:** Pass `isLoading={pendingPaths.has(node.path)}` to `FolderRow` to show a loading spinner on the expand chevron while children are being fetched.
 
-- [ ] 📐 ♻️ Modify `/src/components/filesystem/FolderRow.tsx`
+- [x] 📐 ♻️ Modify `/src/components/filesystem/FolderRow.tsx`
   - **Action:** Add `isLoading?: boolean` prop. When `true`, replace the expand chevron `MaterialIcon` with a small animated rotating `MaterialIcon 'refresh'`.
 
 ---
@@ -1760,43 +1760,43 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## 🔲 Section V8 — FileSystem Live Traversal
 
-- [ ] **Initial tree load (connected):** Navigate to `FileSystemScreen`. `initialize()` runs. Home directory is detected. Root folder contents are displayed. Skeleton loader shown during fetch.
-- [ ] **Offline state:** When `connectionState !== 'connected'`, tree is hidden. Offline error message is displayed. No ghost tree structure from mock data.
-- [ ] **Folder expansion:** Tap a folder. `pendingPaths.has(path) = true`. Expand chevron shows spinner. Server `ls` command fires. Children populate under the folder node. Spinner disappears. `isExpanded = true`.
-- [ ] **Folder collapse and re-expand:** Collapse a previously expanded folder. Children are cached (not discarded). Re-expansion is instant — no network call fired.
-- [ ] **Deep nesting (3 levels):** Navigate to `/home/student/projects/lesson1/` (3 levels deep). Indent guides are visible. Horizontal `ScrollView` scrolls to show deep-nested items.
-- [ ] **`updateNodeInTree` recursion depth guard:** Verified: a tree with 11 nesting levels does not cause a stack overflow. Warning appears in dev logs instead.
-- [ ] **File selection:** Tap a file. `selectedPath` updates. `SelectedFileRow` renders with active background. Breadcrumb updates.
-- [ ] **"OPEN" button:** Tap "OPEN" with a file selected. `buildReadFileCommand` is sent to terminal. File content appears in `TerminalEditor` output. Navigation switches to `Terminal` tab.
-- [ ] **"COPY PATH" button:** Tap "COPY PATH". `Clipboard.setString` fires. Brief visual feedback (e.g., button label flashes to `"COPIED"` for 1.5s).
-- [ ] **Empty directory:** Expand a folder with no children. `children` is set to `[]`. No spinner. Folder chevron becomes static (not expandable). A subtle `TerminalText` `"empty"` placeholder is shown in the indented area.
-- [ ] **Filesystem command sentinel filtering:** `FS_START:{id}` and `FS_END:{id}` lines are **not** displayed in `TerminalEditor` output. Verified: run a filesystem expand and confirm no `FS_START` strings appear in the terminal history UI.
+- [x] **Initial tree load (connected):** Navigate to `FileSystemScreen`. `initialize()` runs. Home directory is detected. Root folder contents are displayed. Skeleton loader shown during fetch.
+- [x] **Offline state:** When `connectionState !== 'connected'`, tree is hidden. Offline error message is displayed. No ghost tree structure from mock data.
+- [x] **Folder expansion:** Tap a folder. `pendingPaths.has(path) = true`. Expand chevron shows spinner. Server `ls` command fires. Children populate under the folder node. Spinner disappears. `isExpanded = true`.
+- [x] **Folder collapse and re-expand:** Collapse a previously expanded folder. Children are cached (not discarded). Re-expansion is instant — no network call fired.
+- [x] **Deep nesting (3 levels):** Navigate to `/home/student/projects/lesson1/` (3 levels deep). Indent guides are visible. Horizontal `ScrollView` scrolls to show deep-nested items.
+- [x] **`updateNodeInTree` recursion depth guard:** Verified: a tree with 11 nesting levels does not cause a stack overflow. Warning appears in dev logs instead.
+- [x] **File selection:** Tap a file. `selectedPath` updates. `SelectedFileRow` renders with active background. Breadcrumb updates.
+- [x] **"OPEN" button:** Tap "OPEN" with a file selected. `buildReadFileCommand` is sent to terminal. File content appears in `TerminalEditor` output. Navigation switches to `Terminal` tab.
+- [x] **"COPY PATH" button:** Tap "COPY PATH". `Clipboard.setString` fires. Brief visual feedback (e.g., button label flashes to `"COPIED"` for 1.5s).
+- [x] **Empty directory:** Expand a folder with no children. `children` is set to `[]`. No spinner. Folder chevron becomes static (not expandable). A subtle `TerminalText` `"empty"` placeholder is shown in the indented area.
+- [x] **Filesystem command sentinel filtering:** `FS_START:{id}` and `FS_END:{id}` lines are **not** displayed in `TerminalEditor` output. Verified: run a filesystem expand and confirm no `FS_START` strings appear in the terminal history UI.
 
 ---
 
 ## 🔲 Section V9 — Network & Offline Resilience
 
-- [ ] **NetworkBanner appearance:** Disable WiFi/data. `NetworkBanner` slides in from top within 1 second. Text `"NO NETWORK CONNECTION"` in `Colors.text.inverse` on `Colors.semantic.warning` background. `pointerEvents='none'` confirmed — tap-through works.
-- [ ] **NetworkBanner dismissal:** Re-enable WiFi/data. `NetworkBanner` slides out within 1.5 seconds (1-second delay + animation).
-- [ ] **Auth screen offline:** Open `AuthScreen` in airplane mode. Google sign-in button tap shows `authError` with a network-related message. No crash.
-- [ ] **Terminal screen offline mid-session:** Disable network while typing in terminal. Next `sendCommand` fails gracefully. `connectionState` transitions to `error`. No crash. `ConnectionBadge` shows red.
-- [ ] **Settings ping offline:** Tap "Test Connection" in airplane mode. Ping `Promise` settles after `pingTimeoutMs` with `reachable: false`. Never hangs indefinitely.
-- [ ] **Firestore offline:** Disable network. Open `LessonsScreen`. Cached Firestore data (from Firestore's offline persistence) is displayed if available. If no cache, empty state is shown gracefully. No crash.
+- [x] **NetworkBanner appearance:** Disable WiFi/data. `NetworkBanner` slides in from top within 1 second. Text `"NO NETWORK CONNECTION"` in `Colors.text.inverse` on `Colors.semantic.warning` background. `pointerEvents='none'` confirmed — tap-through works.
+- [x] **NetworkBanner dismissal:** Re-enable WiFi/data. `NetworkBanner` slides out within 1.5 seconds (1-second delay + animation).
+- [x] **Auth screen offline:** Open `AuthScreen` in airplane mode. Google sign-in button tap shows `authError` with a network-related message. No crash.
+- [x] **Terminal screen offline mid-session:** Disable network while typing in terminal. Next `sendCommand` fails gracefully. `connectionState` transitions to `error`. No crash. `ConnectionBadge` shows red.
+- [x] **Settings ping offline:** Tap "Test Connection" in airplane mode. Ping `Promise` settles after `pingTimeoutMs` with `reachable: false`. Never hangs indefinitely.
+- [x] **Firestore offline:** Disable network. Open `LessonsScreen`. Cached Firestore data (from Firestore's offline persistence) is displayed if available. If no cache, empty state is shown gracefully. No crash.
 
 ---
 
 ## 🔲 Section V10 — TypeScript, Performance & Code Quality
 
-- [ ] `tsc --noEmit` exits with 0 errors across all new and modified files.
-- [ ] ESLint passes with 0 errors on all new `/src/services/`, `/src/context/`, `/src/types/` files.
-- [ ] No `any` type used in service files without explicit justification comment.
-- [ ] All `useEffect` hooks that subscribe to external resources (NetInfo, Firebase `onAuthStateChanged`, Firestore `onSnapshot`, WebSocket callbacks) have cleanup functions returning the `unsubscribe`/`disconnect` call.
-- [ ] `React.memo` wrapping verified on `TerminalCodeLine` — confirmed via React DevTools "Highlight updates" that only new lines re-render on `outputLines` append.
-- [ ] `StyleSheet.create` used for all static styles in new component files. No inline style objects created in render functions.
-- [ ] `Animated.Value` instances initialized in `useRef`, not in component body or render.
-- [ ] Memory usage on 5-inch device does not exceed 150MB heap after 10 minutes of active terminal session with 500-line output cap in place. Verified with Android Studio Memory Profiler.
-- [ ] All `Promise`-returning service functions (`StorageService`, `PingService`, `LessonService`, `ProgressService`) have been verified to never `throw` — all errors are caught internally and returned as safe falsy values or `null`.
-- [ ] `terminalSocket` singleton is verified to have only one active `WebSocket` instance at any time — no socket leak from multiple `connect()` calls. Verified with WebSocket debugger.
+- [x] `tsc --noEmit` exits with 0 errors across all new and modified files.
+- [x] ESLint passes with 0 errors on all new `/src/services/`, `/src/context/`, `/src/types/` files.
+- [x] No `any` type used in service files without explicit justification comment.
+- [x] All `useEffect` hooks that subscribe to external resources (NetInfo, Firebase `onAuthStateChanged`, Firestore `onSnapshot`, WebSocket callbacks) have cleanup functions returning the `unsubscribe`/`disconnect` call.
+- [x] `React.memo` wrapping verified on `TerminalCodeLine` — confirmed via React DevTools "Highlight updates" that only new lines re-render on `outputLines` append.
+- [x] `StyleSheet.create` used for all static styles in new component files. No inline style objects created in render functions.
+- [x] `Animated.Value` instances initialized in `useRef`, not in component body or render.
+- [x] Memory usage on 5-inch device does not exceed 150MB heap after 10 minutes of active terminal session with 500-line output cap in place. Verified with Android Studio Memory Profiler.
+- [x] All `Promise`-returning service functions (`StorageService`, `PingService`, `LessonService`, `ProgressService`) have been verified to never `throw` — all errors are caught internally and returned as safe falsy values or `null`.
+- [x] `terminalSocket` singleton is verified to have only one active `WebSocket` instance at any time — no socket leak from multiple `connect()` calls. Verified with WebSocket debugger.
 
 ---
 
@@ -1805,84 +1805,84 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 > Run `find ./src -name "*.ts" -o -name "*.tsx" | sort` and confirm all new paths are present.
 
 **Config (2 files):**
-- [ ] `/src/config/env.ts`
-- [ ] `/src/config/index.ts`
+- [x] `/src/config/env.ts`
+- [x] `/src/config/index.ts`
 
 **Types (4 files):**
-- [ ] `/src/types/index.ts`
-- [ ] `/src/types/terminal.ts`
-- [ ] `/src/types/lessons.ts`
-- [ ] `/src/types/filesystem.ts`
+- [x] `/src/types/index.ts`
+- [x] `/src/types/terminal.ts`
+- [x] `/src/types/lessons.ts`
+- [x] `/src/types/filesystem.ts`
 
 **Services — Storage (3 files):**
-- [ ] `/src/services/storage/StorageKeys.ts`
-- [ ] `/src/services/storage/StorageService.ts`
-- [ ] `/src/services/storage/index.ts`
+- [x] `/src/services/storage/StorageKeys.ts`
+- [x] `/src/services/storage/StorageService.ts`
+- [x] `/src/services/storage/index.ts`
 
 **Services — Validation (2 files):**
-- [ ] `/src/services/validation/serverConfig.ts`
-- [ ] `/src/services/validation/index.ts`
+- [x] `/src/services/validation/serverConfig.ts`
+- [x] `/src/services/validation/index.ts`
 
 **Services — Terminal (5 files):**
-- [ ] `/src/services/terminal/TerminalSocket.ts`
-- [ ] `/src/services/terminal/PingService.ts`
-- [ ] `/src/services/terminal/AnsiSequences.ts`
-- [ ] `/src/services/terminal/TerminalOutputParser.ts`
-- [ ] `/src/services/terminal/index.ts`
+- [x] `/src/services/terminal/TerminalSocket.ts`
+- [x] `/src/services/terminal/PingService.ts`
+- [x] `/src/services/terminal/AnsiSequences.ts`
+- [x] `/src/services/terminal/TerminalOutputParser.ts`
+- [x] `/src/services/terminal/index.ts`
 
 **Services — Firestore (2 files):**
-- [ ] `/src/services/firestore/FirestoreSchema.ts`
-- [ ] `/src/services/firestore/index.ts`
+- [x] `/src/services/firestore/FirestoreSchema.ts`
+- [x] `/src/services/firestore/index.ts`
 
 **Services — Lessons (3 files):**
-- [ ] `/src/services/lessons/LessonService.ts`
-- [ ] `/src/services/lessons/ProgressService.ts`
-- [ ] `/src/services/lessons/index.ts`
+- [x] `/src/services/lessons/LessonService.ts`
+- [x] `/src/services/lessons/ProgressService.ts`
+- [x] `/src/services/lessons/index.ts`
 
 **Services — FileSystem (3 files):**
-- [ ] `/src/services/filesystem/FileSystemCommands.ts`
-- [ ] `/src/services/filesystem/FileSystemParser.ts`
-- [ ] `/src/services/filesystem/index.ts`
+- [x] `/src/services/filesystem/FileSystemCommands.ts`
+- [x] `/src/services/filesystem/FileSystemParser.ts`
+- [x] `/src/services/filesystem/index.ts`
 
 **Context (6 files):**
-- [ ] `/src/context/AppContext.tsx`
-- [ ] `/src/context/AuthContext.tsx`
-- [ ] `/src/context/TerminalConnectionContext.tsx`
-- [ ] `/src/context/LessonsContext.tsx`
-- [ ] `/src/context/FileSystemContext.tsx`
-- [ ] `/src/context/NetworkBanner.tsx`
-- [ ] `/src/context/index.ts`
+- [x] `/src/context/AppContext.tsx`
+- [x] `/src/context/AuthContext.tsx`
+- [x] `/src/context/TerminalConnectionContext.tsx`
+- [x] `/src/context/LessonsContext.tsx`
+- [x] `/src/context/FileSystemContext.tsx`
+- [x] `/src/context/NetworkBanner.tsx`
+- [x] `/src/context/index.ts`
 
 **Modified Screens (5 files — ♻️):**
-- [ ] `/src/screens/SplashScreen.tsx` (animated boot flow)
-- [ ] `/src/screens/AuthScreen.tsx` (live Firebase sign-in)
-- [ ] `/src/screens/TerminalScreen.tsx` (live socket + lesson context)
-- [ ] `/src/screens/LessonsScreen.tsx` (Firestore live data)
-- [ ] `/src/screens/FileSystemScreen.tsx` (live tree traversal)
-- [ ] `/src/screens/SettingsScreen.tsx` (persistence + ping + sign-out)
+- [x] `/src/screens/SplashScreen.tsx` (animated boot flow)
+- [x] `/src/screens/AuthScreen.tsx` (live Firebase sign-in)
+- [x] `/src/screens/TerminalScreen.tsx` (live socket + lesson context)
+- [x] `/src/screens/LessonsScreen.tsx` (Firestore live data)
+- [x] `/src/screens/FileSystemScreen.tsx` (live tree traversal)
+- [x] `/src/screens/SettingsScreen.tsx` (persistence + ping + sign-out)
 
 **Modified Components (8 files — ♻️):**
-- [ ] `/src/components/settings/ServerConfigInput.tsx` (sshUser field)
-- [ ] `/src/components/settings/ServerStatusSignal.tsx` (live ping state)
-- [ ] `/src/components/terminal/TerminalEditor.tsx` (FlatList + auto-scroll)
-- [ ] `/src/components/terminal/TerminalCodeLine.tsx` (React.memo + TerminalLine type)
-- [ ] `/src/components/terminal/DeveloperKeyboardBar.tsx` (KeyDef ANSI map)
-- [ ] `/src/components/terminal/VimStatusStrip.tsx` (VimMode type + cursor pos)
+- [x] `/src/components/settings/ServerConfigInput.tsx` (sshUser field)
+- [x] `/src/components/settings/ServerStatusSignal.tsx` (live ping state)
+- [x] `/src/components/terminal/TerminalEditor.tsx` (FlatList + auto-scroll)
+- [x] `/src/components/terminal/TerminalCodeLine.tsx` (React.memo + TerminalLine type)
+- [x] `/src/components/terminal/DeveloperKeyboardBar.tsx` (KeyDef ANSI map)
+- [x] `/src/components/terminal/VimStatusStrip.tsx` (VimMode type + cursor pos)
 - [x] `/src/components/terminal/TerminalWorkspace.tsx` (live prop passthrough)
-- [ ] `/src/components/terminal/TaskSheetActions.tsx` (isValidating prop)
-- [ ] `/src/components/filesystem/FileSystemTree.tsx` (full node callback)
-- [ ] `/src/components/filesystem/FolderRow.tsx` (isLoading spinner)
+- [x] `/src/components/terminal/TaskSheetActions.tsx` (isValidating prop)
+- [x] `/src/components/filesystem/FileSystemTree.tsx` (full node callback)
+- [x] `/src/components/filesystem/FolderRow.tsx` (isLoading spinner)
 
 **Modified Navigation (1 file — ♻️):**
-- [ ] `/src/navigation/RootNavigator.tsx` (Firebase auth guard)
+- [x] `/src/navigation/RootNavigator.tsx` (Firebase auth guard)
 
 **Modified App Entry (1 file — ♻️):**
-- [ ] `/src/App.tsx` (full context provider tree)
+- [x] `/src/App.tsx` (full context provider tree)
 
 **Root Config Files (3 files):**
-- [ ] `/.env` (not committed)
-- [ ] `/.env.example` (committed)
-- [ ] *(verify `google-services.json` at `/android/app/google-services.json` — not committed)*
+- [x] `/.env` (not committed)
+- [x] `/.env.example` (committed)
+- [x] *(verify `google-services.json` at `/android/app/google-services.json` — not committed)*
 
 ---
 

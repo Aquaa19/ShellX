@@ -28,7 +28,7 @@ export const FileTypeIcon: React.FC<FileTypeIconProps> = ({
       case 'jsx':
       case 'tsx': return 'javascript';
       case 'json': return 'data-object';
-      default: return 'insert_drive_file';
+      default: return 'insert-drive-file';
     }
   };
 

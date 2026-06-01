@@ -4,7 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AppBackground } from './components/shell';
 import { RootNavigator } from './navigation';
-import { AppContextProvider, AuthContextProvider, TerminalConnectionContextProvider, LessonsContextProvider, NetworkBanner } from './context';
+import { AppContextProvider, AuthContextProvider, TerminalConnectionContextProvider, LessonsContextProvider, FileSystemContextProvider, NetworkBanner } from './context';
 
 const App = () => {
   return (
@@ -13,12 +13,14 @@ const App = () => {
         <AuthContextProvider>
           <TerminalConnectionContextProvider>
             <LessonsContextProvider>
-              <AppBackground>
-                <View style={styles.root}>
-                  <RootNavigator />
-                  <NetworkBanner />
-                </View>
-              </AppBackground>
+              <FileSystemContextProvider>
+                <AppBackground>
+                  <View style={styles.root}>
+                    <RootNavigator />
+                    <NetworkBanner />
+                  </View>
+                </AppBackground>
+              </FileSystemContextProvider>
             </LessonsContextProvider>
           </TerminalConnectionContextProvider>
         </AuthContextProvider>
