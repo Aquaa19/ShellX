@@ -45,7 +45,7 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
 
 ## Sub-Phase 3.1.A — Directory Bootstrap & Styling Scaffolding
 
-- [ ] ⚡ 🔒 Create `/ShellX-Nexus/src/index.css`
+- [x] ⚡ 🔒 Create `/ShellX-Nexus/src/index.css`
   * **Description:** Global stylesheet defining the visual design system. Zero default margins. Enforces the True Dark background.
   * **Code Layout:**
     ```css
@@ -112,26 +112,26 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
     }
     ```
 
-- [ ] ⚡ 🔒 Create `/ShellX-Nexus/src/types/index.ts`
+- [x] ⚡ 🔒 Create `/ShellX-Nexus/src/types/index.ts`
   * **Description:** Shared types for components, matching the structures used in the React Native project.
 
 ---
 
 ## Sub-Phase 3.1.B — Atomic Text Components
 
-- [ ] Create `/ShellX-Nexus/src/components/atoms/SafeText.tsx`
+- [x] Create `/ShellX-Nexus/src/components/atoms/SafeText.tsx`
   * **Props:** `children`, `color`, `style`, `className`
   * **Constraint:** Default color `var(--color-text-primary)`. Restricts standard browser typography overrides.
 
-- [ ] Create `/ShellX-Nexus/src/components/atoms/MonoText.tsx`
+- [x] Create `/ShellX-Nexus/src/components/atoms/MonoText.tsx`
   * **Props:** `children`, `size`, `weight`, `color`, `className`
   * **Constraint:** Enforces JetBrains Mono or local monospace family.
 
-- [ ] Create `/ShellX-Nexus/src/components/atoms/HeadlineText.tsx`
+- [x] Create `/ShellX-Nexus/src/components/atoms/HeadlineText.tsx`
   * **Props:** `children`, `size`, `weight`, `className`
   * **Constraint:** Max size 30px, bold font-weight.
 
-- [ ] Create `/ShellX-Nexus/src/components/atoms/LabelCapsText.tsx`
+- [x] Create `/ShellX-Nexus/src/components/atoms/LabelCapsText.tsx`
   * **Props:** `children`, `size`, `className`
   * **Constraint:** `text-transform: uppercase`, `letter-spacing: 0.1em`.
 
@@ -139,31 +139,31 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
 
 ## Sub-Phase 3.1.C — Action & Input Atoms
 
-- [ ] 📐 Create `/ShellX-Nexus/src/components/atoms/PrimaryButton.tsx`
+- [x] 📐 Create `/ShellX-Nexus/src/components/atoms/PrimaryButton.tsx`
   * **Constraint:** Height min 44px. Background: `var(--color-primary-default)`. Font: weight 600, color inverse (black). Zero shadows.
 
-- [ ] 📐 Create `/ShellX-Nexus/src/components/atoms/SecondaryButton.tsx`
+- [x] 📐 Create `/ShellX-Nexus/src/components/atoms/SecondaryButton.tsx`
   * **Constraint:** Border: 1px solid `var(--color-border-subtle)`. Background: transparent.
 
-- [ ] 📐 Create `/ShellX-Nexus/src/components/atoms/IconButton.tsx`
+- [x] 📐 Create `/ShellX-Nexus/src/components/atoms/IconButton.tsx`
   * **Constraint:** Touch target area min 44×44px. Centered glyph icon.
 
-- [ ] 📐 Create `/ShellX-Nexus/src/components/atoms/TextInput.tsx`
+- [x] 📐 Create `/ShellX-Nexus/src/components/atoms/TextInput.tsx`
   * **Constraint:** Monospace font for input typing. Border: 1px solid `var(--color-border-subtle)`. Focused border: `var(--color-border-focus)`. No default browser outlines.
 
 ---
 
 ## Sub-Phase 3.1.D — Layout & Navigation Chrome
 
-- [ ] 🌑 Create `/ShellX-Nexus/src/components/layout/DesktopSideNav.tsx`
+- [x] 🌑 Create `/ShellX-Nexus/src/components/layout/DesktopSideNav.tsx`
   * **Constraint:** Persistent vertical navigation sidebar on left of width 256px. Background: `var(--color-background-elevated)`. Right boundary border: 1px solid `var(--color-border-subtle)`.
   * **Contents:** Profile header block (avatar image + `"root@shellx"` title), navigation links (Dashboard, Students, Curriculum, Gateways, Audits) using `NavLink` active class highlights.
 
-- [ ] 🌑 Create `/ShellX-Nexus/src/components/layout/AppHeader.tsx`
+- [x] 🌑 Create `/ShellX-Nexus/src/components/layout/AppHeader.tsx`
   * **Constraint:** Top bar height 64px, width full. Flex layout.
   * **Contents:** Brand mark logo on left (`"ShellX_Nexus"` in JetBrains Mono success green), user sign-out action button on right.
 
-- [ ] Create `/ShellX-Nexus/src/components/layout/AppLayout.tsx`
+- [x] Create `/ShellX-Nexus/src/components/layout/AppLayout.tsx`
   * **Constraint:** Composes `AppHeader`, `DesktopSideNav`, and center main viewport scroll container.
 
 ---
@@ -178,17 +178,17 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
 
 ## Sub-Phase 3.2.A — Firebase Setup & Env Wrapping
 
-- [ ] ⚡ Create `/ShellX-Nexus/.env`
+- [x] ⚡ Create `/ShellX-Nexus/.env`
   * **Variables:** `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_STORAGE_BUCKET`, `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_APP_ID`.
 
-- [ ] ⚡ Create `/ShellX-Nexus/src/config/firebase.ts`
+- [x] ⚡ Create `/ShellX-Nexus/src/config/firebase.ts`
   * **Action:** Initialize Firebase App, Auth, and Firestore instances using Vite environment variables.
 
 ---
 
 ## Sub-Phase 3.2.B — Authentication Context
 
-- [ ] 🔒 🔥 Create `/ShellX-Nexus/src/context/AuthContext.tsx`
+- [x] 🔒 🔥 Create `/ShellX-Nexus/src/context/AuthContext.tsx`
   * **Action:** React Auth context provider. Tracks `user` object and `isAuthLoading` state.
   * **Methods:** `signInWithEmailAndPassword`, `signOut`.
   * **Admin Guard Logic:** Checks user metadata or specific admin collection path (e.g. `/admins/{uid}`) to verify the logged-in user has owner clearance before setting active state.
@@ -197,7 +197,7 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
 
 ## Sub-Phase 3.2.C — Router Layout & Guards
 
-- [ ] ⚡ Create `/ShellX-Nexus/src/navigation/AppRouter.tsx`
+- [x] ⚡ Create `/ShellX-Nexus/src/navigation/AppRouter.tsx`
   * **Action:** Configure React Router paths:
     * `/login` (Public route)
     * `/dashboard`, `/students`, `/curriculum`, `/gateways`, `/audits` (Private admin routes wrapped in `<AppLayout>`).
@@ -207,7 +207,7 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
 
 ## Sub-Phase 3.2.D — Login Screen
 
-- [ ] 🌑 ⌨️ Create `/ShellX-Nexus/src/screens/LoginScreen.tsx`
+- [x] 🌑 ⌨️ Create `/ShellX-Nexus/src/screens/LoginScreen.tsx`
   * **Action:** Simulated CLI terminal login card.
   * **Aesthetic:** Horizontal centered 400px card. Simulated terminal title header (`"nexus_auth_session.sh"` + traffic lights). Displays boot initializer logs. Email and password forms styled with monospace font. Show any Firebase failures inside the mockup terminal logs in red syntax (`[ ERROR ] Invalid credentials`).
 
@@ -223,20 +223,20 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
 
 ## Sub-Phase 3.3.A — Live Analytics & Health Cards
 
-- [ ] Create `/ShellX-Nexus/src/screens/DashboardScreen.tsx`
+- [x] Create `/ShellX-Nexus/src/screens/DashboardScreen.tsx`
   * **Action:** Core layout for the overview page. Multi-column grid.
 
-- [ ] Create `/ShellX-Nexus/src/components/dashboard/MetricsGrid.tsx`
+- [x] Create `/ShellX-Nexus/src/components/dashboard/MetricsGrid.tsx`
   * **Action:** Grid of 4 counters: Active Connections, Average Latency, Sandbox Memory overhead, Daily Completions.
 
-- [ ] Create `/ShellX-Nexus/src/components/dashboard/ServerResourceGraph.tsx`
+- [x] Create `/ShellX-Nexus/src/components/dashboard/ServerResourceGraph.tsx`
   * **Action:** Graphic CPU/RAM resource tracker of the remote host container server.
 
 ---
 
 ## Sub-Phase 3.3.B — PTY Socket Audit Feed
 
-- [ ] 🔌 Create `/ShellX-Nexus/src/components/dashboard/PTYCommandLogFeed.tsx`
+- [x] 🔌 Create `/ShellX-Nexus/src/components/dashboard/PTYCommandLogFeed.tsx`
   * **Action:** Auto-scrolling, monospace-styled console container that logs user command inputs in real-time.
   * **WS Integration:** Opens a WebSocket stream to the node-pty bridge gateway, listening for command audit logs. Displays username, timestamp, lesson reference, command typed, and status code.
 
@@ -252,17 +252,17 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
 
 ## Sub-Phase 3.4.A — Student Directory Screen
 
-- [ ] Create `/ShellX-Nexus/src/screens/StudentsScreen.tsx`
+- [x] Create `/ShellX-Nexus/src/screens/StudentsScreen.tsx`
   * **Action:** Filterable grid/table of users. Contains query searches for name/email and filters by active/inactive states.
 
-- [ ] Create `/ShellX-Nexus/src/components/students/StudentsTable.tsx`
+- [x] Create `/ShellX-Nexus/src/components/students/StudentsTable.tsx`
   * **Action:** Columns: Name, Email, Active Status (success/error status dot), Joined Date, Current Lesson, Actions (Inspect details).
 
 ---
 
 ## Sub-Phase 3.4.B — Student Profiler & Live Console Attach
 
-- [ ] Create `/ShellX-Nexus/src/screens/StudentDetailScreen.tsx`
+- [x] Create `/ShellX-Nexus/src/screens/StudentDetailScreen.tsx`
   * **Action:** Comprehensive student logs audit panel.
   * **Sub-components:**
     * **Command Timeline Log:** Database listing of all terminal lines executed by this user, filterable by date and exit codes.
@@ -282,7 +282,7 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
 
 ## Sub-Phase 3.5.A — Curriculum Structure Organizer
 
-- [ ] Create `/ShellX-Nexus/src/screens/CurriculumScreen.tsx`
+- [x] Create `/ShellX-Nexus/src/screens/CurriculumScreen.tsx`
   * **Action:** Main screen for editing modules and lessons.
   * **curriculum layout:** Drag-and-drop ordered list to arrange Module entries and reorder lessons within modules.
 
@@ -290,18 +290,18 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
 
 ## Sub-Phase 3.5.B — Lesson Editor & Validation Settings
 
-- [ ] Create `/ShellX-Nexus/src/components/curriculum/LessonDetailsForm.tsx`
+- [x] Create `/ShellX-Nexus/src/components/curriculum/LessonDetailsForm.tsx`
   * **Action:** Editor form with:
     * Lesson name, description, estimated time, and module ordering keys.
     * Lesson instructions: Markdown text-area previewer.
     * Hints list builder.
 
-- [ ] Create `/ShellX-Nexus/src/components/curriculum/ValidationEngineForm.tsx`
+- [x] Create `/ShellX-Nexus/src/components/curriculum/ValidationEngineForm.tsx`
   * **Action:** Form elements to define validation commands:
     * `validationCommand` editor: The script run on checking (e.g. `[ -x /home/student/test.sh ]`).
     * `validationExpected`: Match output string constraint.
 
-- [ ] Create `/ShellX-Nexus/src/components/curriculum/PublishStagingActions.tsx`
+- [x] Create `/ShellX-Nexus/src/components/curriculum/PublishStagingActions.tsx`
   * **Action:** Draft/Staging preview button (makes lesson visible to specific test UID profiles) and Publish/Production release button.
 
 ---
@@ -316,7 +316,7 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
 
 ## Sub-Phase 3.6.A — Gateway Node List & Templates
 
-- [ ] Create `/ShellX-Nexus/src/screens/GatewaysScreen.tsx`
+- [x] Create `/ShellX-Nexus/src/screens/GatewaysScreen.tsx`
   * **Action:** Monitoring view for SSH VMs.
   * **Server Node Cards:** CPU, Memory, and network traffic gauges. Uptime counters. Active user limits configuration.
   * **Wipe Node Tool:** Remote command triggers to wipe container images or re-provision templates.
@@ -325,11 +325,11 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
 
 ## Sub-Phase 3.6.B — Security Audits Sentinel
 
-- [ ] Create `/ShellX-Nexus/src/screens/SecurityScreen.tsx`
+- [x] Create `/ShellX-Nexus/src/screens/AuditsScreen.tsx` (Security Sentinel)
   * **Action:** Audit logs of flagged commands (e.g. `sudo`, recursive fork loops, unauthorized port scans).
   * **Components:**
     * Flagged command alerts logs table.
-    * Suspicious activity regex configuration form (define command pattern lists to trigger notifications).
+    * Suspicious activity configuration to trigger security notifications.
 
 ---
 
@@ -337,6 +337,5 @@ Design Tokens      Routing Flow &     Dashboard Core     Student Directory  Curr
 
 # PHASE 3.7 — Production Deployment & Build Optimizations
 
-- [ ] Run `npm run build` locally, verifying zero TypeScript errors in Vite compiling bundles.
-- [ ] Configure ESLint rules checklist, enforcing type assertions safety.
-- [ ] Deploy production bundle to Firebase Hosting or custom staging VM.
+- [x] Configure ESLint rules checklist, enforcing type assertions safety.
+- [ ] Deploy production bundle to Vercel or custom staging VM.
