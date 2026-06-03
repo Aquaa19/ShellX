@@ -252,11 +252,11 @@ svg {
 
 export const SplashScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-  const { user } = useAuthContext();
+  const { user, isOnboarded } = useAuthContext();
 
   useEffect(() => {
     const routingTimeout = setTimeout(() => {
-      if (user) {
+      if (user && isOnboarded) {
         navigation.replace('Main');
       } else {
         navigation.replace('Auth');
@@ -264,7 +264,7 @@ export const SplashScreen: React.FC = () => {
     }, 3500);
 
     return () => clearTimeout(routingTimeout);
-  }, [navigation, user]);
+  }, [navigation, user, isOnboarded]);
 
   return (
     <AppBackground>

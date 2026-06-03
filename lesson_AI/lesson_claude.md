@@ -6928,3 +6928,3262 @@ alias ll="ls -la"            # Create alias
 
 ---
 *Linux & Shell Scripting Fundamentals — OS Practical Exam Curriculum | Generated for University Students*
+
+# Linux & Shell Scripting Fundamentals
+### University OS Practical Exam Preparation — Modules 11–14
+
+---
+
+# MODULE: 11 — SORTING ALGORITHMS
+
+## CHAPTER: 11.1 — Bubble Sort (OS Practical #8)
+
+* **Description:** Implement the classic Bubble Sort algorithm in Bash using arrays and nested loops, print sorted output, and understand algorithm complexity concepts relevant to OS practicals.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Understanding Bubble Sort in Shell Scripting
+* **Est. Minutes:** 5
+* **Outline:** Covers sorting concepts, Bash array usage, nested loop mechanics, and algorithm complexity.
+
+* **Instructions (Slides):**
+
+  # Slide 1: What is Bubble Sort?
+  Bubble Sort is one of the simplest sorting algorithms. It works by repeatedly stepping through a list, comparing adjacent elements, and swapping them if they are in the wrong order. This process is repeated until the list is fully sorted.
+
+  **Key Characteristics:**
+  - **Time Complexity:** O(n²) in the worst and average case.
+  - **Space Complexity:** O(1) — it is an in-place sort.
+  - **Stable Sort:** Yes — equal elements maintain their relative order.
+  - **Best Case:** O(n) — when the array is already sorted (with optimization).
+
+  The algorithm gets its name because smaller elements "bubble" to the top of the list with each iteration, just as air bubbles rise to the surface of water.
+
+  ---
+
+  # Slide 2: Bash Arrays — A Refresher
+  Before writing Bubble Sort, you must understand Bash arrays.
+
+  **Declaring an array:**
+  ```bash
+  arr=(5 3 8 1 9 2)
+  ```
+
+  **Accessing elements:**
+  ```bash
+  echo ${arr[0]}   # First element → 5
+  echo ${arr[2]}   # Third element → 8
+  ```
+
+  **Getting array length:**
+  ```bash
+  echo ${#arr[@]}  # → 6
+  ```
+
+  **Looping through an array:**
+  ```bash
+  for i in "${arr[@]}"; do
+    echo $i
+  done
+  ```
+
+  **Setting an element by index:**
+  ```bash
+  arr[0]=99
+  ```
+
+  Arrays are 0-indexed in Bash. Always quote `"${arr[@]}"` to handle spaces safely.
+
+  ---
+
+  # Slide 3: Nested Loops for Bubble Sort
+  Bubble Sort requires two nested loops:
+
+  - **Outer loop:** Controls the number of passes. After each pass, the largest unsorted element is placed at the end.
+  - **Inner loop:** Compares adjacent elements and swaps them.
+
+  **Pseudocode:**
+  ```
+  for pass from 0 to n-1:
+      for j from 0 to n-pass-2:
+          if arr[j] > arr[j+1]:
+              swap arr[j] and arr[j+1]
+  ```
+
+  **Bash Implementation Skeleton:**
+  ```bash
+  n=${#arr[@]}
+  for (( i=0; i<n-1; i++ )); do
+      for (( j=0; j<n-i-1; j++ )); do
+          if [ ${arr[j]} -gt ${arr[$((j+1))]} ]; then
+              # swap
+              temp=${arr[j]}
+              arr[j]=${arr[$((j+1))]}
+              arr[$((j+1))]=$temp
+          fi
+      done
+  done
+  ```
+
+  The inner loop reduces its range by `i` each pass because the last `i` elements are already in their correct position.
+
+  ---
+
+  # Slide 4: Full Bubble Sort Script — Walkthrough
+  ```bash
+  #!/bin/bash
+  arr=(64 34 25 12 22 11 90)
+  n=${#arr[@]}
+
+  echo "Original Array: ${arr[@]}"
+
+  for (( i=0; i<n-1; i++ )); do
+      for (( j=0; j<n-i-1; j++ )); do
+          if [ ${arr[j]} -gt ${arr[$((j+1))]} ]; then
+              temp=${arr[j]}
+              arr[j]=${arr[$((j+1))]}
+              arr[$((j+1))]=$temp
+          fi
+      done
+  done
+
+  echo "Sorted Array:   ${arr[@]}"
+  ```
+
+  **Expected Output:**
+  ```
+  Original Array: 64 34 25 12 22 11 90
+  Sorted Array:   11 12 22 25 34 64 90
+  ```
+
+  **Key points:**
+  - `$(( ))` is used for arithmetic expansion.
+  - The `temp` variable is a classic swap placeholder.
+  - `${arr[@]}` prints all array elements separated by spaces.
+
+  ---
+
+  # Slide 5: Reading Input Dynamically
+  For OS practicals, you will often need to read user input rather than hardcode values.
+
+  ```bash
+  #!/bin/bash
+  echo "Enter number of elements:"
+  read n
+
+  echo "Enter $n numbers:"
+  for (( i=0; i<n; i++ )); do
+      read arr[i]
+  done
+
+  # Bubble Sort
+  for (( i=0; i<n-1; i++ )); do
+      for (( j=0; j<n-i-1; j++ )); do
+          if [ ${arr[j]} -gt ${arr[$((j+1))]} ]; then
+              temp=${arr[j]}
+              arr[j]=${arr[$((j+1))]}
+              arr[$((j+1))]=$temp
+          fi
+      done
+  done
+
+  echo "Sorted Array: ${arr[@]}"
+  ```
+
+  This is the format expected in most university OS practicals — always accept `n` first, then `n` values.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Bubble Sort Script Execution Practice
+* **Est. Minutes:** 5
+* **Outline:** Practice creating the bubble sort script directory, verifying execution, and checking output.
+* **Instructions:**
+  1. Open your terminal.
+  2. Create the working directory `/home/student/sorting`.
+  3. Navigate into it.
+  4. Create `bubble.sh` using a text editor or heredoc.
+  5. Make it executable and run it.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the directory `/home/student/sorting`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/sorting" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create the file `/home/student/sorting/bubble.sh` (it can be empty for now).
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/sorting/bubble.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Make `/home/student/sorting/bubble.sh` executable using `chmod +x`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -x "/home/student/sorting/bubble.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write and Validate the Bubble Sort Script
+* **Est. Minutes:** 8
+* **Outline:** Write a complete Bubble Sort Bash script, make it executable, and verify its output.
+* **Instructions:**
+  1. Open `/home/student/sorting/bubble.sh` in your editor (`nano` or `vi`).
+  2. Write the complete bubble sort script with a hardcoded array `(64 34 25 12 22 11 90)`.
+  3. The script must print `Sorted Array: 11 12 22 25 34 64 90` (or similar sorted output).
+  4. Save, exit, make executable, and test by running `./bubble.sh`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** The file `/home/student/sorting/bubble.sh` must contain the shebang line `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/sorting/bubble.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** The script must contain a `for` loop for sorting (should contain `arr[j]` or similar array indexing).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "arr\[" /home/student/sorting/bubble.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Running the script must produce output containing the word "Sorted".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/sorting/bubble.sh 2>/dev/null | grep -qi "sorted" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** The sorted output must contain `11` as the first element (smallest in the default array).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/sorting/bubble.sh 2>/dev/null | grep -qw "11" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Bubble Sort Concepts Quiz
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on Bubble Sort in Bash.
+
+* **Questions:**
+
+  * **Q1:** What is the time complexity of Bubble Sort in the worst case?
+    * **Options:**
+      * A) O(n log n)
+      * B) O(n)
+      * C) O(n²)
+      * D) O(log n)
+    * **Correct Answer:** C) O(n²)
+    * **Explanation:** Bubble Sort uses two nested loops each running up to n iterations, resulting in O(n²) comparisons in the worst case.
+
+  * **Q2:** In Bash, how do you access the element at index 2 of an array named `arr`?
+    * **Options:**
+      * A) `$arr[2]`
+      * B) `${arr[2]}`
+      * C) `arr(2)`
+      * D) `$(arr[2])`
+    * **Correct Answer:** B) `${arr[2]}`
+    * **Explanation:** Bash array elements are accessed using `${array_name[index]}` syntax. The braces are required for proper variable expansion.
+
+  * **Q3:** What does the `temp` variable do during a Bubble Sort swap in Bash?
+    * **Options:**
+      * A) Stores the array length
+      * B) Acts as a placeholder to prevent data loss during element exchange
+      * C) Counts the number of swaps
+      * D) Holds the sorted array
+    * **Correct Answer:** B) Acts as a placeholder to prevent data loss during element exchange
+    * **Explanation:** When swapping two values, you must save one to a temporary variable before overwriting it, or you'll lose the original value.
+
+  * **Q4:** Which Bash syntax is used for arithmetic comparison in an `if` statement?
+    * **Options:**
+      * A) `if (arr[j] > arr[j+1])`
+      * B) `if [ arr[j] > arr[j+1] ]`
+      * C) `if [ ${arr[j]} -gt ${arr[$((j+1))]} ]`
+      * D) `if {{ arr[j] > arr[j+1] }}`
+    * **Correct Answer:** C) `if [ ${arr[j]} -gt ${arr[$((j+1))]} ]`
+    * **Explanation:** Bash uses `-gt` for "greater than" in numeric comparisons inside `[ ]`, and `$(( ))` for arithmetic expressions within array indices.
+
+---
+
+# MODULE: 12 — NUMERICAL PROGRAMS
+
+## CHAPTER: 12.1 — Factorial (OS Practical #9)
+
+* **Description:** Write a Bash script to compute the factorial of a given number using loops and recursion, covering the mathematical definition, iterative approach, and recursive functions in shell scripting.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Factorial Computation in Bash
+* **Est. Minutes:** 5
+* **Outline:** Mathematical definition, iterative and recursive implementations in Bash.
+
+* **Instructions (Slides):**
+
+  # Slide 1: What is Factorial?
+  The factorial of a non-negative integer `n` is the product of all positive integers less than or equal to `n`. It is denoted as `n!`.
+
+  **Definition:**
+  ```
+  n! = n × (n-1) × (n-2) × ... × 2 × 1
+  0! = 1  (by convention)
+  ```
+
+  **Examples:**
+  ```
+  5! = 5 × 4 × 3 × 2 × 1 = 120
+  4! = 4 × 3 × 2 × 1 = 24
+  3! = 6
+  1! = 1
+  0! = 1
+  ```
+
+  Factorial grows very rapidly. It is used in permutations, combinations, probability, and algorithm analysis.
+
+  ---
+
+  # Slide 2: Iterative Factorial in Bash
+  The simplest approach is to use a `for` loop to multiply numbers from 1 to n.
+
+  ```bash
+  #!/bin/bash
+  echo "Enter a number:"
+  read n
+
+  fact=1
+  for (( i=1; i<=n; i++ )); do
+      fact=$((fact * i))
+  done
+
+  echo "Factorial of $n = $fact"
+  ```
+
+  **Walkthrough:**
+  - `fact=1` initializes the accumulator (important — NOT 0, as we're multiplying).
+  - The loop starts at `i=1` and goes up to `n`.
+  - Each iteration multiplies `fact` by `i`.
+  - `$(( ))` performs integer arithmetic.
+
+  **Test Run:** Input `5` → Output: `Factorial of 5 = 120`
+
+  ---
+
+  # Slide 3: Handling Edge Cases
+  Your OS practical solution must handle special cases:
+
+  **Case 1 — Zero input:**
+  ```bash
+  if [ $n -eq 0 ]; then
+      echo "Factorial of 0 = 1"
+      exit 0
+  fi
+  ```
+
+  **Case 2 — Negative input:**
+  ```bash
+  if [ $n -lt 0 ]; then
+      echo "Factorial is not defined for negative numbers."
+      exit 1
+  fi
+  ```
+
+  **Complete Robust Script:**
+  ```bash
+  #!/bin/bash
+  echo "Enter a number:"
+  read n
+
+  if [ $n -lt 0 ]; then
+      echo "Error: Negative number not allowed."
+      exit 1
+  fi
+
+  fact=1
+  for (( i=1; i<=n; i++ )); do
+      fact=$((fact * i))
+  done
+
+  echo "Factorial of $n = $fact"
+  ```
+
+  ---
+
+  # Slide 4: Recursive Factorial Using Functions
+  Bash supports functions, and factorial has a natural recursive definition: `n! = n × (n-1)!`
+
+  ```bash
+  #!/bin/bash
+
+  factorial() {
+      local n=$1
+      if [ $n -le 1 ]; then
+          echo 1
+      else
+          local prev=$(factorial $((n - 1)))
+          echo $((n * prev))
+      fi
+  }
+
+  echo "Enter a number:"
+  read num
+  result=$(factorial $num)
+  echo "Factorial of $num = $result"
+  ```
+
+  **Key concepts:**
+  - `local` makes variables function-scoped.
+  - `$1` is the first argument passed to the function.
+  - Command substitution `$(factorial ...)` captures the function's output.
+  - The base case returns 1 for `n <= 1`.
+
+  **Caution:** Bash recursion has a depth limit (~1000 calls). For large factorials, use the iterative approach.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Factorial Script Setup
+* **Est. Minutes:** 5
+* **Outline:** Create the necessary directory and file structure for the factorial program.
+* **Instructions:**
+  1. Create the directory `/home/student/numerical`.
+  2. Create the file `factorial.sh` inside it.
+  3. Make it executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the directory `/home/student/numerical`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/numerical" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create the file `/home/student/numerical/factorial.sh`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/numerical/factorial.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Make `/home/student/numerical/factorial.sh` executable.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -x "/home/student/numerical/factorial.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write the Factorial Script
+* **Est. Minutes:** 8
+* **Outline:** Write, save, and validate an iterative factorial Bash script.
+* **Instructions:**
+  1. Open `/home/student/numerical/factorial.sh` in `nano`.
+  2. Write the iterative factorial script.
+  3. The script must accept input `5` and output `Factorial of 5 = 120`.
+  4. Use `echo "5" | bash /home/student/numerical/factorial.sh` to test non-interactively.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** The file must begin with `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/numerical/factorial.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** The script must use a `for` loop and compute factorial using multiplication (`*`).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "fact" /home/student/numerical/factorial.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Running the script with input `5` must output `120`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "5" | bash /home/student/numerical/factorial.sh 2>/dev/null | grep -q "120" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** Running the script with input `0` must output `1` (0! = 1).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "0" | bash /home/student/numerical/factorial.sh 2>/dev/null | grep -qw "1" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Factorial Concepts Quiz
+* **Est. Minutes:** 3
+* **Outline:** Test understanding of factorial logic in Bash.
+
+* **Questions:**
+
+  * **Q1:** What is the value of `0!` (zero factorial)?
+    * **Options:**
+      * A) 0
+      * B) 1
+      * C) Undefined
+      * D) -1
+    * **Correct Answer:** B) 1
+    * **Explanation:** By mathematical convention, 0! = 1. This serves as the base case for both iterative and recursive implementations.
+
+  * **Q2:** In a Bash factorial loop, why must the accumulator variable be initialized to `1` and not `0`?
+    * **Options:**
+      * A) Because loops start from 1
+      * B) Because multiplying by 0 would always give 0
+      * C) Because `read` defaults to 1
+      * D) Because Bash does not support 0
+    * **Correct Answer:** B) Because multiplying by 0 would always give 0
+    * **Explanation:** Factorial uses multiplication. Any number times 0 is 0. The accumulator starts at 1 (the multiplicative identity) so it does not distort the product.
+
+  * **Q3:** What does `local` do inside a Bash function?
+    * **Options:**
+      * A) Exports the variable to the environment
+      * B) Restricts the variable's scope to the function
+      * C) Makes the variable read-only
+      * D) Declares an integer variable
+    * **Correct Answer:** B) Restricts the variable's scope to the function
+    * **Explanation:** The `local` keyword in Bash functions ensures the variable is not visible outside the function, preventing unintended side effects in recursive calls.
+
+  * **Q4:** What is the output of `echo $((5 * 4 * 3 * 2 * 1))` in Bash?
+    * **Options:**
+      * A) 15
+      * B) 60
+      * C) 120
+      * D) 24
+    * **Correct Answer:** C) 120
+    * **Explanation:** `5 × 4 × 3 × 2 × 1 = 120`, which is 5!. `$(( ))` evaluates arithmetic expressions in Bash.
+
+---
+
+## CHAPTER: 12.2 — String Reversal
+
+* **Description:** Write a Bash script to reverse a string entered by the user, exploring string manipulation techniques including `rev`, parameter expansion, and loop-based character reversal.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** String Reversal Techniques in Bash
+* **Est. Minutes:** 5
+* **Outline:** Multiple methods to reverse strings in Bash — built-in command, loop, and parameter expansion.
+
+* **Instructions (Slides):**
+
+  # Slide 1: What is String Reversal?
+  String reversal means producing a new string that contains all characters of the original string in reverse order.
+
+  **Examples:**
+  ```
+  "hello"   → "olleh"
+  "Linux"   → "xuniL"
+  "racecar" → "racecar"  (palindrome!)
+  "12345"   → "54321"
+  ```
+
+  In Bash, there are several ways to reverse a string:
+  1. Using the `rev` command (simplest).
+  2. Using a `while` loop with character-by-character reading.
+  3. Using `awk` or `sed`.
+  4. Using Bash string slicing in a loop.
+
+  ---
+
+  # Slide 2: Method 1 — Using `rev`
+  The `rev` command reverses each line of text character by character.
+
+  ```bash
+  #!/bin/bash
+  echo "Enter a string:"
+  read str
+  reversed=$(echo "$str" | rev)
+  echo "Reversed: $reversed"
+  ```
+
+  **Output:**
+  ```
+  Enter a string: hello
+  Reversed: olleh
+  ```
+
+  `rev` is available on all standard Linux systems. It is the cleanest and fastest approach. However, in OS practicals, examiners often want you to demonstrate the logic manually.
+
+  ---
+
+  # Slide 3: Method 2 — Loop-Based Reversal
+  This method manually builds the reversed string by iterating through indices.
+
+  ```bash
+  #!/bin/bash
+  echo "Enter a string:"
+  read str
+
+  len=${#str}
+  reversed=""
+
+  for (( i=len-1; i>=0; i-- )); do
+      reversed="${reversed}${str:$i:1}"
+  done
+
+  echo "Reversed: $reversed"
+  ```
+
+  **Key Bash operations used:**
+  - `${#str}` — returns the length of the string.
+  - `${str:$i:1}` — extracts 1 character at position `$i` (substring extraction).
+  - The loop runs from `len-1` down to `0`, appending each character to `reversed`.
+
+  **This is the preferred method for OS exam submissions** as it demonstrates understanding of string operations.
+
+  ---
+
+  # Slide 4: Method 3 — Using `awk`
+  ```bash
+  #!/bin/bash
+  echo "Enter a string:"
+  read str
+
+  reversed=$(echo "$str" | awk '{ for(i=length;i!=0;i--) x=x substr($0,i,1); print x }')
+  echo "Reversed: $reversed"
+  ```
+
+  `awk` iterates from the last character to the first using `length` and `substr()`. This is compact but requires knowledge of `awk` syntax.
+
+  ---
+
+  # Slide 5: Combining String Reversal with Palindrome Check
+  Reversing a string is the first step in palindrome checking (covered in Chapter 12.3). 
+
+  ```bash
+  #!/bin/bash
+  echo "Enter a string:"
+  read str
+
+  # Reverse using loop
+  len=${#str}
+  reversed=""
+  for (( i=len-1; i>=0; i-- )); do
+      reversed="${reversed}${str:$i:1}"
+  done
+
+  echo "Original:  $str"
+  echo "Reversed:  $reversed"
+
+  if [ "$str" = "$reversed" ]; then
+      echo "The string is a Palindrome!"
+  else
+      echo "The string is NOT a Palindrome."
+  fi
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** String Reversal File Setup
+* **Est. Minutes:** 5
+* **Outline:** Create and set up the string reversal script file.
+* **Instructions:**
+  1. Navigate to `/home/student/numerical/`.
+  2. Create `reverse.sh`.
+  3. Make it executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the file `/home/student/numerical/reverse.sh`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/numerical/reverse.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Make `/home/student/numerical/reverse.sh` executable.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -x "/home/student/numerical/reverse.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Use `echo "hello" | rev` in the terminal and verify it outputs `olleh`. (Run it; this tests familiarity with the `rev` command.)
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "hello" | rev | grep -q "olleh" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write the String Reversal Script (Loop Method)
+* **Est. Minutes:** 8
+* **Outline:** Write a loop-based string reversal script without using `rev`.
+* **Instructions:**
+  1. Open `/home/student/numerical/reverse.sh` in `nano` or `vi`.
+  2. Write the script using the loop method (`${str:$i:1}` substring extraction).
+  3. The script must read a string from input and print `Reversed: <reversed_string>`.
+  4. Do NOT use the `rev` command — the examiner wants to see the logic.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** The script must contain `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/numerical/reverse.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** The script must use `${#` for string length or substring indexing (`${str:`).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qE '\$\{#|\$\{str:' /home/student/numerical/reverse.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Running the script with input `hello` must output something containing `olleh`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "hello" | bash /home/student/numerical/reverse.sh 2>/dev/null | grep -q "olleh" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** Running the script with input `Linux` must output something containing `xuniL`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "Linux" | bash /home/student/numerical/reverse.sh 2>/dev/null | grep -q "xuniL" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** String Reversal Concepts Quiz
+* **Est. Minutes:** 3
+* **Outline:** Test understanding of Bash string manipulation techniques.
+
+* **Questions:**
+
+  * **Q1:** What does `${#str}` return in Bash?
+    * **Options:**
+      * A) The first character of `str`
+      * B) The number of characters in `str`
+      * C) The hash of `str`
+      * D) The last character of `str`
+    * **Correct Answer:** B) The number of characters in `str`
+    * **Explanation:** `${#variable}` is the Bash parameter expansion for string length — it returns the number of characters in the variable's value.
+
+  * **Q2:** What does `${str:3:2}` return if `str="Hello"`?
+    * **Options:**
+      * A) `He`
+      * B) `lo`
+      * C) `ll`
+      * D) `llo`
+    * **Correct Answer:** B) `lo`
+    * **Explanation:** `${str:offset:length}` extracts a substring. Starting at index 3 (0-based, which is 'l') with length 2 gives `lo`.
+
+  * **Q3:** Which Linux command reverses a string on the command line?
+    * **Options:**
+      * A) `reverse`
+      * B) `flip`
+      * C) `rev`
+      * D) `invert`
+    * **Correct Answer:** C) `rev`
+    * **Explanation:** `rev` is a standard Unix utility that reverses each line of its input character by character. Usage: `echo "hello" | rev` gives `olleh`.
+
+  * **Q4:** In a loop-based reversal `for (( i=len-1; i>=0; i-- ))`, what does starting `i` at `len-1` achieve?
+    * **Options:**
+      * A) It skips the first character
+      * B) It starts reading from the last character of the string
+      * C) It counts the number of iterations
+      * D) It prevents index overflow
+    * **Correct Answer:** B) It starts reading from the last character of the string
+    * **Explanation:** Since strings are 0-indexed, the last character is at index `length - 1`. By starting `i` there and decrementing, we read characters from last to first, building the reversed string.
+
+---
+
+## CHAPTER: 12.3 — Palindrome (OS Practical #10)
+
+* **Description:** Write a Bash script to check whether a given string or number is a palindrome by comparing it with its reverse, handling both string and numeric input.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Palindrome Detection in Bash
+* **Est. Minutes:** 5
+* **Outline:** Definition, logic, implementation using string reversal, and handling of numbers.
+
+* **Instructions (Slides):**
+
+  # Slide 1: What is a Palindrome?
+  A palindrome is a string (or number) that reads the same forwards and backwards.
+
+  **String Palindromes:**
+  ```
+  "racecar"  → reversed: "racecar"  → IS a palindrome
+  "madam"    → reversed: "madam"    → IS a palindrome
+  "hello"    → reversed: "olleh"    → NOT a palindrome
+  "level"    → reversed: "level"    → IS a palindrome
+  ```
+
+  **Numeric Palindromes:**
+  ```
+  121   → reversed: 121  → IS a palindrome
+  1331  → reversed: 1331 → IS a palindrome
+  12345 → reversed: 54321 → NOT a palindrome
+  ```
+
+  The logic is identical for both: reverse the input and compare it to the original.
+
+  ---
+
+  # Slide 2: Palindrome Check Algorithm
+  ```
+  1. Read input (str)
+  2. Reverse str → reversed
+  3. If str == reversed:
+       Print "Palindrome"
+     Else:
+       Print "Not a Palindrome"
+  ```
+
+  The key operation is step 2 — reversal. We already learned how to do this in Chapter 12.2.
+
+  ---
+
+  # Slide 3: Complete Palindrome Script
+  ```bash
+  #!/bin/bash
+  echo "Enter a string or number:"
+  read str
+
+  # Reverse the string
+  len=${#str}
+  reversed=""
+  for (( i=len-1; i>=0; i-- )); do
+      reversed="${reversed}${str:$i:1}"
+  done
+
+  # Compare
+  if [ "$str" = "$reversed" ]; then
+      echo "$str is a Palindrome."
+  else
+      echo "$str is NOT a Palindrome."
+  fi
+  ```
+
+  **Test Cases:**
+  ```
+  Input: madam   → Output: madam is a Palindrome.
+  Input: hello   → Output: hello is NOT a Palindrome.
+  Input: 121     → Output: 121 is a Palindrome.
+  Input: 12345   → Output: 12345 is NOT a Palindrome.
+  ```
+
+  ---
+
+  # Slide 4: Case-Insensitive Palindrome Check
+  For more robust checks, you may want `"Racecar"` to be detected as a palindrome even with mixed case.
+
+  ```bash
+  #!/bin/bash
+  echo "Enter a string:"
+  read str
+
+  # Convert to lowercase
+  lower=$(echo "$str" | tr '[:upper:]' '[:lower:]')
+
+  # Reverse
+  reversed=$(echo "$lower" | rev)
+
+  if [ "$lower" = "$reversed" ]; then
+      echo "$str is a Palindrome (case-insensitive)."
+  else
+      echo "$str is NOT a Palindrome."
+  fi
+  ```
+
+  `tr '[:upper:]' '[:lower:]'` converts the string to lowercase before comparison.
+
+  ---
+
+  # Slide 5: Common Mistakes to Avoid
+  1. **Not quoting the string variable:** Always use `"$str"` in comparisons, not `$str`, to handle strings with spaces.
+  2. **Using `-eq` instead of `=`:** `-eq` is for numeric comparison; `=` is for string comparison.
+  3. **Off-by-one in the loop:** The loop must start at `len-1`, not `len`, to avoid accessing an out-of-bounds index.
+  4. **Forgetting to initialize `reversed=""`:** Without initialization, the variable may contain garbage from a previous run.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Palindrome Script Setup
+* **Est. Minutes:** 5
+* **Outline:** Create and prepare the palindrome script file.
+* **Instructions:**
+  1. Navigate to `/home/student/numerical/`.
+  2. Create `palindrome.sh` and make it executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the file `/home/student/numerical/palindrome.sh`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/numerical/palindrome.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Make `/home/student/numerical/palindrome.sh` executable.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -x "/home/student/numerical/palindrome.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write the Palindrome Check Script
+* **Est. Minutes:** 8
+* **Outline:** Write a complete palindrome detection script.
+* **Instructions:**
+  1. Open `/home/student/numerical/palindrome.sh`.
+  2. Write the complete script using the loop-based reversal method.
+  3. The script must print whether the input is or is not a palindrome.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** The file must start with `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/numerical/palindrome.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** The script must contain a comparison between the original and reversed string.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "reversed" /home/student/numerical/palindrome.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Running the script with input `madam` must output something containing `Palindrome`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "madam" | bash /home/student/numerical/palindrome.sh 2>/dev/null | grep -qi "palindrome" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** Running the script with input `hello` must output something containing `NOT`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "hello" | bash /home/student/numerical/palindrome.sh 2>/dev/null | grep -qi "not" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Palindrome Concepts Quiz
+* **Est. Minutes:** 3
+* **Outline:** Test understanding of palindrome detection logic.
+
+* **Questions:**
+
+  * **Q1:** Which of the following is a palindrome?
+    * **Options:**
+      * A) hello
+      * B) world
+      * C) racecar
+      * D) linux
+    * **Correct Answer:** C) racecar
+    * **Explanation:** "racecar" spelled backwards is still "racecar", making it a palindrome. The others produce different strings when reversed.
+
+  * **Q2:** In Bash, which operator correctly compares two strings for equality?
+    * **Options:**
+      * A) `-eq`
+      * B) `==` (inside `[[ ]]`)
+      * C) `=` (inside `[ ]`)
+      * D) Both B and C
+    * **Correct Answer:** D) Both B and C
+    * **Explanation:** `=` works inside `[ ]` (POSIX test), while `==` works inside `[[ ]]` (Bash extended test). Both are correct for string comparison in their respective contexts.
+
+  * **Q3:** What is the palindrome check's core logic?
+    * **Options:**
+      * A) Check if the string has even length
+      * B) Compare the string to its reverse
+      * C) Count vowels and consonants
+      * D) Check if all characters are the same
+    * **Correct Answer:** B) Compare the string to its reverse
+    * **Explanation:** A palindrome is defined as a string that equals its own reverse. The algorithm reverses the string and compares the result to the original.
+
+  * **Q4:** Is `121` a palindrome?
+    * **Options:**
+      * A) No, because it is a number not a string
+      * B) Yes, because 121 reversed is still 121
+      * C) No, because it has odd digits
+      * D) Yes, because all digits are the same
+    * **Correct Answer:** B) Yes, because 121 reversed is still 121
+    * **Explanation:** The palindrome logic works on the string representation of a number. The string "121" reversed is "121" — identical, so it is a palindrome.
+
+---
+
+## CHAPTER: 12.4 — Quadratic Equation (OS Practical #11)
+
+* **Description:** Write a Bash script to solve a quadratic equation `ax² + bx + c = 0` using the discriminant formula, handling real, equal, and complex roots.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Solving Quadratic Equations in Bash
+* **Est. Minutes:** 5
+* **Outline:** Quadratic formula, discriminant analysis, integer arithmetic limitations in Bash, and use of `bc` for floating-point math.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The Quadratic Formula
+  A quadratic equation takes the form: `ax² + bx + c = 0`
+
+  The roots are found using the **quadratic formula**:
+  ```
+  x = (-b ± √(b² - 4ac)) / 2a
+  ```
+
+  The expression under the square root is called the **discriminant**: `D = b² - 4ac`
+
+  **Three Cases Based on D:**
+  | Discriminant | Root Type |
+  |---|---|
+  | D > 0 | Two distinct real roots |
+  | D = 0 | Two equal real roots |
+  | D < 0 | Two complex (imaginary) roots |
+
+  ---
+
+  # Slide 2: Why We Need `bc` for This
+  Bash only handles **integer arithmetic** natively. Quadratic equations require:
+  - Floating-point division (e.g., `-3 / 2 = -1.5`)
+  - Square roots (e.g., `√5 = 2.236...`)
+
+  The `bc` (Basic Calculator) command handles arbitrary-precision arithmetic:
+
+  ```bash
+  # Square root of 25
+  echo "scale=2; sqrt(25)" | bc   # → 5.00
+
+  # Division with decimal
+  echo "scale=4; 7/3" | bc        # → 2.3333
+
+  # Complex expression
+  echo "scale=2; (-3 + sqrt(5)) / 2" | bc
+  ```
+
+  `scale=N` sets the number of decimal places.
+
+  ---
+
+  # Slide 3: Bash Quadratic Solver — Full Script
+  ```bash
+  #!/bin/bash
+  echo "Enter coefficients a, b, c (for ax^2 + bx + c = 0):"
+  read a b c
+
+  # Calculate discriminant (using integer arithmetic for comparison)
+  D=$((b*b - 4*a*c))
+
+  echo "Discriminant (D) = $D"
+
+  if [ $D -gt 0 ]; then
+      echo "Two distinct real roots:"
+      r1=$(echo "scale=4; (-$b + sqrt($D)) / (2*$a)" | bc)
+      r2=$(echo "scale=4; (-$b - sqrt($D)) / (2*$a)" | bc)
+      echo "Root 1 = $r1"
+      echo "Root 2 = $r2"
+  elif [ $D -eq 0 ]; then
+      echo "Two equal real roots:"
+      r=$(echo "scale=4; -$b / (2*$a)" | bc)
+      echo "Root = $r"
+  else
+      echo "Complex roots (no real solution):"
+      real=$(echo "scale=4; -$b / (2*$a)" | bc)
+      D_abs=$((-D))
+      imag=$(echo "scale=4; sqrt($D_abs) / (2*$a)" | bc)
+      echo "Root 1 = $real + ${imag}i"
+      echo "Root 2 = $real - ${imag}i"
+  fi
+  ```
+
+  ---
+
+  # Slide 4: Walkthrough for Each Case
+
+  **Case 1 — D > 0 (Two Real Roots):**
+  Input: `a=1, b=-5, c=6` → D = 25-24 = 1 → Roots: 3 and 2
+
+  **Case 2 — D = 0 (Equal Roots):**
+  Input: `a=1, b=-4, c=4` → D = 16-16 = 0 → Root: 2
+
+  **Case 3 — D < 0 (Complex Roots):**
+  Input: `a=1, b=2, c=5` → D = 4-20 = -16 → Roots: -1 ± 2i
+
+  ---
+
+  # Slide 5: Input Validation
+  For a robust practical submission, validate that `a != 0`:
+
+  ```bash
+  if [ $a -eq 0 ]; then
+      echo "Error: Coefficient 'a' cannot be zero (not a quadratic equation)."
+      exit 1
+  fi
+  ```
+
+  When `a = 0`, the equation becomes linear (`bx + c = 0`), not quadratic.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Quadratic Equation Script Setup
+* **Est. Minutes:** 5
+* **Outline:** Create and prepare the quadratic equation script file.
+* **Instructions:**
+  1. Navigate to `/home/student/numerical/`.
+  2. Create `quadratic.sh` and make it executable.
+  3. Verify `bc` is available on the system.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the file `/home/student/numerical/quadratic.sh`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/numerical/quadratic.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Make `/home/student/numerical/quadratic.sh` executable.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -x "/home/student/numerical/quadratic.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Verify the `bc` command is available by running `which bc`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `which bc > /dev/null 2>&1 && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write the Quadratic Equation Solver
+* **Est. Minutes:** 8
+* **Outline:** Write a full quadratic equation solver that handles all three discriminant cases.
+* **Instructions:**
+  1. Open `/home/student/numerical/quadratic.sh`.
+  2. Write the complete solver with all three cases (D > 0, D = 0, D < 0).
+  3. Use `bc` for floating-point computation and square roots.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** The script must contain `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/numerical/quadratic.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** The script must use `bc` for computation.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "bc" /home/student/numerical/quadratic.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** The script must handle the discriminant (`b*b - 4*a*c` or similar).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qE "b\*b|4\*a\*c|\bD\b" /home/student/numerical/quadratic.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 4:**
+    * **Instruction:** Running the script with `a=1, b=-5, c=6` must output roots containing `3` and `2`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "1 -5 6" | bash /home/student/numerical/quadratic.sh 2>/dev/null | grep -q "3" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Quadratic Equation Concepts Quiz
+* **Est. Minutes:** 3
+* **Outline:** Test understanding of quadratic solving concepts and Bash `bc` usage.
+
+* **Questions:**
+
+  * **Q1:** What does a discriminant of `D = 0` indicate?
+    * **Options:**
+      * A) Two distinct real roots
+      * B) No real roots
+      * C) Two equal real roots
+      * D) One real and one complex root
+    * **Correct Answer:** C) Two equal real roots
+    * **Explanation:** When D = 0, the formula gives `x = -b / 2a` for both roots, so both roots are identical (equal).
+
+  * **Q2:** Why is `bc` needed for quadratic equation solving in Bash?
+    * **Options:**
+      * A) Bash cannot read numbers
+      * B) Bash's `$(( ))` only handles integers; `bc` handles floating-point and square roots
+      * C) `bc` is faster than Bash
+      * D) The quadratic formula requires text processing
+    * **Correct Answer:** B) Bash's `$(( ))` only handles integers; `bc` handles floating-point and square roots
+    * **Explanation:** Quadratic solutions often involve decimal values and square roots, which native Bash integer arithmetic cannot compute. `bc` provides arbitrary-precision math including `sqrt()`.
+
+  * **Q3:** What is the discriminant for `x² + 4x + 4 = 0`?
+    * **Options:**
+      * A) 16
+      * B) -16
+      * C) 0
+      * D) 8
+    * **Correct Answer:** C) 0
+    * **Explanation:** D = b² - 4ac = 4² - 4(1)(4) = 16 - 16 = 0. This equation has equal roots (x = -2 repeated).
+
+  * **Q4:** What does `echo "scale=2; sqrt(16)" | bc` output?
+    * **Options:**
+      * A) 4
+      * B) 4.00
+      * C) 2.00
+      * D) 8.00
+    * **Correct Answer:** B) 4.00
+    * **Explanation:** `scale=2` sets 2 decimal places, and the square root of 16 is 4. With `scale=2`, `bc` outputs `4.00`.
+
+---
+
+# MODULE: 13 — MENU DRIVEN SYSTEMS
+
+## CHAPTER: 13.1 — Case Statement
+
+* **Description:** Learn to build interactive menu-driven programs in Bash using the `case` statement, `while` loops for continuous menus, and structured user interaction patterns.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Menu-Driven Programs with case Statement
+* **Est. Minutes:** 5
+* **Outline:** `case` syntax, pattern matching, default cases, infinite menus with `while`, and best practices.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The `case` Statement in Bash
+  The `case` statement is Bash's equivalent of a switch-case in C/Java. It matches a variable against a list of patterns and executes the matching block.
+
+  **Syntax:**
+  ```bash
+  case $variable in
+      pattern1)
+          # commands
+          ;;
+      pattern2)
+          # commands
+          ;;
+      *)
+          # default case
+          ;;
+  esac
+  ```
+
+  **Key rules:**
+  - Each pattern ends with `)`.
+  - Each block ends with `;;`.
+  - `*` is the catch-all (default) pattern.
+  - `case` ends with `esac` (case reversed).
+
+  ---
+
+  # Slide 2: Simple Calculator Menu Example
+  ```bash
+  #!/bin/bash
+  echo "Simple Calculator"
+  echo "1. Addition"
+  echo "2. Subtraction"
+  echo "3. Multiplication"
+  echo "4. Division"
+  echo "Enter your choice:"
+  read choice
+
+  echo "Enter two numbers:"
+  read a b
+
+  case $choice in
+      1) echo "Result: $((a + b))" ;;
+      2) echo "Result: $((a - b))" ;;
+      3) echo "Result: $((a * b))" ;;
+      4)
+          if [ $b -ne 0 ]; then
+              echo "Result: $(echo "scale=2; $a/$b" | bc)"
+          else
+              echo "Error: Division by zero!"
+          fi
+          ;;
+      *) echo "Invalid choice!" ;;
+  esac
+  ```
+
+  ---
+
+  # Slide 3: Looping Menu with `while`
+  A real menu-driven system keeps showing the menu until the user chooses to exit:
+
+  ```bash
+  #!/bin/bash
+  while true; do
+      echo "===================="
+      echo "   MAIN MENU        "
+      echo "===================="
+      echo "1. Say Hello"
+      echo "2. Show Date"
+      echo "3. Show Uptime"
+      echo "4. Exit"
+      echo "Enter choice:"
+      read choice
+
+      case $choice in
+          1) echo "Hello, World!" ;;
+          2) date ;;
+          3) uptime ;;
+          4) echo "Goodbye!"; exit 0 ;;
+          *) echo "Invalid option. Try again." ;;
+      esac
+
+      echo ""
+  done
+  ```
+
+  `while true` creates an infinite loop. `exit 0` breaks out when the user selects "Exit".
+
+  ---
+
+  # Slide 4: Pattern Matching in `case`
+  `case` supports flexible pattern matching:
+
+  ```bash
+  case $answer in
+      [Yy] | [Yy][Ee][Ss])
+          echo "You said Yes"
+          ;;
+      [Nn] | [Nn][Oo])
+          echo "You said No"
+          ;;
+      *)
+          echo "Unknown response"
+          ;;
+  esac
+  ```
+
+  - `[Yy]` matches either `Y` or `y`.
+  - `|` allows multiple patterns for the same block.
+  - `[Yy][Ee][Ss]` matches any capitalisation of "yes".
+
+  ---
+
+  # Slide 5: Best Practices for Menu Systems
+  1. **Always have a default `*` case** to handle invalid input gracefully.
+  2. **Clear the screen** between menu iterations using `clear` for better UX.
+  3. **Validate numeric input** before using it in calculations.
+  4. **Use functions** for each menu option's logic to keep the script clean.
+  5. **Provide an exit option** that terminates the loop cleanly.
+
+  ```bash
+  show_menu() {
+      echo "1. Option A"
+      echo "2. Option B"
+      echo "3. Exit"
+  }
+
+  while true; do
+      show_menu
+      read choice
+      case $choice in
+          1) do_option_a ;;
+          2) do_option_b ;;
+          3) break ;;
+          *) echo "Invalid" ;;
+      esac
+  done
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Menu Script File Setup
+* **Est. Minutes:** 5
+* **Outline:** Create the directory and file for menu-driven programs.
+* **Instructions:**
+  1. Create directory `/home/student/menu`.
+  2. Create `calculator_menu.sh` inside it.
+  3. Make it executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the directory `/home/student/menu`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/menu" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create the file `/home/student/menu/calculator_menu.sh`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/menu/calculator_menu.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Make `/home/student/menu/calculator_menu.sh` executable.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -x "/home/student/menu/calculator_menu.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write the Calculator Menu Script
+* **Est. Minutes:** 8
+* **Outline:** Write a menu-driven calculator using `case` with at least 4 arithmetic options.
+* **Instructions:**
+  1. Open `/home/student/menu/calculator_menu.sh`.
+  2. Write a menu-driven calculator that offers: Addition, Subtraction, Multiplication, Division, and Exit.
+  3. Use a `while true` loop for repeated menu display.
+  4. Use `case` for choice handling.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** The file must contain `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/menu/calculator_menu.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** The script must contain a `case` statement.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "case" /home/student/menu/calculator_menu.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** The script must contain a `while` loop.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "while" /home/student/menu/calculator_menu.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 4:**
+    * **Instruction:** The script must contain `esac` (end of case statement).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "esac" /home/student/menu/calculator_menu.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Case Statement Concepts Quiz
+* **Est. Minutes:** 3
+* **Outline:** Test understanding of `case` syntax and menu design.
+
+* **Questions:**
+
+  * **Q1:** What keyword ends a `case` block in Bash?
+    * **Options:**
+      * A) `end`
+      * B) `done`
+      * C) `esac`
+      * D) `fi`
+    * **Correct Answer:** C) `esac`
+    * **Explanation:** `esac` (case spelled backwards) is the closing keyword for a `case` statement in Bash, just as `fi` closes `if` and `done` closes loops.
+
+  * **Q2:** What does `;;` mean inside a `case` block?
+    * **Options:**
+      * A) End of the entire case statement
+      * B) Comment line
+      * C) End of a case branch (like `break` in C switch)
+      * D) Start of a new case
+    * **Correct Answer:** C) End of a case branch (like `break` in C switch)
+    * **Explanation:** `;;` terminates each individual pattern match block in a `case` statement, preventing fall-through to the next case.
+
+  * **Q3:** Which pattern in a `case` statement acts as the "default" catch-all?
+    * **Options:**
+      * A) `default)`
+      * B) `else)`
+      * C) `*)`
+      * D) `any)`
+    * **Correct Answer:** C) `*)`
+    * **Explanation:** In Bash `case` statements, `*)` is a glob pattern that matches any string. It is placed last to act as the default when no other pattern matches.
+
+  * **Q4:** How do you create a continuously repeating menu in Bash?
+    * **Options:**
+      * A) `repeat { menu } until exit`
+      * B) `for menu in true`
+      * C) `while true; do ... done` with an `exit` or `break` option
+      * D) `loop menu; end`
+    * **Correct Answer:** C) `while true; do ... done` with an `exit` or `break` option
+    * **Explanation:** `while true` creates an infinite loop. The menu is displayed and processed inside the loop. An exit option using `exit 0` or `break` terminates the loop when the user is done.
+
+---
+
+## CHAPTER: 13.2 — File-Based Record Storage
+
+* **Description:** Learn to store, retrieve, and manage structured records in flat text files using Bash — including append, search, display, and delete operations on file-based data.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** File-Based Record Storage in Bash
+* **Est. Minutes:** 5
+* **Outline:** Flat file databases, delimiter-separated records, CRUD operations using shell commands.
+
+* **Instructions (Slides):**
+
+  # Slide 1: What is File-Based Record Storage?
+  In shell scripting, a simple "database" is typically a plain text file where each line represents one record, and fields within each record are separated by a delimiter (usually `:` or `,`).
+
+  **Example — Employee Record File (`employees.txt`):**
+  ```
+  1001:John Smith:Developer:55000
+  1002:Jane Doe:Manager:75000
+  1003:Bob Johnson:Analyst:48000
+  ```
+
+  **Format:** `ID:Name:Role:Salary`
+
+  This is similar to how `/etc/passwd` stores user accounts in Linux:
+  ```
+  root:x:0:0:root:/root:/bin/bash
+  ```
+
+  ---
+
+  # Slide 2: Adding Records (Create)
+  To add a record, simply append a new line to the file:
+
+  ```bash
+  echo "1004:Alice Brown:Designer:52000" >> employees.txt
+  ```
+
+  Or dynamically with user input:
+  ```bash
+  echo "Enter ID, Name, Role, Salary:"
+  read id name role salary
+  echo "$id:$name:$role:$salary" >> /home/student/employees.txt
+  echo "Record added."
+  ```
+
+  `>>` appends to the file without overwriting existing content. `>` would overwrite.
+
+  ---
+
+  # Slide 3: Displaying Records (Read)
+  **Show all records:**
+  ```bash
+  cat /home/student/employees.txt
+  ```
+
+  **Show with formatted output using `awk`:**
+  ```bash
+  awk -F: '{printf "ID: %s | Name: %-15s | Role: %-12s | Salary: %s\n", $1,$2,$3,$4}' /home/student/employees.txt
+  ```
+
+  **Show a specific record by ID:**
+  ```bash
+  echo "Enter ID to search:"
+  read search_id
+  grep "^$search_id:" /home/student/employees.txt
+  ```
+
+  `^$search_id:` uses `grep` to match lines starting with the ID followed by `:`.
+
+  ---
+
+  # Slide 4: Searching Records (Search)
+  ```bash
+  echo "Enter name to search:"
+  read name
+  result=$(grep -i "$name" /home/student/employees.txt)
+
+  if [ -z "$result" ]; then
+      echo "No record found for '$name'."
+  else
+      echo "Found:"
+      echo "$result"
+  fi
+  ```
+
+  `-i` makes the search case-insensitive. `-z` checks if a string is empty.
+
+  ---
+
+  # Slide 5: Deleting Records (Delete)
+  Deletion in a flat file requires rewriting the file without the target line. Use `grep -v` to exclude matching lines:
+
+  ```bash
+  echo "Enter ID to delete:"
+  read del_id
+
+  if grep -q "^$del_id:" /home/student/employees.txt; then
+      grep -v "^$del_id:" /home/student/employees.txt > /tmp/temp_emp.txt
+      mv /tmp/temp_emp.txt /home/student/employees.txt
+      echo "Record deleted."
+  else
+      echo "Record not found."
+  fi
+  ```
+
+  - `grep -v` inverts the match (keeps all lines that do NOT match).
+  - Writing to a temp file and then moving it is the safest pattern to avoid data corruption.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Record Storage File Setup
+* **Est. Minutes:** 5
+* **Outline:** Create the data directory and initial employee file for record storage practice.
+* **Instructions:**
+  1. Create the directory `/home/student/records`.
+  2. Create an empty file `employees.txt` in it.
+  3. Manually add one record to the file using `echo >>`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the directory `/home/student/records`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/records" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create the file `/home/student/records/employees.txt`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/records/employees.txt" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Append the line `1001:John Smith:Developer:55000` to `/home/student/records/employees.txt`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "1001:John Smith" /home/student/records/employees.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write the Record Management Script
+* **Est. Minutes:** 8
+* **Outline:** Write a Bash script with functions for add, view, search, and delete operations on a flat file.
+* **Instructions:**
+  1. Create `/home/student/records/manage.sh`.
+  2. Implement functions: `add_record`, `view_records`, `search_record`, `delete_record`.
+  3. Call each function from a `case` menu.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** The file `/home/student/records/manage.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/records/manage.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** The script must contain `grep` for search/delete operations.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "grep" /home/student/records/manage.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** The script must use `>>` for appending new records to the file.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q ">>" /home/student/records/manage.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 4:**
+    * **Instruction:** The script must contain a `case` statement for the menu.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "case" /home/student/records/manage.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** File-Based Record Storage Quiz
+* **Est. Minutes:** 3
+* **Outline:** Test understanding of file-based CRUD in Bash.
+
+* **Questions:**
+
+  * **Q1:** What does the `>>` operator do in Bash?
+    * **Options:**
+      * A) Overwrites the file with new content
+      * B) Appends content to the end of the file
+      * C) Reads from the file
+      * D) Deletes the file
+    * **Correct Answer:** B) Appends content to the end of the file
+    * **Explanation:** `>>` is the append redirection operator. It adds content to the end of a file without deleting existing content. `>` would overwrite the file.
+
+  * **Q2:** How does `grep -v "pattern" file.txt` differ from `grep "pattern" file.txt`?
+    * **Options:**
+      * A) `-v` makes the search case-insensitive
+      * B) `-v` prints only lines that do NOT match the pattern (inverts the match)
+      * C) `-v` searches recursively
+      * D) `-v` outputs line numbers
+    * **Correct Answer:** B) `-v` prints only lines that do NOT match the pattern (inverts the match)
+    * **Explanation:** `grep -v` inverts the match — it outputs all lines that do NOT contain the pattern. This is useful for "deleting" a record by recreating the file without the unwanted line.
+
+  * **Q3:** Which delimiter is commonly used in Linux flat file "databases" (like `/etc/passwd`)?
+    * **Options:**
+      * A) `,`
+      * B) `|`
+      * C) `:`
+      * D) `\t`
+    * **Correct Answer:** C) `:`
+    * **Explanation:** The colon (`:`) is the traditional field separator in Linux system files like `/etc/passwd` and `/etc/group`. While comma and tab are used in other contexts, colon is the Linux convention.
+
+  * **Q4:** Why do we write deletion output to a temp file before replacing the original?
+    * **Options:**
+      * A) For faster I/O
+      * B) To avoid data loss if redirecting to the same file being read
+      * C) Because `grep -v` requires a temp file
+      * D) To keep a backup automatically
+    * **Correct Answer:** B) To avoid data loss if redirecting to the same file being read
+    * **Explanation:** You cannot safely redirect output to the same file you're reading (e.g., `grep -v ... file > file` truncates the file before reading). Writing to a temp file and then moving it is the safe pattern.
+
+---
+
+## CHAPTER: 13.3 — Employee Management System (OS Practical #12)
+
+* **Description:** Build a complete, interactive Employee Management System in Bash that integrates menu-driven UI, file-based record storage, and CRUD operations — the most comprehensive OS practical program.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Designing an Employee Management System in Bash
+* **Est. Minutes:** 5
+* **Outline:** System design, function decomposition, data format, complete CRUD implementation.
+
+* **Instructions (Slides):**
+
+  # Slide 1: System Overview
+  An Employee Management System (EMS) allows a user to:
+  - **Add** a new employee record
+  - **View** all employee records
+  - **Search** for an employee by ID or name
+  - **Delete** an employee record
+  - **Update** an employee's details (advanced)
+  - **Exit** the system
+
+  This is a comprehensive program that combines all skills learned in Module 13: menus, file storage, functions, loops, and case statements.
+
+  **Data file:** `/home/student/ems/employees.dat`
+  **Format:** `EmpID:Name:Department:Salary`
+
+  ---
+
+  # Slide 2: System Architecture
+  A well-structured EMS uses **functions** for each operation:
+
+  ```
+  main()
+    └── show_menu()
+         ├── 1 → add_employee()
+         ├── 2 → view_employees()
+         ├── 3 → search_employee()
+         ├── 4 → delete_employee()
+         └── 5 → exit
+  ```
+
+  Each function is independent and testable. The `main` function ties them together with a loop and case statement.
+
+  Data is persisted to a file between sessions — the system reloads it each time.
+
+  ---
+
+  # Slide 3: Core Functions — Add and View
+  ```bash
+  DATA_FILE="/home/student/ems/employees.dat"
+
+  add_employee() {
+      echo "Enter Employee ID:"
+      read emp_id
+      # Check for duplicate
+      if grep -q "^$emp_id:" "$DATA_FILE" 2>/dev/null; then
+          echo "Error: Employee ID already exists."
+          return
+      fi
+      echo "Enter Name:"
+      read name
+      echo "Enter Department:"
+      read dept
+      echo "Enter Salary:"
+      read salary
+      echo "$emp_id:$name:$dept:$salary" >> "$DATA_FILE"
+      echo "Employee added successfully."
+  }
+
+  view_employees() {
+      if [ ! -s "$DATA_FILE" ]; then
+          echo "No records found."
+          return
+      fi
+      echo "============================================"
+      printf "%-8s %-20s %-15s %-10s\n" "ID" "Name" "Department" "Salary"
+      echo "============================================"
+      while IFS=: read -r id name dept salary; do
+          printf "%-8s %-20s %-15s %-10s\n" "$id" "$name" "$dept" "$salary"
+      done < "$DATA_FILE"
+      echo "============================================"
+  }
+  ```
+
+  ---
+
+  # Slide 4: Core Functions — Search and Delete
+  ```bash
+  search_employee() {
+      echo "Enter Employee ID or Name to search:"
+      read query
+      result=$(grep -i "$query" "$DATA_FILE" 2>/dev/null)
+      if [ -z "$result" ]; then
+          echo "No employee found matching '$query'."
+      else
+          echo "Search Results:"
+          echo "$result" | while IFS=: read -r id name dept salary; do
+              printf "ID: %s | Name: %s | Dept: %s | Salary: %s\n" "$id" "$name" "$dept" "$salary"
+          done
+      fi
+  }
+
+  delete_employee() {
+      echo "Enter Employee ID to delete:"
+      read del_id
+      if grep -q "^$del_id:" "$DATA_FILE" 2>/dev/null; then
+          grep -v "^$del_id:" "$DATA_FILE" > /tmp/emp_temp.dat
+          mv /tmp/emp_temp.dat "$DATA_FILE"
+          echo "Employee $del_id deleted successfully."
+      else
+          echo "Employee ID $del_id not found."
+      fi
+  }
+  ```
+
+  ---
+
+  # Slide 5: Main Menu and Entry Point
+  ```bash
+  mkdir -p /home/student/ems
+  touch "$DATA_FILE"
+
+  while true; do
+      clear
+      echo "=============================="
+      echo "  EMPLOYEE MANAGEMENT SYSTEM  "
+      echo "=============================="
+      echo " 1. Add Employee"
+      echo " 2. View All Employees"
+      echo " 3. Search Employee"
+      echo " 4. Delete Employee"
+      echo " 5. Exit"
+      echo "=============================="
+      echo -n "Enter choice [1-5]: "
+      read choice
+
+      case $choice in
+          1) add_employee ;;
+          2) view_employees ;;
+          3) search_employee ;;
+          4) delete_employee ;;
+          5) echo "Exiting EMS. Goodbye!"; exit 0 ;;
+          *) echo "Invalid choice. Press Enter to continue."; read ;;
+      esac
+      echo; echo "Press Enter to continue..."; read
+  done
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** EMS Directory and File Setup
+* **Est. Minutes:** 5
+* **Outline:** Set up the EMS directory structure and initial data file.
+* **Instructions:**
+  1. Create the directory `/home/student/ems`.
+  2. Create the data file `employees.dat` inside it.
+  3. Create the script file `ems.sh` inside it and make it executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the directory `/home/student/ems`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/ems" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create the data file `/home/student/ems/employees.dat`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/ems/employees.dat" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Create the script file `/home/student/ems/ems.sh` and make it executable.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -f "/home/student/ems/ems.sh" ] && [ -x "/home/student/ems/ems.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write the Complete Employee Management System
+* **Est. Minutes:** 8
+* **Outline:** Write the full EMS script with all four CRUD functions and a looping menu.
+* **Instructions:**
+  1. Open `/home/student/ems/ems.sh`.
+  2. Write the full EMS with functions: `add_employee`, `view_employees`, `search_employee`, `delete_employee`.
+  3. Use `DATA_FILE="/home/student/ems/employees.dat"` as the data store.
+  4. Implement the `while true` loop with `case` menu.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** The script must contain `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/ems/ems.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** The script must define the `add_employee` function.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "add_employee" /home/student/ems/ems.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** The script must define the `delete_employee` function.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "delete_employee" /home/student/ems/ems.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 4:**
+    * **Instruction:** The script must reference the data file path (contain `employees.dat`).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "employees.dat" /home/student/ems/ems.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 5:**
+    * **Instruction:** Simulate adding an employee: echo test data to the data file and verify it's searchable.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "9001:Test User:IT:60000" >> /home/student/ems/employees.dat && grep -q "9001" /home/student/ems/employees.dat && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Employee Management System Concepts Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehensive test on EMS design and implementation.
+
+* **Questions:**
+
+  * **Q1:** In the EMS, what does `IFS=:` do in `while IFS=: read -r id name dept salary`?
+    * **Options:**
+      * A) Sets the line ending to `:`
+      * B) Sets the Input Field Separator to `:`, splitting each line on colons into variables
+      * C) Ignores colons when reading
+      * D) Makes the read command case-sensitive
+    * **Correct Answer:** B) Sets the Input Field Separator to `:`, splitting each line on colons into variables
+    * **Explanation:** `IFS=:` temporarily sets the field separator to colon. When `read` processes each line, it splits on `:` and assigns each field to the corresponding variable (id, name, dept, salary).
+
+  * **Q2:** What does `-s` test for in `[ ! -s "$DATA_FILE" ]`?
+    * **Options:**
+      * A) The file is a symbolic link
+      * B) The file exists AND has a size greater than zero
+      * C) The file has special permissions
+      * D) The file is a socket
+    * **Correct Answer:** B) The file exists AND has a size greater than zero
+    * **Explanation:** `-s` in Bash test expressions returns true if the file exists AND is not empty (has size > 0). `! -s` means the file is empty or does not exist — useful for checking "no records" conditions.
+
+  * **Q3:** Why use `2>/dev/null` in commands like `grep -q "^$emp_id:" "$DATA_FILE" 2>/dev/null`?
+    * **Options:**
+      * A) To speed up the search
+      * B) To suppress error messages (e.g., if the file doesn't exist yet)
+      * C) To send output to the null device for storage
+      * D) To enable regex matching
+    * **Correct Answer:** B) To suppress error messages (e.g., if the file doesn't exist yet)
+    * **Explanation:** `2>/dev/null` redirects stderr (file descriptor 2) to `/dev/null`, discarding error messages. If the data file hasn't been created yet, the `grep` would normally print an error — this suppresses it gracefully.
+
+  * **Q4:** What is the advantage of using a function-based architecture for EMS?
+    * **Options:**
+      * A) Functions make scripts run faster
+      * B) Functions allow each operation to be independently written, tested, and reused
+      * C) Functions are required by Bash for file I/O
+      * D) Functions automatically handle user input
+    * **Correct Answer:** B) Functions allow each operation to be independently written, tested, and reused
+    * **Explanation:** Functions decompose a complex script into manageable, testable units. Each operation (add, view, search, delete) is self-contained, making the code easier to understand, debug, and extend.
+
+---
+
+# MODULE: 14 — FINAL PRACTICAL PREPARATION
+
+## CHAPTER: 14.1 — File Processing Mini Project
+
+* **Description:** Build a complete file processing script that demonstrates reading, filtering, counting, and summarizing data from text files — integrating skills from all previous modules.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** File Processing Patterns in Bash
+* **Est. Minutes:** 5
+* **Outline:** Reading files line by line, counting, filtering with conditions, generating summary reports.
+
+* **Instructions (Slides):**
+
+  # Slide 1: File Processing Concepts
+  File processing in Bash involves:
+  1. **Reading** a file line by line or in bulk.
+  2. **Filtering** lines based on conditions.
+  3. **Counting** records, words, characters.
+  4. **Transforming** data (e.g., uppercase, replacing fields).
+  5. **Summarizing** results in a formatted report.
+
+  The combination of `while read`, `awk`, `grep`, `wc`, and `sed` makes Bash a powerful data processing tool.
+
+  ---
+
+  # Slide 2: Reading Files — Three Approaches
+  **Approach 1 — `while read` loop (best for line-by-line processing):**
+  ```bash
+  while IFS= read -r line; do
+      echo "Line: $line"
+  done < /path/to/file.txt
+  ```
+
+  **Approach 2 — `cat` piped to a loop:**
+  ```bash
+  cat /path/to/file.txt | while read line; do
+      echo "$line"
+  done
+  ```
+
+  **Approach 3 — `for` loop with command substitution:**
+  ```bash
+  for line in $(cat file.txt); do
+      echo "$line"
+  done
+  ```
+  Note: Approach 3 splits on whitespace, not newlines — avoid for multi-word lines.
+
+  ---
+
+  # Slide 3: File Statistics Script
+  ```bash
+  #!/bin/bash
+  FILE="/home/student/data/sample.txt"
+
+  if [ ! -f "$FILE" ]; then
+      echo "File not found: $FILE"
+      exit 1
+  fi
+
+  total_lines=$(wc -l < "$FILE")
+  total_words=$(wc -w < "$FILE")
+  total_chars=$(wc -c < "$FILE")
+  empty_lines=$(grep -c "^$" "$FILE")
+  non_empty=$((total_lines - empty_lines))
+
+  echo "===== File Statistics ====="
+  echo "File:        $FILE"
+  echo "Total Lines: $total_lines"
+  echo "Total Words: $total_words"
+  echo "Total Chars: $total_chars"
+  echo "Empty Lines: $empty_lines"
+  echo "Non-Empty:   $non_empty"
+  ```
+
+  ---
+
+  # Slide 4: Filtering and Counting Specific Patterns
+  ```bash
+  #!/bin/bash
+  FILE="/home/student/data/employees.txt"
+
+  echo "Employees in IT department:"
+  grep -i ":IT:" "$FILE"
+
+  echo ""
+  echo "Count of IT employees:"
+  grep -ic ":IT:" "$FILE"
+
+  echo ""
+  echo "Employees with salary > 50000:"
+  awk -F: '$4 > 50000 {print $2, "→", $4}' "$FILE"
+  ```
+
+  ---
+
+  # Slide 5: Generating a Report
+  ```bash
+  #!/bin/bash
+  REPORT="/home/student/data/report.txt"
+  DATA="/home/student/data/employees.txt"
+
+  {
+      echo "===== EMPLOYEE REPORT ====="
+      echo "Generated: $(date)"
+      echo ""
+      echo "Total Employees: $(wc -l < "$DATA")"
+      echo ""
+      echo "By Department:"
+      awk -F: '{print $3}' "$DATA" | sort | uniq -c | sort -rn
+      echo ""
+      echo "Average Salary:"
+      awk -F: 'BEGIN{sum=0; count=0} {sum+=$4; count++} END{printf "%.2f\n", sum/count}' "$DATA"
+  } > "$REPORT"
+
+  echo "Report saved to $REPORT"
+  cat "$REPORT"
+  ```
+
+  `{ } > file` redirects the entire block's output to a file.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** File Processing Setup
+* **Est. Minutes:** 5
+* **Outline:** Create the data directory and sample files for the mini project.
+* **Instructions:**
+  1. Create `/home/student/data/` directory.
+  2. Create a sample `sample.txt` with at least 3 lines.
+  3. Create `employees.txt` with at least 3 employee records.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the directory `/home/student/data`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/data" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create `/home/student/data/sample.txt` with at least 3 lines of text.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ $(wc -l < /home/student/data/sample.txt 2>/dev/null) -ge 3 ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Create `/home/student/data/employees.txt` with at least 3 colon-separated employee records.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ $(wc -l < /home/student/data/employees.txt 2>/dev/null) -ge 3 ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write the File Processing Script
+* **Est. Minutes:** 8
+* **Outline:** Write a complete file statistics and report generation script.
+* **Instructions:**
+  1. Create `/home/student/data/fileprocess.sh`.
+  2. The script must read `/home/student/data/sample.txt` and output: total lines, total words, total characters.
+  3. The script must save the output to `/home/student/data/report.txt`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/data/fileprocess.sh` with `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/data/fileprocess.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** The script must use `wc` for counting.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "wc" /home/student/data/fileprocess.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Running the script must create `/home/student/data/report.txt`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/data/fileprocess.sh > /dev/null 2>&1; [ -f "/home/student/data/report.txt" ] && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** File Processing Concepts Quiz
+* **Est. Minutes:** 3
+* **Outline:** Test understanding of file processing commands and patterns.
+
+* **Questions:**
+
+  * **Q1:** What does `wc -l < file.txt` output?
+    * **Options:**
+      * A) The word count of the file
+      * B) The number of lines in the file
+      * C) The character count
+      * D) The file size in bytes
+    * **Correct Answer:** B) The number of lines in the file
+    * **Explanation:** `wc -l` counts lines. Using `< file.txt` (input redirection) instead of passing the filename avoids printing the filename in the output — just the number.
+
+  * **Q2:** What does `grep -c "pattern" file` return?
+    * **Options:**
+      * A) The matching lines
+      * B) The count of matching lines
+      * C) The positions of matches
+      * D) True or false
+    * **Correct Answer:** B) The count of matching lines
+    * **Explanation:** `grep -c` (count) prints only the number of lines that match the pattern, not the lines themselves.
+
+  * **Q3:** In `awk -F: '$4 > 50000 {print $2}'`, what does `$4` refer to?
+    * **Options:**
+      * A) The 4th line of the file
+      * B) The 4th field in each line, split by `:`
+      * C) The 4th character of each line
+      * D) Line number 4
+    * **Correct Answer:** B) The 4th field in each line, split by `:`
+    * **Explanation:** In `awk`, `-F:` sets the field separator to `:`. `$4` refers to the 4th field in the current line. `$1` is the first field, `$2` is the second, etc. `$0` is the entire line.
+
+  * **Q4:** What does `{ command1; command2; } > output.txt` do?
+    * **Options:**
+      * A) Runs commands in a subshell and discards output
+      * B) Redirects the combined output of all commands in the block to `output.txt`
+      * C) Appends command outputs to the file
+      * D) Creates a named pipe
+    * **Correct Answer:** B) Redirects the combined output of all commands in the block to `output.txt`
+    * **Explanation:** `{ }` groups commands in the current shell. Placing `> file` after the group redirects the stdout of all commands within the group to the specified file in a single operation.
+
+---
+
+## CHAPTER: 14.2 — Text Search Mini Project
+
+* **Description:** Build a complete text search utility in Bash that accepts a keyword and file, performs case-insensitive and exact-match searches, counts occurrences, highlights results, and outputs a search report.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Building a Text Search Utility in Bash
+* **Est. Minutes:** 5
+* **Outline:** Search techniques using `grep`, `awk`, `sed`; counting, context display, and report generation.
+
+* **Instructions (Slides):**
+
+  # Slide 1: Text Search in Bash — Tools Overview
+  Text search is a core operation in any practical. Linux provides powerful tools:
+
+  | Tool | Best For |
+  |---|---|
+  | `grep` | Pattern-based line search |
+  | `awk` | Field-based search and extraction |
+  | `sed` | Stream editing, substitution |
+  | `find` | File system search |
+  | `locate` | Indexed file path search |
+
+  For a text search utility, `grep` is the primary tool.
+
+  ---
+
+  # Slide 2: `grep` Options Reference
+  ```bash
+  grep "word"     file     # Basic search
+  grep -i "word"  file     # Case-insensitive
+  grep -n "word"  file     # With line numbers
+  grep -c "word"  file     # Count of matching lines
+  grep -v "word"  file     # Inverted (non-matching lines)
+  grep -w "word"  file     # Whole word match only
+  grep -r "word"  dir/     # Recursive search
+  grep -l "word"  *.txt    # Only filenames that match
+  grep -A 2 "word" file    # 2 lines AFTER match (context)
+  grep -B 2 "word" file    # 2 lines BEFORE match
+  grep -C 2 "word" file    # 2 lines around match
+  grep -E "pat1|pat2" file # Extended regex (OR)
+  ```
+
+  ---
+
+  # Slide 3: Complete Text Search Script
+  ```bash
+  #!/bin/bash
+  echo "Enter the file to search:"
+  read search_file
+  echo "Enter the keyword to search:"
+  read keyword
+
+  if [ ! -f "$search_file" ]; then
+      echo "Error: File '$search_file' not found."
+      exit 1
+  fi
+
+  echo ""
+  echo "=============================="
+  echo "  SEARCH RESULTS"
+  echo "=============================="
+  echo "File:    $search_file"
+  echo "Keyword: $keyword"
+  echo ""
+
+  count=$(grep -ic "$keyword" "$search_file")
+  echo "Occurrences (case-insensitive): $count"
+  echo ""
+
+  echo "Matching Lines (with line numbers):"
+  grep -in "$keyword" "$search_file"
+  ```
+
+  ---
+
+  # Slide 4: Advanced Features — Word Frequency Count
+  ```bash
+  #!/bin/bash
+  FILE="/home/student/data/sample.txt"
+  echo "Top 10 most frequent words in $FILE:"
+  tr -s '[:space:]' '\n' < "$FILE" \
+      | tr '[:upper:]' '[:lower:]' \
+      | grep -v '^$' \
+      | sort \
+      | uniq -c \
+      | sort -rn \
+      | head -10
+  ```
+
+  Pipeline breakdown:
+  - `tr -s '[:space:]' '\n'` — replace spaces with newlines (one word per line)
+  - `tr '[:upper:]' '[:lower:]'` — normalize to lowercase
+  - `grep -v '^$'` — remove empty lines
+  - `sort | uniq -c` — count occurrences
+  - `sort -rn` — sort by count descending
+  - `head -10` — show top 10
+
+  ---
+
+  # Slide 5: Saving Search Results to a Report File
+  ```bash
+  #!/bin/bash
+  FILE=$1
+  KEYWORD=$2
+  REPORT="/home/student/data/search_report.txt"
+
+  {
+      echo "Search Report"
+      echo "Date: $(date)"
+      echo "File: $FILE"
+      echo "Keyword: $KEYWORD"
+      echo "---"
+      echo "Match count: $(grep -ic "$KEYWORD" "$FILE")"
+      echo ""
+      echo "Matched lines:"
+      grep -in "$KEYWORD" "$FILE"
+  } > "$REPORT"
+
+  echo "Report saved to $REPORT"
+  ```
+
+  This version accepts the file and keyword as **command-line arguments** (`$1`, `$2`) — a more professional approach.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Text Search Utility Setup
+* **Est. Minutes:** 5
+* **Outline:** Practice `grep` commands interactively before writing the script.
+* **Instructions:**
+  1. Ensure `/home/student/data/sample.txt` exists with content.
+  2. Use `grep` to search for a word and count occurrences.
+  3. Create `search.sh` in `/home/student/data/`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Search for the word "the" (case-insensitive) in `/home/student/data/sample.txt` using `grep -ic`. The file must exist and `grep` must complete without error.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `grep -ic "the" /home/student/data/sample.txt > /dev/null 2>&1 && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create the file `/home/student/data/search.sh`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/data/search.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Make `/home/student/data/search.sh` executable.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -x "/home/student/data/search.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write the Text Search Utility
+* **Est. Minutes:** 8
+* **Outline:** Write a complete search script that accepts a keyword, searches a file, counts matches, and saves a report.
+* **Instructions:**
+  1. Open `/home/student/data/search.sh`.
+  2. The script must prompt for a file and a keyword.
+  3. Display matching lines with line numbers.
+  4. Display total count of matches.
+  5. Save results to `/home/student/data/search_report.txt`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** The file must contain `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/data/search.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** The script must use `grep` with line numbers (`-n` flag or equivalent).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qE "grep.*-[a-z]*n|grep.*-n" /home/student/data/search.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Running the script with `/home/student/data/sample.txt` as file and any keyword must create `/home/student/data/search_report.txt`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "/home/student/data/sample.txt\nhello\n" | bash /home/student/data/search.sh > /dev/null 2>&1; [ -f "/home/student/data/search_report.txt" ] && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Text Search Concepts Quiz
+* **Est. Minutes:** 3
+* **Outline:** Test understanding of grep options and pipeline-based text processing.
+
+* **Questions:**
+
+  * **Q1:** What does `grep -n "error" logfile.txt` do?
+    * **Options:**
+      * A) Counts lines containing "error"
+      * B) Prints matching lines with their line numbers
+      * C) Searches recursively for "error"
+      * D) Replaces "error" with nothing
+    * **Correct Answer:** B) Prints matching lines with their line numbers
+    * **Explanation:** `grep -n` (line number) prepends each matching line with its line number in the format `linenum:line`. Useful for pinpointing where in a file a match occurs.
+
+  * **Q2:** What is the purpose of `sort | uniq -c` in a word frequency pipeline?
+    * **Options:**
+      * A) Sort lines alphabetically and remove duplicates
+      * B) Sort lines alphabetically and count how many times each unique line appears
+      * C) Remove duplicate words and sort by frequency
+      * D) Sort by file size and count files
+    * **Correct Answer:** B) Sort lines alphabetically and count how many times each unique line appears
+    * **Explanation:** `uniq -c` only works correctly on adjacent duplicate lines, so `sort` is run first to bring identical lines together. `uniq -c` then prepends each unique line with its occurrence count.
+
+  * **Q3:** How do you search for a whole word only (not substrings) using `grep`?
+    * **Options:**
+      * A) `grep -s`
+      * B) `grep -w`
+      * C) `grep -x`
+      * D) `grep -e`
+    * **Correct Answer:** B) `grep -w`
+    * **Explanation:** `grep -w` matches only whole words. For example, `grep -w "cat" file` would match "cat" but NOT "catch", "concatenate", or "cats".
+
+  * **Q4:** What does `$1` refer to in a Bash script?
+    * **Options:**
+      * A) The script's PID
+      * B) The first command-line argument passed to the script
+      * C) The first line of the script
+      * D) The exit status of the last command
+    * **Correct Answer:** B) The first command-line argument passed to the script
+    * **Explanation:** In Bash, `$0` is the script name, `$1` is the first argument, `$2` is the second, and so on. `$@` is all arguments. Command-line arguments allow scripts to be more flexible and reusable.
+
+---
+
+## CHAPTER: 14.3 — Algorithm Mini Project
+
+* **Description:** Combine sorting and numerical algorithm skills into a single integrated program that offers multiple algorithm operations through a menu — Bubble Sort, Factorial, Palindrome Check, and String Reversal.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Integrating Algorithms into a Menu-Driven System
+* **Est. Minutes:** 5
+* **Outline:** Combining multiple algorithms from previous modules into a unified, menu-driven Bash program.
+
+* **Instructions (Slides):**
+
+  # Slide 1: Design of the Algorithm Toolkit
+  The Algorithm Mini Project integrates four programs from earlier modules into a single, cohesive menu-driven system.
+
+  **Menu Options:**
+  ```
+  1. Bubble Sort       → Sort an array of numbers
+  2. Factorial         → Compute n!
+  3. String Reversal   → Reverse a string
+  4. Palindrome Check  → Check if input is a palindrome
+  5. Exit
+  ```
+
+  **Architecture:** Each algorithm is implemented as a standalone function. The main loop handles the menu and dispatches to the appropriate function.
+
+  ---
+
+  # Slide 2: Source Other Scripts vs. Functions in One File
+  You can either:
+
+  **Option A — All-in-one script (recommended for practicals):**
+  Define all functions in one file: `algorithm_toolkit.sh`. Clean and portable.
+
+  **Option B — Source external scripts:**
+  ```bash
+  source /home/student/sorting/bubble.sh
+  source /home/student/numerical/factorial.sh
+  ```
+  `source` (or `.`) runs another script in the current shell's context, making its functions available.
+
+  For the OS practical exam, Option A (all-in-one) is preferred.
+
+  ---
+
+  # Slide 3: Skeleton of the Algorithm Toolkit
+  ```bash
+  #!/bin/bash
+
+  bubble_sort() {
+      # [Bubble sort code from Chapter 11.1]
+  }
+
+  factorial() {
+      # [Factorial code from Chapter 12.1]
+  }
+
+  reverse_string() {
+      # [Reversal code from Chapter 12.2]
+  }
+
+  palindrome_check() {
+      # [Palindrome code from Chapter 12.3]
+  }
+
+  while true; do
+      echo "==== ALGORITHM TOOLKIT ===="
+      echo "1. Bubble Sort"
+      echo "2. Factorial"
+      echo "3. String Reversal"
+      echo "4. Palindrome Check"
+      echo "5. Exit"
+      echo "Enter choice:"
+      read choice
+      case $choice in
+          1) bubble_sort ;;
+          2) factorial ;;
+          3) reverse_string ;;
+          4) palindrome_check ;;
+          5) exit 0 ;;
+          *) echo "Invalid choice" ;;
+      esac
+  done
+  ```
+
+  ---
+
+  # Slide 4: Complete Bubble Sort Function (Adapted for Toolkit)
+  ```bash
+  bubble_sort() {
+      echo "Enter number of elements:"
+      read n
+      echo "Enter $n numbers:"
+      for (( i=0; i<n; i++ )); do
+          read arr[i]
+      done
+
+      for (( i=0; i<n-1; i++ )); do
+          for (( j=0; j<n-i-1; j++ )); do
+              if [ ${arr[j]} -gt ${arr[$((j+1))]} ]; then
+                  temp=${arr[j]}
+                  arr[j]=${arr[$((j+1))]}
+                  arr[$((j+1))]=$temp
+              fi
+          done
+      done
+      echo "Sorted: ${arr[@]}"
+      unset arr
+  }
+  ```
+
+  Note: `unset arr` clears the array after use to avoid state leakage between calls.
+
+  ---
+
+  # Slide 5: Integration Testing Checklist
+  Before submitting your algorithm toolkit:
+
+  - [ ] All 4 algorithms produce correct output for test inputs.
+  - [ ] Menu loops correctly and displays after each operation.
+  - [ ] Invalid menu choice shows an error message.
+  - [ ] Exit option terminates the program cleanly.
+  - [ ] No hardcoded values — all inputs are read from user.
+  - [ ] Variables are properly scoped (use `local` inside functions).
+  - [ ] Script has `#!/bin/bash` shebang and is executable.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Algorithm Toolkit File Setup
+* **Est. Minutes:** 5
+* **Outline:** Create the project directory and script file for the algorithm toolkit.
+* **Instructions:**
+  1. Create directory `/home/student/project`.
+  2. Create `algorithm_toolkit.sh` inside it.
+  3. Make it executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the directory `/home/student/project`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/project" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create the file `/home/student/project/algorithm_toolkit.sh`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/project/algorithm_toolkit.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Make `/home/student/project/algorithm_toolkit.sh` executable.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -x "/home/student/project/algorithm_toolkit.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write the Complete Algorithm Toolkit
+* **Est. Minutes:** 8
+* **Outline:** Write the full algorithm toolkit with all 4 algorithm functions and a menu.
+* **Instructions:**
+  1. Open `/home/student/project/algorithm_toolkit.sh`.
+  2. Implement all four functions: `bubble_sort`, `factorial`, `reverse_string`, `palindrome_check`.
+  3. Implement the `while true` loop with `case` menu.
+  4. Test each function by running the script and selecting each option.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** The script must contain `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/project/algorithm_toolkit.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** The script must define all four functions (bubble_sort, factorial, reverse_string, palindrome_check).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `grep -q "bubble_sort" /home/student/project/algorithm_toolkit.sh && grep -q "factorial" /home/student/project/algorithm_toolkit.sh && grep -q "palindrome" /home/student/project/algorithm_toolkit.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** The script must contain a `while` loop and `case` statement for the menu.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "while" /home/student/project/algorithm_toolkit.sh && grep -q "case" /home/student/project/algorithm_toolkit.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 4:**
+    * **Instruction:** The factorial function, when called with input `4`, must produce output containing `24`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `source /home/student/project/algorithm_toolkit.sh 2>/dev/null; echo "4" | (factorial 2>/dev/null || echo "4" | bash -c 'source /home/student/project/algorithm_toolkit.sh 2>/dev/null; echo "4" | factorial') 2>/dev/null | grep -q "24" && echo "PASS" || (bash /home/student/project/algorithm_toolkit.sh <<< $'2\n4\n5' 2>/dev/null | grep -q "24" && echo "PASS" || echo "FAIL")`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Algorithm Integration Quiz
+* **Est. Minutes:** 3
+* **Outline:** Test understanding of integrating multiple algorithms and code organization.
+
+* **Questions:**
+
+  * **Q1:** What does `source script.sh` do in Bash?
+    * **Options:**
+      * A) Runs `script.sh` in a subshell, keeping its variables isolated
+      * B) Runs `script.sh` in the current shell, making its functions and variables available
+      * C) Compiles `script.sh` for faster execution
+      * D) Copies `script.sh` to the current directory
+    * **Correct Answer:** B) Runs `script.sh` in the current shell, making its functions and variables available
+    * **Explanation:** `source` (or `.`) executes a script in the current shell environment. Functions and variables defined in the sourced script become available in the calling script — unlike running it as a subprocess.
+
+  * **Q2:** Why should you use `unset arr` after a bubble sort function in a toolkit?
+    * **Options:**
+      * A) To free memory for better performance
+      * B) To prevent leftover array data from affecting subsequent calls to the function
+      * C) Because Bash requires arrays to be explicitly deleted
+      * D) To reset the sort order
+    * **Correct Answer:** B) To prevent leftover array data from affecting subsequent calls to the function
+    * **Explanation:** Global arrays persist between function calls. If the user runs bubble sort twice, the second call's array might be padded with values from the first. `unset arr` clears it cleanly.
+
+  * **Q3:** In a multi-function script, what is the advantage of using `local` for function variables?
+    * **Options:**
+      * A) Local variables execute faster
+      * B) Local variables prevent naming conflicts between functions
+      * C) Local variables are automatically saved to files
+      * D) Local variables persist between sessions
+    * **Correct Answer:** B) Local variables prevent naming conflicts between functions
+    * **Explanation:** Without `local`, a variable like `result` in one function would overwrite any variable named `result` in another function. `local` scopes variables to their function, preventing unintended interactions.
+
+  * **Q4:** Which is the correct way to define a Bash function?
+    * **Options:**
+      * A) `def my_function() { ... }`
+      * B) `function my_function: { ... }`
+      * C) `my_function() { ... }` or `function my_function { ... }`
+      * D) `create function my_function { ... }`
+    * **Correct Answer:** C) `my_function() { ... }` or `function my_function { ... }`
+    * **Explanation:** Bash supports two equivalent function definition syntaxes: `name() { commands; }` (POSIX-compatible) and `function name { commands; }` (Bash-specific). Both are valid and commonly used.
+
+---
+
+## CHAPTER: 14.4 — Employee Management Mini Project
+
+* **Description:** Final polished version of the Employee Management System with additional features: update records, count by department, display salary statistics, and generate a complete report — demonstrating full mastery of file processing and menu-driven systems.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Advanced Employee Management System
+* **Est. Minutes:** 5
+* **Outline:** Extending EMS with update, statistics, and reporting; polishing for examination submission.
+
+* **Instructions (Slides):**
+
+  # Slide 1: Extended EMS Features
+  Building on Chapter 13.3's EMS, this version adds:
+
+  - **Update Record** — Modify an existing employee's details.
+  - **Department Summary** — Count employees per department.
+  - **Salary Statistics** — Min, Max, and Average salary.
+  - **Generate Report** — Save a comprehensive report to a file.
+  - **Exit**
+
+  This is the "final project" version intended for OS practical exam submission.
+
+  ---
+
+  # Slide 2: Update Employee Record
+  Updating a record in a flat file means: delete the old record, then insert the new one.
+
+  ```bash
+  update_employee() {
+      echo "Enter Employee ID to update:"
+      read upd_id
+      if ! grep -q "^$upd_id:" "$DATA_FILE"; then
+          echo "Employee not found."
+          return
+      fi
+      echo "Enter new Name (leave blank to keep current):"
+      read new_name
+      echo "Enter new Department:"
+      read new_dept
+      echo "Enter new Salary:"
+      read new_salary
+      
+      # Get current values for any blank fields
+      current=$(grep "^$upd_id:" "$DATA_FILE")
+      curr_name=$(echo "$current" | cut -d: -f2)
+      curr_dept=$(echo "$current" | cut -d: -f3)
+      curr_salary=$(echo "$current" | cut -d: -f4)
+      
+      # Use current values if new input is blank
+      [ -z "$new_name" ] && new_name="$curr_name"
+      [ -z "$new_dept" ] && new_dept="$curr_dept"
+      [ -z "$new_salary" ] && new_salary="$curr_salary"
+      
+      # Delete old, add new
+      grep -v "^$upd_id:" "$DATA_FILE" > /tmp/emp_upd.dat
+      echo "$upd_id:$new_name:$new_dept:$new_salary" >> /tmp/emp_upd.dat
+      mv /tmp/emp_upd.dat "$DATA_FILE"
+      echo "Record updated."
+  }
+  ```
+
+  ---
+
+  # Slide 3: Salary Statistics
+  ```bash
+  salary_stats() {
+      if [ ! -s "$DATA_FILE" ]; then
+          echo "No records."
+          return
+      fi
+      echo "===== SALARY STATISTICS ====="
+      awk -F: 'BEGIN{max=0; min=9999999; sum=0; count=0}
+      {
+          sum+=$4; count++;
+          if($4>max) max=$4;
+          if($4<min) min=$4;
+      }
+      END{
+          printf "Total Employees: %d\n", count;
+          printf "Total Payroll:   %d\n", sum;
+          printf "Average Salary:  %.2f\n", sum/count;
+          printf "Maximum Salary:  %d\n", max;
+          printf "Minimum Salary:  %d\n", min;
+      }' "$DATA_FILE"
+  }
+  ```
+
+  `awk` tracks max, min, sum, and count in a single pass through the file.
+
+  ---
+
+  # Slide 4: Department Summary
+  ```bash
+  dept_summary() {
+      echo "===== DEPARTMENT SUMMARY ====="
+      echo "Department         Count"
+      echo "----------------------------"
+      awk -F: '{print $3}' "$DATA_FILE" \
+          | sort \
+          | uniq -c \
+          | awk '{printf "%-20s %d\n", $2, $1}'
+  }
+  ```
+
+  This extracts the 3rd field (department), sorts, counts with `uniq -c`, then reformats with `awk`.
+
+  ---
+
+  # Slide 5: Generate Report
+  ```bash
+  generate_report() {
+      REPORT="/home/student/ems/emp_report.txt"
+      {
+          echo "EMPLOYEE MANAGEMENT SYSTEM REPORT"
+          echo "Generated: $(date)"
+          echo "=================================="
+          echo ""
+          view_employees
+          echo ""
+          dept_summary
+          echo ""
+          salary_stats
+      } > "$REPORT"
+      echo "Report saved to $REPORT"
+  }
+  ```
+
+  This function calls the existing `view_employees`, `dept_summary`, and `salary_stats` functions and redirects their combined output to a report file — demonstrating function composition.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Advanced EMS Preparation
+* **Est. Minutes:** 5
+* **Outline:** Set up the advanced EMS script and seed the data file.
+* **Instructions:**
+  1. Ensure `/home/student/ems/` exists.
+  2. Create `ems_advanced.sh`.
+  3. Add at least 3 sample employee records to `employees.dat`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the file `/home/student/ems/ems_advanced.sh`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/ems/ems_advanced.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Make `/home/student/ems/ems_advanced.sh` executable.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -x "/home/student/ems/ems_advanced.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Ensure `/home/student/ems/employees.dat` has at least 3 records.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ $(wc -l < /home/student/ems/employees.dat 2>/dev/null || echo 0) -ge 3 ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write the Advanced EMS
+* **Est. Minutes:** 8
+* **Outline:** Write the full advanced EMS with update, statistics, report generation, and complete menu.
+* **Instructions:**
+  1. Open `/home/student/ems/ems_advanced.sh`.
+  2. Implement: `add_employee`, `view_employees`, `search_employee`, `delete_employee`, `update_employee`, `salary_stats`, `dept_summary`, `generate_report`.
+  3. Tie everything together with the main menu.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** The script must contain `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/ems/ems_advanced.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** The script must contain `salary_stats` or `awk` for statistics.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qE "salary_stats|awk.*sum|awk.*max" /home/student/ems/ems_advanced.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** The script must contain `generate_report` function.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "generate_report" /home/student/ems/ems_advanced.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 4:**
+    * **Instruction:** After running the script and generating a report, `/home/student/ems/emp_report.txt` must exist.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/ems/ems_advanced.sh <<< $'8\n5' > /dev/null 2>&1; [ -f "/home/student/ems/emp_report.txt" ] && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Advanced EMS Concepts Quiz
+* **Est. Minutes:** 3
+* **Outline:** Test understanding of advanced data processing in Bash.
+
+* **Questions:**
+
+  * **Q1:** In `awk`, what does `BEGIN { }` do?
+    * **Options:**
+      * A) Runs after processing all lines
+      * B) Runs before processing any lines — used to initialize variables
+      * C) Processes only the first line
+      * D) Handles empty lines
+    * **Correct Answer:** B) Runs before processing any lines — used to initialize variables
+    * **Explanation:** `awk`'s `BEGIN` block executes once before any input is read. It's typically used to initialize accumulator variables (like `sum=0`, `count=0`, `max=0`) so they have defined starting values.
+
+  * **Q2:** What does `cut -d: -f2` do when applied to `1001:John Smith:IT:55000`?
+    * **Options:**
+      * A) Returns `1001`
+      * B) Returns `John Smith`
+      * C) Returns `IT`
+      * D) Returns `55000`
+    * **Correct Answer:** B) Returns `John Smith`
+    * **Explanation:** `cut -d:` sets the delimiter to `:` and `-f2` selects the 2nd field. In the record `1001:John Smith:IT:55000`, field 2 is `John Smith`.
+
+  * **Q3:** What is the effect of `sort | uniq -c | sort -rn` in a pipeline?
+    * **Options:**
+      * A) Sorts alphabetically, removes duplicates, then sorts by file size
+      * B) Sorts alphabetically, counts occurrences, then sorts by count descending
+      * C) Removes duplicates, counts remaining, then sorts alphabetically
+      * D) Sorts numerically, counts lines, then reverses the file
+    * **Correct Answer:** B) Sorts alphabetically, counts occurrences, then sorts by count descending
+    * **Explanation:** `sort` brings duplicates together, `uniq -c` counts them (prepends count), and `sort -rn` sorts numerically in reverse (highest count first). This is the standard "most frequent items" pattern.
+
+  * **Q4:** How does an "update" operation work in flat-file storage?
+    * **Options:**
+      * A) `sed` directly edits the record in place in all cases
+      * B) The record is deleted (grep -v) and re-appended with new values
+      * C) The file is locked, modified, then unlocked
+      * D) An UPDATE SQL command is issued
+    * **Correct Answer:** B) The record is deleted (grep -v) and re-appended with new values
+    * **Explanation:** Flat files have no direct "update" operation. The common pattern is: use `grep -v` to write all other records to a temp file, then append the modified record, then replace the original file with the temp file.
+
+---
+
+## CHAPTER: 14.5 — Practical Examination Mock Test
+
+* **Description:** A comprehensive mock examination that simulates a real OS practical exam — five timed tasks drawn from all modules, testing the student's readiness for the final assessment.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Practical Exam Strategy and Quick Reference
+* **Est. Minutes:** 5
+* **Outline:** Exam tips, common mistakes, quick syntax reference, and time management strategy.
+
+* **Instructions (Slides):**
+
+  # Slide 1: OS Practical Exam Format
+  In your university OS practical exam, you will typically:
+  - Be given 2–3 programming tasks to complete in 1.5–3 hours.
+  - Write Bash scripts from scratch on a Linux terminal.
+  - Be evaluated on: correctness of output, use of proper constructs, code readability.
+  - Common topics: File operations, sorting, factorial, palindrome, quadratic equation, EMS.
+
+  **Strategy:**
+  1. Read all questions first — start with what you know best.
+  2. Always write the shebang (`#!/bin/bash`) first.
+  3. Test with at least 2–3 inputs before submitting.
+  4. If stuck, write pseudocode comments first, then fill in code.
+
+  ---
+
+  # Slide 2: Essential Syntax Quick Reference
+  ```bash
+  # Variables
+  var="value"         echo $var
+  num=10              echo $((num + 5))
+
+  # String operations
+  ${#str}             # Length
+  ${str:0:3}          # Substring from index 0, length 3
+  $(echo $str | rev)  # Reverse
+
+  # Arrays
+  arr=(1 2 3)         ${arr[0]}     ${#arr[@]}
+
+  # Conditionals
+  [ $a -eq $b ]       # Numeric equal
+  [ "$a" = "$b" ]     # String equal
+  [ -f "$file" ]      # File exists
+  [ -d "$dir" ]       # Directory exists
+  [ -z "$str" ]       # String is empty
+
+  # Loops
+  for (( i=0; i<n; i++ )); do ... done
+  while true; do ... done
+  while IFS= read -r line; do ... done < file
+
+  # Functions
+  myfunc() { local x=$1; echo $x; }
+  result=$(myfunc arg)
+
+  # File I/O
+  echo "text" > file     # Overwrite
+  echo "text" >> file    # Append
+  cat file               # Display
+  grep "pat" file        # Search
+  ```
+
+  ---
+
+  # Slide 3: Common Mistakes and How to Avoid Them
+  | Mistake | Correct Approach |
+  |---|---|
+  | `if [ $a>$b ]` | `if [ $a -gt $b ]` |
+  | `fact=0` (for factorial) | `fact=1` (multiplicative identity) |
+  | `for i in $(seq 0 $len)` for strings | Use `${str:$i:1}` with a C-style loop |
+  | Forgetting `;;` in case | Every branch needs `;;` |
+  | Using `>` instead of `>>` | Always double-check append vs overwrite |
+  | Not quoting `"$var"` | Quote variables in comparisons |
+  | Using `=` for numbers | Use `-eq`, `-gt`, `-lt` for numbers |
+  | No shebang `#!/bin/bash` | ALWAYS the first line |
+
+  ---
+
+  # Slide 4: Time Management for 3-Question Exams
+  Typical 3-hour practical with 3 questions (1 hour each):
+
+  - **First 10 minutes:** Read all questions. Plan your approach for each.
+  - **Next 35 minutes:** Write, test, and debug.
+  - **Last 15 minutes:** Review output, clean up code, add comments.
+
+  **Prioritization:**
+  - If all are equal difficulty, start with the easiest for confidence.
+  - If one is very hard, do it last — partial marks are better than no marks on easier ones.
+  - Leave the menu/EMS type for adequate time (most complex).
+
+  ---
+
+  # Slide 5: Quick Exam Checklist
+  Before submitting each script:
+
+  - [ ] Shebang `#!/bin/bash` present
+  - [ ] File saved and executable (`chmod +x`)
+  - [ ] Tested with at least 2 different inputs
+  - [ ] Edge cases handled (0, negative, empty input)
+  - [ ] Output format matches the question's expected output
+  - [ ] Variable names are meaningful and consistent
+  - [ ] `bc` used for floating-point (quadratic equations)
+  - [ ] `while read` or `cat` used for file reading
+  - [ ] Functions defined before they are called
+  - [ ] `case` statement has `esac` and every branch has `;;`
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Mock Exam Setup — Create All Required Files
+* **Est. Minutes:** 5
+* **Outline:** Simulate exam environment by creating the required directory structure.
+* **Instructions:**
+  1. Create the mock exam directory `/home/student/mockexam`.
+  2. Create three script files: `q1.sh`, `q2.sh`, `q3.sh`.
+  3. Make all three executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the directory `/home/student/mockexam`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/mockexam" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create all three files: `q1.sh`, `q2.sh`, `q3.sh` inside `/home/student/mockexam`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -f "/home/student/mockexam/q1.sh" ] && [ -f "/home/student/mockexam/q2.sh" ] && [ -f "/home/student/mockexam/q3.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Make all three scripts executable.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -x "/home/student/mockexam/q1.sh" ] && [ -x "/home/student/mockexam/q2.sh" ] && [ -x "/home/student/mockexam/q3.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Mock Exam — Three Full Questions
+* **Est. Minutes:** 8
+* **Outline:** Complete three realistic OS practical exam questions under exam-like conditions.
+
+* **Instructions:**
+
+  **Question 1 — `q1.sh`: Fibonacci Series**
+  Write a Bash script that:
+  - Reads `n` from the user.
+  - Prints the first `n` Fibonacci numbers (0, 1, 1, 2, 3, 5, 8, ...).
+  - Format: `Fibonacci Series: 0 1 1 2 3 5`
+
+  **Question 2 — `q2.sh`: Number Pattern**
+  Write a Bash script that:
+  - Reads `n` from the user.
+  - Prints a right-angled triangle number pattern for `n` rows.
+  - Example for n=4:
+    ```
+    1
+    1 2
+    1 2 3
+    1 2 3 4
+    ```
+
+  **Question 3 — `q3.sh`: Student Grade Calculator**
+  Write a Bash script that:
+  - Reads a student's name and marks in 5 subjects.
+  - Calculates total, percentage, and grade (A ≥ 80, B ≥ 60, C ≥ 40, F < 40).
+  - Displays a formatted result.
+
+* **Tasks:**
+
+  * **Task 1 (q1.sh):**
+    * **Instruction:** `/home/student/mockexam/q1.sh` must contain `#!/bin/bash` and produce Fibonacci output for input `6` containing the sequence `0 1 1 2 3 5`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "6" | bash /home/student/mockexam/q1.sh 2>/dev/null | grep -qE "0.*1.*1.*2.*3.*5|0 1 1 2 3 5" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 2 (q2.sh):**
+    * **Instruction:** `/home/student/mockexam/q2.sh` must produce a number pattern for `n=3` that contains `1 2 3` on the last line.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "3" | bash /home/student/mockexam/q2.sh 2>/dev/null | grep -q "1 2 3" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 3 (q3.sh):**
+    * **Instruction:** `/home/student/mockexam/q3.sh` must calculate grade. Input: name `Alice`, marks `90 85 88 92 87` must output `A` grade and percentage containing `88`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "Alice\n90\n85\n88\n92\n87\n" | bash /home/student/mockexam/q3.sh 2>/dev/null | grep -qi "grade.*A\|A.*grade\| A$\|Grade: A" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Final Comprehensive Review Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehensive final review covering all key concepts from Modules 11–14.
+
+* **Questions:**
+
+  * **Q1:** Which command makes a script executable in Linux?
+    * **Options:**
+      * A) `exec script.sh`
+      * B) `chmod +x script.sh`
+      * C) `run script.sh`
+      * D) `enable script.sh`
+    * **Correct Answer:** B) `chmod +x script.sh`
+    * **Explanation:** `chmod +x` adds execute permission to a file. Without this, running `./script.sh` will produce "Permission denied". It must be the first step after creating a new script.
+
+  * **Q2:** What will `echo $((10 % 3))` print?
+    * **Options:**
+      * A) 3
+      * B) 1
+      * C) 0
+      * D) 10
+    * **Correct Answer:** B) 1
+    * **Explanation:** `%` is the modulo (remainder) operator. `10 ÷ 3 = 3` remainder `1`. So `10 % 3 = 1`. This is commonly used to check divisibility (e.g., `n % 2 == 0` means even).
+
+  * **Q3:** What is the output of this snippet?
+    ```bash
+    x=5
+    if [ $x -gt 3 ] && [ $x -lt 10 ]; then
+        echo "In range"
+    fi
+    ```
+    * **Options:**
+      * A) Nothing (no output)
+      * B) `In range`
+      * C) `Error`
+      * D) `5`
+    * **Correct Answer:** B) `In range`
+    * **Explanation:** Both conditions are true: 5 > 3 AND 5 < 10. When both sides of `&&` are true, the `then` block executes, printing "In range".
+
+  * **Q4:** Which Bash construct is used to read each line of a file into a variable one line at a time?
+    * **Options:**
+      * A) `for line in $file; do`
+      * B) `read file line by line`
+      * C) `while IFS= read -r line; do ... done < "$file"`
+      * D) `cat $file | read line`
+    * **Correct Answer:** C) `while IFS= read -r line; do ... done < "$file"`
+    * **Explanation:** `while IFS= read -r line` is the idiomatic and correct way to read a file line by line in Bash. `IFS=` prevents leading/trailing whitespace stripping, and `-r` prevents backslash interpretation. The file is provided via input redirection `< "$file"`.
+
+---
+
+# END OF CURRICULUM — MODULES 11–14
+
+---
+
+## Quick Reference Index
+
+| Module | Chapter | Practical # | Key Script |
+|---|---|---|---|
+| 11 | 11.1 Bubble Sort | OS Practical #8 | `~/sorting/bubble.sh` |
+| 12 | 12.1 Factorial | OS Practical #9 | `~/numerical/factorial.sh` |
+| 12 | 12.2 String Reversal | — | `~/numerical/reverse.sh` |
+| 12 | 12.3 Palindrome | OS Practical #10 | `~/numerical/palindrome.sh` |
+| 12 | 12.4 Quadratic Equation | OS Practical #11 | `~/numerical/quadratic.sh` |
+| 13 | 13.1 Case Statement | — | `~/menu/calculator_menu.sh` |
+| 13 | 13.2 File Record Storage | — | `~/records/manage.sh` |
+| 13 | 13.3 Employee Management | OS Practical #12 | `~/ems/ems.sh` |
+| 14 | 14.1 File Processing | — | `~/data/fileprocess.sh` |
+| 14 | 14.2 Text Search | — | `~/data/search.sh` |
+| 14 | 14.3 Algorithm Toolkit | — | `~/project/algorithm_toolkit.sh` |
+| 14 | 14.4 Advanced EMS | — | `~/ems/ems_advanced.sh` |
+| 14 | 14.5 Mock Exam | — | `~/mockexam/q1.sh` `q2.sh` `q3.sh` |
+
+---
+
+*End of Linux & Shell Scripting Fundamentals — Modules 11–14*
+*Total: 4 Modules | 13 Chapters | 52 Quests | 52 MCQs | 40+ Validation Tasks*
