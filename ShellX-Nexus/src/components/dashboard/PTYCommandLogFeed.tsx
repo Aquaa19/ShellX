@@ -5,14 +5,6 @@ import type { CommandLog } from '../../types';
 import { db } from '../../config/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-const INITIAL_LOGS: CommandLog[] = [
-  { id: '1', username: 'john_doe@shellx', command: 'ls -la', exitCode: 0, timestamp: '13:14:02', lessonTitle: 'Directory Traversal' },
-  { id: '2', username: 'sarah_k@shellx', command: 'cd /home/student/workspace', exitCode: 0, timestamp: '13:14:15', lessonTitle: 'File Management' },
-  { id: '3', username: 'mike_p@shellx', command: 'cat secret.txt', exitCode: 1, timestamp: '13:14:28', lessonTitle: 'Read Permissions' },
-  { id: '4', username: 'alex_r@shellx', command: 'mkdir -p project/src', exitCode: 0, timestamp: '13:14:40', lessonTitle: 'Create Directories' },
-  { id: '5', username: 'john_doe@shellx', command: 'rm -rf /', exitCode: 127, timestamp: '13:14:55', lessonTitle: 'Dangerous Operations' },
-];
-
 const RANDOM_COMMANDS = [
   { username: 'david_w@shellx', command: 'gcc -o main main.c', exitCode: 0, lessonTitle: 'C Compiling' },
   { username: 'sarah_k@shellx', command: 'git commit -m "add index"', exitCode: 0, lessonTitle: 'Git Basics' },
