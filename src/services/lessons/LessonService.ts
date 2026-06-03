@@ -72,6 +72,8 @@ export const LessonService = {
             instructions: card.instructions,
             order: card.order,
             starterFiles: card.starterFiles,
+            type: card.type || 'theory_only',
+            questions: card.questions || [],
           };
         });
 

@@ -5,6 +5,13 @@ export interface StarterFile {
   content: string;
 }
 
+export interface MCQQuestion {
+  question: string;
+  options: string[];
+  answer: string;
+  explanation: string;
+}
+
 export interface LessonCardDocument {
   id:                 string;
   moduleId:           string;
@@ -18,6 +25,8 @@ export interface LessonCardDocument {
   order:              number;
   prerequisiteId?:    string; // lessonId that must be complete first
   starterFiles?:      StarterFile[];
+  type?:              'theory_only' | 'terminal_challenge' | 'editor_challenge' | 'exercise';
+  questions?:         MCQQuestion[];
 }
 
 export interface UserModuleProgressDocument {

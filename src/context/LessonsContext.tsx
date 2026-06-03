@@ -17,6 +17,7 @@ interface LessonsContextState {
   dismissTaskSheet: () => void;
   runValidation:    () => Promise<void>;
   refreshLessons:   () => Promise<void>;
+  completeExerciseLesson: () => Promise<void>;
 }
 
 const LessonsContext = createContext<LessonsContextState | null>(null);
@@ -225,6 +226,25 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, [user, activeLessonData, sendCommand, refreshLessons]);
 
+  const completeExerciseLesson = useCallback(async () => {
+    if (!user || !activeLessonData) return;
+    setIsValidating(true);
+    try {
+      await ProgressService.markLessonComplete(
+        user.uid,
+        activeLessonData.moduleId,
+        activeLessonData.id,
+        'Passed Quiz'
+      );
+      setLastValidationResult({ passed: true, output: 'Quiz completed successfully!' });
+      await refreshLessons();
+    } catch (error: any) {
+      console.warn('[LessonsContext] Quiz completion failed:', error);
+    } finally {
+      setIsValidating(false);
+    }
+  }, [user, activeLessonData, refreshLessons]);
+
   return (
     <LessonsContext.Provider
       value={{
@@ -238,6 +258,7 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
         dismissTaskSheet,
         runValidation,
         refreshLessons,
+        completeExerciseLesson,
       }}
     >
       {children}

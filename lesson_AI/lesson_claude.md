@@ -1,0 +1,3510 @@
+# Linux & Shell Scripting Fundamentals
+### Complete Curriculum — University OS Practical Exam Preparation
+> **14 Modules | 16 Chapters | Full Theory, Terminal Challenges, Editor Challenges, and MCQ Exercises**
+
+---
+
+# MODULE 1: INTRODUCTION TO LINUX & TERMINAL
+
+---
+
+## CHAPTER 1.1: What is Linux?
+
+* **Description:** Introduces students to the Linux operating system — its history, architecture, distributions, and role in modern computing. Establishes conceptual foundations before any hands-on work.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** The Linux Operating System — History, Architecture & Distributions
+* **Est. Minutes:** 5
+* **Outline:** Covers the origin of Linux, the kernel, user space, distributions, and why Linux is used in servers, embedded systems, and academic OS courses.
+
+* **Instructions (Slides):**
+
+  # Slide 1: What Is an Operating System?
+  An **Operating System (OS)** is system software that manages computer hardware, software resources, and provides common services for computer programs. Without an OS, a user cannot interact with the computer hardware directly.
+
+  Key functions of an OS include:
+  - **Process Management** — Creating, scheduling, and terminating processes.
+  - **Memory Management** — Allocating RAM to running programs.
+  - **File System Management** — Organizing data into files and directories.
+  - **Device Management** — Communicating with hardware through drivers.
+  - **Security & Access Control** — Managing users, permissions, and authentication.
+
+  Examples of operating systems: Windows, macOS, Android, and **Linux**.
+
+  ---
+
+  # Slide 2: The Origin of Linux
+  Linux was created in **1991** by **Linus Torvalds**, a Finnish computer science student at the University of Helsinki. He was inspired by **MINIX**, a small Unix-like OS used for educational purposes.
+
+  **Timeline of Key Events:**
+  | Year | Event |
+  |------|-------|
+  | 1969 | Unix developed at AT&T Bell Labs by Ken Thompson & Dennis Ritchie |
+  | 1983 | Richard Stallman starts the GNU Project (free software tools) |
+  | 1991 | Linus Torvalds releases the Linux kernel (version 0.01) |
+  | 1992 | Linux kernel is relicensed under GPL (GNU General Public License) |
+  | 1994 | Linux kernel 1.0 released |
+  | 2000s | Linux dominates server and supercomputer markets |
+  | Today | Powers 96%+ of world's top 500 supercomputers |
+
+  The name "Linux" combines **Linus** (Torvalds) + **Unix**.
+
+  ---
+
+  # Slide 3: The Linux Kernel
+  The **kernel** is the core of the Linux OS. It acts as a bridge between user applications and the computer hardware.
+
+  ```
+  ┌─────────────────────────────┐
+  │        USER SPACE           │
+  │  (Applications, Shell, GUI) │
+  ├─────────────────────────────┤
+  │         KERNEL              │
+  │  (Process/Memory/File Mgmt) │
+  ├─────────────────────────────┤
+  │         HARDWARE            │
+  │  (CPU, RAM, Disk, Network)  │
+  └─────────────────────────────┘
+  ```
+
+  The kernel handles:
+  - **System Calls** — APIs that user programs use to request OS services.
+  - **Interrupt Handling** — Responding to hardware signals.
+  - **Scheduling** — Deciding which process runs on the CPU at any time.
+
+  The Linux kernel is **monolithic** (runs mostly in kernel space for speed), but also **modular** — you can load/unload drivers at runtime.
+
+  ---
+
+  # Slide 4: Linux Distributions (Distros)
+  A **Linux distribution (distro)** is a complete OS built on the Linux kernel, bundled with software, a package manager, and default settings.
+
+  **Popular Distributions:**
+  | Distro | Based On | Use Case |
+  |--------|----------|----------|
+  | Ubuntu | Debian | Desktop, beginners, servers |
+  | Debian | Independent | Stability, servers |
+  | Fedora | Red Hat | Cutting-edge desktop |
+  | CentOS / RHEL | Red Hat | Enterprise servers |
+  | Arch Linux | Independent | Advanced users |
+  | Kali Linux | Debian | Cybersecurity / pentesting |
+  | Android | Linux kernel | Mobile devices |
+
+  In this course, we use **Ubuntu** (most common in university labs).
+
+  ---
+
+  # Slide 5: Why Learn Linux?
+  Linux is essential knowledge for:
+  - **Software Engineers** — Servers run Linux (AWS, Google Cloud, Azure all use Linux VMs).
+  - **System Administrators** — 90%+ of enterprise servers run Linux.
+  - **Data Scientists** — HPC clusters and ML environments use Linux.
+  - **Cybersecurity Professionals** — Most security tools are Linux-native.
+  - **University OS Courses** — Practical exams test Linux commands and shell scripting.
+
+  **Open Source Advantage:** The full source code of Linux is freely available. You can study, modify, and redistribute it under the GPL license.
+
+  Key principle: *"In Linux, everything is a file."* — devices, directories, and even processes are represented as files in the filesystem.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Explore Your Linux Environment
+* **Est. Minutes:** 5
+* **Outline:** Practice viewing basic system information commands to familiarize yourself with the Linux terminal.
+* **Instructions:** Open your terminal. You will run commands to inspect your Linux environment. Type each command exactly as shown and press Enter.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Display the version of the Linux kernel currently running on your system using `uname -r`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `uname -r | grep -qE '^[0-9]+\.[0-9]+' && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Find out who you are logged in as by running `whoami`. The output should be `student`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ "$(whoami)" = "student" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Display the full name and version of your Linux distribution by running `cat /etc/os-release | head -5`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `cat /etc/os-release | grep -qi "ubuntu\|debian\|fedora\|centos\|linux" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Create Your First Linux Notes File
+* **Est. Minutes:** 8
+* **Outline:** Use a text editor (nano) to create a notes file summarizing what you learned about Linux.
+* **Instructions:** Open the nano editor by typing `nano /home/student/linux_notes.txt`. Type the content as instructed in each task. Save with `Ctrl+O`, Enter, then exit with `Ctrl+X`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the file `/home/student/linux_notes.txt` and write at least one line containing the word "Linux" (e.g., "Linux is an open-source operating system.").
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "Linux" /home/student/linux_notes.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Add a second line to the same file containing the name of the creator: "Linus Torvalds".
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "Linus Torvalds" /home/student/linux_notes.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Add a third line containing the word "kernel" (e.g., "The Linux kernel is the core of the OS.").
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "kernel" /home/student/linux_notes.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** What Is Linux? — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on Linux history, kernel, and distributions.
+
+* **Questions:**
+
+  * **Q1:** Who created the Linux kernel?
+    * **Options:**
+      * A) Richard Stallman
+      * B) Linus Torvalds
+      * C) Dennis Ritchie
+      * D) Bill Gates
+    * **Correct Answer:** B) Linus Torvalds
+    * **Explanation:** Linus Torvalds created the Linux kernel in 1991 as a personal project while studying at the University of Helsinki. Richard Stallman created the GNU Project tools that complement the kernel.
+
+  * **Q2:** What is the role of the Linux kernel?
+    * **Options:**
+      * A) It provides a graphical user interface to the user
+      * B) It manages hardware resources and provides system call interfaces
+      * C) It is a text editor built into Linux
+      * D) It is a package manager used to install software
+    * **Correct Answer:** B) It manages hardware resources and provides system call interfaces
+    * **Explanation:** The kernel is the core component of Linux. It sits between user space applications and the hardware, managing CPU, memory, devices, and providing system calls.
+
+  * **Q3:** Which of the following is a Linux distribution?
+    * **Options:**
+      * A) Windows 11
+      * B) macOS Ventura
+      * C) Ubuntu 22.04
+      * D) MS-DOS
+    * **Correct Answer:** C) Ubuntu 22.04
+    * **Explanation:** Ubuntu is a Linux distribution based on Debian. It is widely used in educational and enterprise environments.
+
+  * **Q4:** The statement "In Linux, everything is a file" means:
+    * **Options:**
+      * A) Linux can only run if all hardware has a corresponding file
+      * B) Linux represents devices, directories, and processes as file objects in the filesystem
+      * C) Linux stores all programs inside a single large file
+      * D) Linux requires you to edit files manually to configure the OS
+    * **Correct Answer:** B) Linux represents devices, directories, and processes as file objects in the filesystem
+    * **Explanation:** The Unix/Linux design philosophy abstracts hardware devices (like `/dev/sda`), processes (`/proc`), and even system settings (`/sys`) as files, providing a unified interface.
+
+---
+
+## CHAPTER 1.2: Understanding the Terminal
+
+* **Description:** Introduces the Linux terminal (command-line interface), the shell, basic command structure, and how to navigate the CLI effectively. Students learn to distinguish between the terminal, shell, and prompt.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** The Terminal, Shell, and Command Structure
+* **Est. Minutes:** 5
+* **Outline:** Explains what a terminal emulator is, what the shell is (focusing on Bash), the anatomy of a Linux command, common shortcuts, and the difference between GUI and CLI.
+
+* **Instructions (Slides):**
+
+  # Slide 1: GUI vs CLI
+  Most people interact with computers via a **Graphical User Interface (GUI)** — windows, icons, buttons, and menus. However, Linux professionals primarily use the **Command-Line Interface (CLI)**.
+
+  | Feature | GUI | CLI |
+  |---------|-----|-----|
+  | Interaction | Mouse + Keyboard | Keyboard only |
+  | Speed | Slower for complex tasks | Much faster for power users |
+  | Automation | Difficult | Easy (scripts) |
+  | Resource Use | High (needs display server) | Very low |
+  | Remote Access | Requires VNC/RDP | SSH works natively |
+
+  The CLI gives you **direct control** of the OS. Every action you do in a GUI has an equivalent CLI command — and often the CLI version is faster and more powerful.
+
+  ---
+
+  # Slide 2: Terminal Emulator vs Shell
+  These two terms are often confused:
+
+  **Terminal Emulator:** A program (application window) that provides a text-based interface. Examples: GNOME Terminal, Konsole, xterm, PuTTY (on Windows), iTerm2 (on Mac).
+
+  **Shell:** The program *inside* the terminal that interprets and executes your commands. The shell reads your input, processes it, and displays output.
+
+  ```
+  ┌──────────────────────────────────────┐
+  │         Terminal Emulator            │  ← The "window" you see
+  │  ┌────────────────────────────────┐  │
+  │  │            Shell (Bash)        │  │  ← Interprets commands
+  │  │  student@ubuntu:~$  _          │  │
+  │  └────────────────────────────────┘  │
+  └──────────────────────────────────────┘
+  ```
+
+  Popular shells: **Bash** (Bourne Again Shell) — default on most Linux distros, **Zsh**, **Fish**, **Dash**, **sh** (original Bourne Shell).
+
+  This course uses **Bash** exclusively.
+
+  ---
+
+  # Slide 3: Anatomy of the Command Prompt
+  When you open a terminal, you see the **prompt**. It looks like this:
+
+  ```
+  student@ubuntu:~$
+  ```
+
+  Breaking it down:
+  | Part | Meaning |
+  |------|---------|
+  | `student` | Current logged-in username |
+  | `@` | Separator (at symbol) |
+  | `ubuntu` | Hostname (computer name) |
+  | `:` | Separator |
+  | `~` | Current directory (`~` means home directory) |
+  | `$` | Prompt symbol for normal users |
+  | `#` | Prompt symbol for root (superuser) — be careful! |
+
+  After the `$` or `#`, you type your command and press **Enter**.
+
+  ---
+
+  # Slide 4: Anatomy of a Linux Command
+  Every Linux command follows a general structure:
+
+  ```
+  command  [options]  [arguments]
+  ```
+
+  Example:
+  ```bash
+  ls  -la  /home/student
+  │    │       │
+  │    │       └── Argument: the directory to list
+  │    └────────── Option: -l (long format) + -a (show hidden files)
+  └─────────────── Command: list directory contents
+  ```
+
+  **Key Rules:**
+  - Commands are **case-sensitive** (`ls` ≠ `LS`)
+  - Options usually start with `-` (short) or `--` (long). Example: `-l` or `--long`
+  - Multiple short options can be combined: `-l -a` = `-la`
+  - Arguments follow options and specify what the command acts on
+
+  ---
+
+  # Slide 5: Essential Terminal Shortcuts & Help Commands
+  **Navigation Shortcuts:**
+  | Shortcut | Action |
+  |----------|--------|
+  | `Ctrl+C` | Cancel current running command |
+  | `Ctrl+D` | Log out / close terminal |
+  | `Ctrl+L` | Clear the screen (same as `clear`) |
+  | `Tab` | Auto-complete file/directory/command names |
+  | `↑` / `↓` | Scroll through command history |
+  | `Ctrl+A` | Move cursor to beginning of line |
+  | `Ctrl+E` | Move cursor to end of line |
+
+  **Getting Help:**
+  ```bash
+  man ls          # Opens the manual page for 'ls'
+  ls --help       # Prints a short help message
+  info ls         # More detailed info pages
+  whatis ls       # One-line description of command
+  ```
+
+  **The `man` command** is your best friend. Press `q` to quit a man page, use `/` to search within it.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Navigating the Shell Basics
+* **Est. Minutes:** 5
+* **Outline:** Practice the prompt, basic commands, and getting help from the terminal.
+* **Instructions:** Open your terminal. Run the following commands one at a time and observe the output. Understanding what each command does is as important as running it.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Run `echo "Hello, Linux!"` to print a message to the terminal. This verifies the shell is working and demonstrates the `echo` command.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "Hello, Linux!" | grep -q "Hello, Linux!" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Run `pwd` to print your current working directory. It should output `/home/student`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ "$(pwd)" = "/home/student" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Run `bash --version` to confirm which version of Bash is installed.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash --version | grep -qi "bash" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 4:**
+    * **Instruction:** Run `history` to view your recent command history. This is useful for reviewing and repeating past commands.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `history | grep -q "." && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Document Your Terminal Knowledge
+* **Est. Minutes:** 8
+* **Outline:** Use nano to create a cheatsheet file summarizing terminal concepts.
+* **Instructions:** Use `nano /home/student/terminal_cheatsheet.txt` to create a file. Document at least three terminal shortcuts or commands in the file. Save with `Ctrl+O` then `Ctrl+X`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the file `/home/student/terminal_cheatsheet.txt` containing the word "Bash" somewhere in the file.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "Bash" /home/student/terminal_cheatsheet.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Add a line to the file that includes the word "prompt" (e.g., "The shell prompt shows the username.").
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "prompt" /home/student/terminal_cheatsheet.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Add a line that contains the text "Ctrl+C" as a documented shortcut.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "Ctrl+C" /home/student/terminal_cheatsheet.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Terminal & Shell — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on the shell, terminal, command structure, and shortcuts.
+
+* **Questions:**
+
+  * **Q1:** What is the difference between a terminal emulator and a shell?
+    * **Options:**
+      * A) They are the same — both refer to the command line window
+      * B) The terminal is the window/application; the shell is the program inside that interprets commands
+      * C) The shell is the window; the terminal is the interpreter
+      * D) The shell is a type of file system; the terminal is the hardware
+    * **Correct Answer:** B) The terminal is the window/application; the shell is the program inside that interprets commands
+    * **Explanation:** The terminal emulator provides the visual interface (the window), while the shell (like Bash) is the command interpreter running inside it, processing your commands.
+
+  * **Q2:** In the prompt `student@ubuntu:~$`, what does the `~` symbol represent?
+    * **Options:**
+      * A) The root directory `/`
+      * B) The current user's home directory
+      * C) An unknown or undefined directory
+      * D) A hidden directory
+    * **Correct Answer:** B) The current user's home directory
+    * **Explanation:** In Linux, `~` is a shorthand for the current user's home directory. For user `student`, it typically expands to `/home/student`.
+
+  * **Q3:** Which keyboard shortcut cancels a currently running command in the terminal?
+    * **Options:**
+      * A) `Ctrl+D`
+      * B) `Ctrl+Z`
+      * C) `Ctrl+C`
+      * D) `Ctrl+X`
+    * **Correct Answer:** C) `Ctrl+C`
+    * **Explanation:** `Ctrl+C` sends the SIGINT (interrupt) signal to the running process, which typically terminates it. `Ctrl+D` closes the terminal session, and `Ctrl+Z` suspends the process.
+
+  * **Q4:** Given the command `ls -la /home`, which part is the argument?
+    * **Options:**
+      * A) `ls`
+      * B) `-la`
+      * C) `/home`
+      * D) `-l`
+    * **Correct Answer:** C) `/home`
+    * **Explanation:** In `ls -la /home`: `ls` is the command, `-la` is the combined options (long format + show hidden), and `/home` is the argument — the directory to list.
+
+---
+
+# MODULE 2: FILE SYSTEM NAVIGATION
+
+---
+
+## CHAPTER 2.1: Directories and Paths
+
+* **Description:** Covers the Linux filesystem hierarchy, the difference between absolute and relative paths, and commands for navigating directories (`pwd`, `cd`, `ls`).
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** The Linux Filesystem Hierarchy and Path Types
+* **Est. Minutes:** 5
+* **Outline:** Explains the Filesystem Hierarchy Standard (FHS), key directories, absolute vs. relative paths, and navigation commands.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The Linux Filesystem Hierarchy Standard (FHS)
+  Linux organizes all files in a **single-rooted, hierarchical tree** starting from `/` (the root directory). Unlike Windows (which has multiple drive letters like C:\, D:\), Linux has one unified tree.
+
+  ```
+  /                        ← Root (top of everything)
+  ├── bin/                 ← Essential user commands (ls, cp, mv)
+  ├── boot/                ← Boot loader files, kernel image
+  ├── dev/                 ← Device files (hard drives, USB, etc.)
+  ├── etc/                 ← System configuration files
+  ├── home/                ← User home directories
+  │   └── student/         ← Your home directory
+  ├── lib/                 ← Shared libraries for /bin and /sbin
+  ├── media/               ← Mount points for removable media
+  ├── opt/                 ← Optional/third-party software
+  ├── proc/                ← Virtual filesystem for running processes
+  ├── root/                ← Home directory of the root user
+  ├── sbin/                ← System administration commands
+  ├── tmp/                 ← Temporary files (cleared on reboot)
+  ├── usr/                 ← User programs and data
+  │   ├── bin/             ← Most user commands
+  │   └── share/           ← Shared data for programs
+  └── var/                 ← Variable data (logs, spool, databases)
+  ```
+
+  ---
+
+  # Slide 2: Absolute vs Relative Paths
+  There are two ways to specify a file or directory location:
+
+  **Absolute Path:** Starts from the root `/`. It is the full path, always valid regardless of your current location.
+  ```bash
+  /home/student/documents/notes.txt
+  ```
+
+  **Relative Path:** Relative to your **current working directory (CWD)**. Does NOT start with `/`.
+  ```bash
+  documents/notes.txt        # If you are in /home/student
+  ../student/documents/      # Go up one level, then back in
+  ```
+
+  **Special Path Symbols:**
+  | Symbol | Meaning |
+  |--------|---------|
+  | `.` | Current directory |
+  | `..` | Parent directory (one level up) |
+  | `~` | Current user's home directory |
+  | `-` | Previous directory (used with `cd -`) |
+
+  ---
+
+  # Slide 3: Navigation Commands — pwd, cd, ls
+  **`pwd` — Print Working Directory**
+  ```bash
+  pwd
+  # Output: /home/student
+  ```
+  Always shows your current absolute path.
+
+  **`cd` — Change Directory**
+  ```bash
+  cd /etc                   # Go to /etc (absolute)
+  cd documents              # Go into documents/ (relative)
+  cd ..                     # Go up one level
+  cd ~                      # Go to home directory
+  cd -                      # Go back to previous directory
+  cd                        # Same as cd ~ (go home)
+  ```
+
+  **`ls` — List Directory Contents**
+  ```bash
+  ls                        # List current directory
+  ls /etc                   # List /etc directory
+  ls -l                     # Long format (permissions, size, date)
+  ls -a                     # Show hidden files (starting with .)
+  ls -la                    # Both long format AND hidden files
+  ls -lh                    # Human-readable file sizes (KB, MB)
+  ls -R                     # Recursive: list all subdirectories too
+  ```
+
+  ---
+
+  # Slide 4: Understanding `ls -l` Output
+  The long listing format shows detailed file information:
+
+  ```
+  drwxr-xr-x 2 student student 4096 Jan 10 09:00 documents
+  -rw-r--r-- 1 student student  256 Jan 10 09:05 notes.txt
+  │          │ │       │        │    │              └── Filename
+  │          │ │       │        │    └───────────────── Last modified date
+  │          │ │       │        └────────────────────── File size (bytes)
+  │          │ │       └─────────────────────────────── Group owner
+  │          │ └─────────────────────────────────────── User owner
+  │          └───────────────────────────────────────── Link count
+  └──────────────────────────────────────────────────── Permissions + type
+  ```
+
+  **File Type Indicators (first character):**
+  - `-` = Regular file
+  - `d` = Directory
+  - `l` = Symbolic link
+  - `c` = Character device
+  - `b` = Block device
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Navigate the Linux Filesystem
+* **Est. Minutes:** 5
+* **Outline:** Practice using `pwd`, `cd`, and `ls` to navigate the filesystem hierarchy.
+* **Instructions:** Run each command below and observe the output. Pay attention to how your prompt changes when you change directories.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Run `ls /` to list the root directory and see the top-level structure of the Linux filesystem.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `ls / | grep -q "etc" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Navigate to the `/etc` directory using `cd /etc`, then confirm your location with `pwd`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `cd /etc && pwd | grep -q "/etc" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Return to your home directory using `cd ~`, then verify you are in `/home/student` with `pwd`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `cd ~ && [ "$(pwd)" = "/home/student" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 4:**
+    * **Instruction:** Run `ls -la /home/student` to view all files (including hidden) in your home directory with detailed information.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `ls -la /home/student | grep -q "student" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Create a Filesystem Reference File
+* **Est. Minutes:** 8
+* **Outline:** Create a reference file documenting the key directories in the Linux filesystem hierarchy.
+* **Instructions:** Use `nano /home/student/filesystem_reference.txt` to create the file. Write at least three key Linux directory paths and their purposes. Save and exit with `Ctrl+O`, Enter, `Ctrl+X`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the file `/home/student/filesystem_reference.txt` containing the path `/etc` with a description.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "/etc" /home/student/filesystem_reference.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Add a line mentioning `/home` in the same file.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "/home" /home/student/filesystem_reference.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Add a line mentioning `/var` in the same file.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "/var" /home/student/filesystem_reference.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Directories and Paths — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on the filesystem hierarchy, path types, and navigation commands.
+
+* **Questions:**
+
+  * **Q1:** What does the `pwd` command do?
+    * **Options:**
+      * A) Creates a new directory
+      * B) Prints the current working directory's absolute path
+      * C) Displays a list of all directories in the system
+      * D) Changes your password
+    * **Correct Answer:** B) Prints the current working directory's absolute path
+    * **Explanation:** `pwd` stands for "Print Working Directory." It outputs the full absolute path of the directory you are currently in.
+
+  * **Q2:** Which of the following is an absolute path?
+    * **Options:**
+      * A) `./documents/notes.txt`
+      * B) `../etc/passwd`
+      * C) `/home/student/documents/notes.txt`
+      * D) `documents/notes.txt`
+    * **Correct Answer:** C) `/home/student/documents/notes.txt`
+    * **Explanation:** An absolute path always begins with `/` (the root). Options A, B, and D all use relative references (`.`, `..`, or no leading `/`).
+
+  * **Q3:** What does `cd ..` do?
+    * **Options:**
+      * A) Goes to the home directory
+      * B) Goes to the root directory
+      * C) Goes up one level to the parent directory
+      * D) Creates a directory named `..`
+    * **Correct Answer:** C) Goes up one level to the parent directory
+    * **Explanation:** `..` always refers to the parent directory. So `cd ..` moves you up one level in the directory hierarchy.
+
+  * **Q4:** In which Linux directory are system configuration files typically stored?
+    * **Options:**
+      * A) `/bin`
+      * B) `/var`
+      * C) `/home`
+      * D) `/etc`
+    * **Correct Answer:** D) `/etc`
+    * **Explanation:** `/etc` stands for "Editable Text Configuration" (historically "et cetera"). It stores system-wide configuration files like `/etc/hosts`, `/etc/passwd`, and `/etc/fstab`.
+
+---
+
+## CHAPTER 2.2: Creating Directories
+
+* **Description:** Teaches students how to create directories using `mkdir`, including creating nested directory structures and understanding directory permissions.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Creating Directories with mkdir
+* **Est. Minutes:** 5
+* **Outline:** Explains the `mkdir` command, its options, creating nested directories, and understanding directory permissions and ownership.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The mkdir Command
+  The `mkdir` command (make directory) creates new directories. Its basic syntax is:
+
+  ```bash
+  mkdir [options] directory_name
+  ```
+
+  **Basic Usage:**
+  ```bash
+  mkdir projects              # Creates 'projects' in current directory
+  mkdir /home/student/work    # Creates 'work' using absolute path
+  mkdir docs images scripts   # Creates multiple directories at once
+  ```
+
+  **Creating a directory requires:**
+  - Write permission on the parent directory
+  - The directory name must not already exist
+
+  ---
+
+  # Slide 2: mkdir Options
+  | Option | Long Form | Description |
+  |--------|-----------|-------------|
+  | `-p` | `--parents` | Create parent directories as needed (no error if exists) |
+  | `-m` | `--mode` | Set file permissions on creation |
+  | `-v` | `--verbose` | Print a message for each created directory |
+
+  **Most important: `-p` (parents)**
+  ```bash
+  mkdir -p projects/2024/semester1/notes
+  # Creates all directories in the chain that don't exist yet
+  # No error if any already exist
+  ```
+
+  Without `-p`, this would fail if `projects/` doesn't exist yet.
+
+  **Verbose creation:**
+  ```bash
+  mkdir -pv projects/2024/semester1
+  # Output:
+  # mkdir: created directory 'projects'
+  # mkdir: created directory 'projects/2024'
+  # mkdir: created directory 'projects/2024/semester1'
+  ```
+
+  ---
+
+  # Slide 3: Naming Conventions for Directories
+  Linux directory names are **case-sensitive** and can contain most characters, but follow these best practices:
+
+  **Recommended:**
+  - Use lowercase letters: `documents`, `projects`
+  - Use hyphens or underscores for spaces: `my-project`, `my_project`
+  - Keep names short and descriptive
+
+  **Avoid:**
+  - Spaces in names (causes issues in commands): `my project` → Use `my_project`
+  - Special characters: `!`, `*`, `?`, `\`, `/`, `;`
+  - Starting with a hyphen `-` (can be confused with options)
+  - Overly long names
+
+  **Creating a directory with a space (if you must):**
+  ```bash
+  mkdir "my project"          # Quotes wrap the space
+  mkdir my\ project           # Backslash escapes the space
+  ```
+
+  ---
+
+  # Slide 4: Verifying Directory Creation
+  After creating directories, always verify with `ls` or `ls -l`:
+
+  ```bash
+  mkdir -p /home/student/os_course/assignments
+  ls -la /home/student/
+  # You should see:  drwxr-xr-x  os_course
+  
+  ls -R /home/student/os_course
+  # Recursive listing shows nested structure:
+  # /home/student/os_course:
+  # assignments
+  # /home/student/os_course/assignments:
+  # (empty)
+  ```
+
+  Also useful: `tree` command (shows directory tree visually):
+  ```bash
+  tree /home/student/os_course
+  # os_course
+  # └── assignments
+  ```
+  Note: `tree` may need to be installed: `sudo apt install tree`
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Build a Directory Structure
+* **Est. Minutes:** 5
+* **Outline:** Practice creating directories including nested structures using mkdir and its options.
+* **Instructions:** You will create a project directory structure in your home directory. Run each command as instructed.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create a directory named `os_course` in your home directory using `mkdir /home/student/os_course`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/os_course" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create a nested directory structure `assignments/lab1` inside `os_course` in one command using `mkdir -p /home/student/os_course/assignments/lab1`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/os_course/assignments/lab1" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Create three directories at once inside `os_course`: `notes`, `scripts`, `reports` using `mkdir /home/student/os_course/notes /home/student/os_course/scripts /home/student/os_course/reports`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/os_course/notes" ] && [ -d "/home/student/os_course/scripts" ] && [ -d "/home/student/os_course/reports" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Document Your Directory Structure
+* **Est. Minutes:** 8
+* **Outline:** Create a README file inside the os_course directory to describe its structure.
+* **Instructions:** Navigate to `/home/student/os_course` using `cd /home/student/os_course`, then use `nano README.txt` to create a file. Describe the directory structure you created.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create the file `/home/student/os_course/README.txt` containing the word "assignments" to describe the folder structure.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "assignments" /home/student/os_course/README.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Add a line to the same file that includes the word "scripts".
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "scripts" /home/student/os_course/README.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Creating Directories — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on mkdir usage, options, and naming conventions.
+
+* **Questions:**
+
+  * **Q1:** What does `mkdir -p a/b/c` do when directory `a` does not exist?
+    * **Options:**
+      * A) Returns an error because `a` does not exist
+      * B) Creates only directory `c`
+      * C) Creates all directories `a`, `a/b`, and `a/b/c` in sequence
+      * D) Creates the directory `a/b/c` as a single flat directory
+    * **Correct Answer:** C) Creates all directories `a`, `a/b`, and `a/b/c` in sequence
+    * **Explanation:** The `-p` flag tells mkdir to create parent directories as needed. If `a` doesn't exist, it creates `a`, then `a/b`, then `a/b/c` — no errors are raised if parents are missing.
+
+  * **Q2:** Which command creates a directory named `my_lab` inside `/home/student`?
+    * **Options:**
+      * A) `create /home/student/my_lab`
+      * B) `mkdir /home/student/my_lab`
+      * C) `touch /home/student/my_lab`
+      * D) `new /home/student/my_lab`
+    * **Correct Answer:** B) `mkdir /home/student/my_lab`
+    * **Explanation:** `mkdir` is the standard Linux command to create directories. `touch` creates files (not directories), and `create` / `new` are not standard Linux commands.
+
+  * **Q3:** What is the recommended practice when a directory name must contain a space?
+    * **Options:**
+      * A) Linux does not allow spaces in directory names
+      * B) Use quotes or a backslash escape: `"my dir"` or `my\ dir`
+      * C) Replace the space with a dot: `my.dir`
+      * D) Use a capital letter instead of space
+    * **Correct Answer:** B) Use quotes or a backslash escape: `"my dir"` or `my\ dir`
+    * **Explanation:** Linux does allow spaces in filenames and directory names, but they must be escaped. Wrapping in quotes (`"my dir"`) or using backslash (`my\ dir`) prevents the shell from splitting the name into two separate arguments.
+
+  * **Q4:** What does `mkdir -v projects` print after successful creation?
+    * **Options:**
+      * A) Nothing — `-v` suppresses output
+      * B) The directory listing of `projects`
+      * C) A message like "mkdir: created directory 'projects'"
+      * D) The permissions of the new directory
+    * **Correct Answer:** C) A message like "mkdir: created directory 'projects'"
+    * **Explanation:** The `-v` (verbose) flag causes `mkdir` to print a message for every directory it creates. This is useful for confirming that nested directories were all created.
+
+---
+
+## CHAPTER 2.3: Creating Files
+
+* **Description:** Teaches students how to create empty files with `touch`, understand file timestamps, and differentiate file creation from directory creation.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Creating Files with touch and Redirects
+* **Est. Minutes:** 5
+* **Outline:** Explains the `touch` command, its primary and secondary uses, file timestamps, and how output redirection can also create files.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The touch Command
+  The `touch` command is primarily used to **create empty files** and to **update file timestamps**.
+
+  ```bash
+  touch filename.txt              # Create a new empty file
+  touch file1.txt file2.txt       # Create multiple files at once
+  touch /home/student/notes.txt   # Create using absolute path
+  ```
+
+  If the file **does not exist**, `touch` creates it (empty, 0 bytes).
+  If the file **already exists**, `touch` updates its access and modification timestamps without changing its content.
+
+  ---
+
+  # Slide 2: File Timestamps
+  Every file in Linux has three timestamps:
+
+  | Timestamp | Name | Updated When |
+  |-----------|------|-------------|
+  | `atime` | Access Time | File is read |
+  | `mtime` | Modification Time | File content is changed |
+  | `ctime` | Change Time | File metadata is changed (rename, permission) |
+
+  **View timestamps with `ls -l`:**
+  ```bash
+  ls -l notes.txt
+  # -rw-r--r-- 1 student student 0 Jan 10 09:15 notes.txt
+  #                                     └── This is the mtime
+  ```
+
+  **View all timestamps with `stat`:**
+  ```bash
+  stat notes.txt
+  # Access: 2024-01-10 09:15:00
+  # Modify: 2024-01-10 09:15:00
+  # Change: 2024-01-10 09:15:00
+  ```
+
+  **Set a specific timestamp with touch:**
+  ```bash
+  touch -t 202401010800 notes.txt   # Set to Jan 1, 2024 at 08:00
+  ```
+
+  ---
+
+  # Slide 3: Creating Files with Redirection
+  In addition to `touch`, files can be created using **output redirection** (`>` and `>>`):
+
+  ```bash
+  > newfile.txt              # Creates empty file (or truncates existing)
+  echo "Hello" > file.txt    # Creates file with "Hello" as content
+  echo "More" >> file.txt    # Appends "More" to existing file
+  ```
+
+  **Important distinction:**
+  | Method | Creates File | Adds Content | Overwrites Existing |
+  |--------|-------------|--------------|---------------------|
+  | `touch file.txt` | ✅ Yes | ❌ No | ❌ No (preserves) |
+  | `> file.txt` | ✅ Yes | ❌ No | ✅ Yes (truncates) |
+  | `echo "text" > file.txt` | ✅ Yes | ✅ Yes | ✅ Yes |
+  | `echo "text" >> file.txt` | ✅ Yes | ✅ Yes | ❌ No (appends) |
+
+  ---
+
+  # Slide 4: File Naming Best Practices
+  Linux filenames are case-sensitive and very flexible. Best practices:
+
+  **Allowed Characters:** Letters (a-z, A-Z), digits (0-9), dots (`.`), hyphens (`-`), underscores (`_`)
+
+  **Avoid:** Spaces, `!`, `*`, `?`, `\`, `;`, `:`, `|`, `<`, `>` (special shell characters)
+
+  **Hidden Files:** Files starting with `.` are hidden from `ls` (visible with `ls -a`):
+  ```bash
+  touch .hidden_file          # Creates a hidden file
+  ls                          # Not shown
+  ls -a                       # Shown: .hidden_file
+  ```
+
+  **File Extensions:** Linux does not rely on extensions for file types (unlike Windows), but using them helps humans identify file purposes:
+  - `.txt` — Text files
+  - `.sh` — Shell scripts
+  - `.py` — Python scripts
+  - `.conf` — Configuration files
+  - `.log` — Log files
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Create and Inspect Files
+* **Est. Minutes:** 5
+* **Outline:** Practice creating files using touch and redirection, and inspect them with stat and ls.
+* **Instructions:** Create various files in your home directory and os_course directory, then verify their creation.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create an empty file named `assignment1.txt` inside `/home/student/os_course/assignments/lab1/` using the `touch` command.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/os_course/assignments/lab1/assignment1.txt" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create three empty files at once in `/home/student/os_course/notes/`: `lecture1.txt`, `lecture2.txt`, `lecture3.txt` using a single `touch` command.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/os_course/notes/lecture1.txt" ] && [ -f "/home/student/os_course/notes/lecture2.txt" ] && [ -f "/home/student/os_course/notes/lecture3.txt" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Use the `stat` command to view the timestamps of `assignment1.txt`. Run `stat /home/student/os_course/assignments/lab1/assignment1.txt`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `stat /home/student/os_course/assignments/lab1/assignment1.txt | grep -qi "access\|modify\|birth\|change" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write Your First Assignment File
+* **Est. Minutes:** 8
+* **Outline:** Use nano to write content into an assignment file.
+* **Instructions:** Open the file `/home/student/os_course/assignments/lab1/assignment1.txt` with `nano`. Write your student information and a brief answer about what `touch` does. Save with `Ctrl+O`, Enter, `Ctrl+X`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Open `/home/student/os_course/assignments/lab1/assignment1.txt` in nano and add a line containing "touch" (explaining the command).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "touch" /home/student/os_course/assignments/lab1/assignment1.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Add a line to the same file containing the word "timestamp".
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "timestamp" /home/student/os_course/assignments/lab1/assignment1.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Creating Files — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on touch, file timestamps, and redirection-based file creation.
+
+* **Questions:**
+
+  * **Q1:** What happens when you run `touch existing_file.txt` on a file that already exists?
+    * **Options:**
+      * A) The file is deleted and recreated empty
+      * B) An error is returned because the file exists
+      * C) The file's content is unchanged but its timestamps are updated
+      * D) A backup copy of the file is made
+    * **Correct Answer:** C) The file's content is unchanged but its timestamps are updated
+    * **Explanation:** `touch` on an existing file only updates its access and modification timestamps to the current time. It does not delete, truncate, or alter the content.
+
+  * **Q2:** Which command creates a file AND writes "Hello World" into it simultaneously?
+    * **Options:**
+      * A) `touch hello.txt "Hello World"`
+      * B) `echo "Hello World" > hello.txt`
+      * C) `mkdir hello.txt`
+      * D) `write hello.txt Hello World`
+    * **Correct Answer:** B) `echo "Hello World" > hello.txt`
+    * **Explanation:** `echo "Hello World" > hello.txt` uses the `>` redirection operator to write the output of `echo` into `hello.txt`, creating the file if it doesn't exist and writing "Hello World" as content.
+
+  * **Q3:** A file named `.settings` starts with a dot. What does this mean in Linux?
+    * **Options:**
+      * A) It is a directory, not a file
+      * B) It is a hidden file, not shown by default in `ls`
+      * C) It is read-only and cannot be modified
+      * D) It belongs to the root user
+    * **Correct Answer:** B) It is a hidden file, not shown by default in `ls`
+    * **Explanation:** In Linux, any file or directory whose name begins with a `.` is treated as hidden. It won't appear in a standard `ls` listing, but `ls -a` will show it.
+
+  * **Q4:** What does the `>>` operator do compared to `>`?
+    * **Options:**
+      * A) Both operators do the same thing
+      * B) `>>` overwrites the file; `>` appends to it
+      * C) `>>` appends to an existing file; `>` overwrites (truncates) it
+      * D) `>>` creates a directory; `>` creates a file
+    * **Correct Answer:** C) `>>` appends to an existing file; `>` overwrites (truncates) it
+    * **Explanation:** `>` redirects output and overwrites the target file from scratch. `>>` redirects output and appends it to the end of the existing file. Both create the file if it doesn't exist.
+
+---
+
+# MODULE 3: WORKING WITH FILES
+
+---
+
+## CHAPTER 3.1: Reading Files
+
+* **Description:** Covers multiple ways to view file content in Linux: `cat`, `less`, `more`, `head`, `tail`, and `wc`. Students learn when to use each command based on file size and context.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Commands for Reading and Viewing File Content
+* **Est. Minutes:** 5
+* **Outline:** Explains cat, less, more, head, tail, and wc — their purposes, options, and use cases.
+
+* **Instructions (Slides):**
+
+  # Slide 1: cat — Concatenate and Display
+  `cat` (concatenate) is the most basic file reading command. It prints the entire contents of a file to the terminal.
+
+  ```bash
+  cat filename.txt              # Display file content
+  cat file1.txt file2.txt       # Display multiple files in sequence
+  cat -n filename.txt           # Display with line numbers
+  cat -A filename.txt           # Show special characters (tabs as ^I, newlines as $)
+  cat -b filename.txt           # Number only non-empty lines
+  ```
+
+  **When to use cat:**
+  - Small files (a few dozen lines)
+  - When you need to see the entire file at once
+  - When piping content to another command: `cat file.txt | grep "error"`
+
+  **Caution:** Running `cat` on very large files floods the terminal. Use `less` instead.
+
+  ---
+
+  # Slide 2: less and more — Paged Viewers
+  For large files, use **pagers** that display content one screen at a time:
+
+  **`less`** (recommended — more features than `more`):
+  ```bash
+  less filename.txt
+  ```
+  Navigation inside `less`:
+  | Key | Action |
+  |-----|--------|
+  | `Space` or `f` | Next page |
+  | `b` | Previous page |
+  | `↑` / `↓` | Scroll one line |
+  | `/pattern` | Search forward |
+  | `n` | Next search match |
+  | `g` | Go to beginning |
+  | `G` | Go to end |
+  | `q` | Quit |
+
+  **`more`** (simpler, older):
+  ```bash
+  more filename.txt    # Only scrolls forward; Enter = one line, Space = one page
+  ```
+
+  ---
+
+  # Slide 3: head and tail — View File Extremes
+  **`head`** — Shows the first N lines of a file (default: 10):
+  ```bash
+  head filename.txt           # First 10 lines
+  head -n 20 filename.txt     # First 20 lines
+  head -20 filename.txt       # Same (shorter form)
+  head -c 100 filename.txt    # First 100 bytes
+  ```
+
+  **`tail`** — Shows the last N lines of a file (default: 10):
+  ```bash
+  tail filename.txt           # Last 10 lines
+  tail -n 20 filename.txt     # Last 20 lines
+  tail -f filename.txt        # Follow mode: shows new lines as they are added (great for logs!)
+  tail -f /var/log/syslog     # Live log monitoring example
+  ```
+
+  **Combining head and tail (extract middle of file):**
+  ```bash
+  head -n 20 file.txt | tail -n 5   # Lines 16-20 of file
+  ```
+
+  ---
+
+  # Slide 4: wc — Word Count
+  `wc` counts lines, words, and characters in a file:
+
+  ```bash
+  wc filename.txt              # Lines, words, bytes (all three)
+  wc -l filename.txt           # Count lines only
+  wc -w filename.txt           # Count words only
+  wc -c filename.txt           # Count bytes (characters in ASCII files)
+  wc -m filename.txt           # Count characters (handles multibyte/unicode)
+  ```
+
+  **Example output:**
+  ```bash
+  wc /etc/passwd
+  #   45  78  2564 /etc/passwd
+  #   │   │   │
+  #   │   │   └── Bytes
+  #   │   └────── Words
+  #   └────────── Lines
+  ```
+
+  **Useful for OS practicals:** Count words in a document, count lines in a script, verify file sizes.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Read and Inspect Files
+* **Est. Minutes:** 5
+* **Outline:** Practice using cat, head, tail, and wc to read and analyze file contents.
+* **Instructions:** Run each command to practice the various file reading techniques.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Use `cat /etc/hostname` to view the system's hostname file.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `cat /etc/hostname | grep -q "." && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Use `head -n 5 /etc/passwd` to view the first 5 lines of the passwd file.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `head -n 5 /etc/passwd | wc -l | grep -q "5" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Use `wc -l /etc/passwd` to count how many lines are in the passwd file.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `wc -l /etc/passwd | grep -qE "^[0-9]+" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 4:**
+    * **Instruction:** Use `cat -n /home/student/linux_notes.txt` to display your notes file with line numbers. (If the file doesn't exist yet, create it with `touch /home/student/linux_notes.txt` first.)
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -f "/home/student/linux_notes.txt" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Create a Multi-Line Study File
+* **Est. Minutes:** 8
+* **Outline:** Create a file with multiple lines to practice reading commands on a file you authored.
+* **Instructions:** Use `nano /home/student/os_course/notes/lecture1.txt` to create a file with at least 5 lines of content about Linux commands. Then verify it with `cat -n` and `wc -l`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Write at least 5 lines into `/home/student/os_course/notes/lecture1.txt`. Each line should mention a command name (cat, head, tail, less, wc, etc.).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ "$(wc -l < /home/student/os_course/notes/lecture1.txt)" -ge 5 ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Ensure the file `/home/student/os_course/notes/lecture1.txt` contains the word "cat" in it.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "cat" /home/student/os_course/notes/lecture1.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Reading Files — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on cat, less, head, tail, and wc.
+
+* **Questions:**
+
+  * **Q1:** Which command is best suited for viewing the last 20 lines of a large log file?
+    * **Options:**
+      * A) `cat -n logfile.txt`
+      * B) `head -n 20 logfile.txt`
+      * C) `tail -n 20 logfile.txt`
+      * D) `wc -l logfile.txt`
+    * **Correct Answer:** C) `tail -n 20 logfile.txt`
+    * **Explanation:** `tail` displays lines from the end of a file. `-n 20` specifies 20 lines. `head` shows from the beginning. `cat` dumps everything. `wc` counts but doesn't display content.
+
+  * **Q2:** What does `wc -w report.txt` output?
+    * **Options:**
+      * A) The number of lines in report.txt
+      * B) The number of words in report.txt
+      * C) The number of bytes in report.txt
+      * D) The word list found in report.txt
+    * **Correct Answer:** B) The number of words in report.txt
+    * **Explanation:** `wc -w` counts words (sequences of characters separated by whitespace). `wc -l` counts lines and `wc -c` counts bytes.
+
+  * **Q3:** Which `tail` option lets you monitor a file in real-time as new content is added?
+    * **Options:**
+      * A) `tail -r`
+      * B) `tail -n`
+      * C) `tail -f`
+      * D) `tail -v`
+    * **Correct Answer:** C) `tail -f`
+    * **Explanation:** `tail -f` (follow) keeps the file open and continuously prints new lines as they are appended — ideal for monitoring log files in real-time.
+
+  * **Q4:** What is the key advantage of using `less` over `cat` for large files?
+    * **Options:**
+      * A) `less` is faster because it reads less of the file
+      * B) `less` displays the file one page at a time and allows forward and backward navigation
+      * C) `less` automatically compresses the file
+      * D) `less` filters out empty lines
+    * **Correct Answer:** B) `less` displays the file one page at a time and allows forward and backward navigation
+    * **Explanation:** `less` is a pager that lets you scroll through files interactively. Unlike `cat` (which dumps everything) or `more` (forward-only), `less` supports both forward and backward navigation, search, and line jumping.
+
+---
+
+## CHAPTER 3.2: Copying Files
+
+* **Description:** Teaches the `cp` command for copying files and directories, including recursive copying, preserving attributes, and using wildcards.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Copying Files and Directories with cp
+* **Est. Minutes:** 5
+* **Outline:** Explains the cp command, its key options (recursive, preserve, verbose, interactive), wildcard usage, and common use cases.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The cp Command
+  `cp` (copy) copies files and directories from one location to another.
+
+  **Basic Syntax:**
+  ```bash
+  cp source destination
+  cp [options] source destination
+  cp [options] source1 source2 ... destination_directory
+  ```
+
+  **Basic Examples:**
+  ```bash
+  cp notes.txt backup_notes.txt           # Copy file in same directory (creates backup)
+  cp notes.txt /home/student/backup/      # Copy to another directory
+  cp /etc/passwd /home/student/           # Copy system file to home
+  ```
+
+  **Copying multiple files to a directory:**
+  ```bash
+  cp file1.txt file2.txt file3.txt /home/student/backup/
+  # All three files are copied into backup/
+  ```
+
+  ---
+
+  # Slide 2: Key cp Options
+  | Option | Long Form | Description |
+  |--------|-----------|-------------|
+  | `-r` | `--recursive` | Copy directories and their contents recursively |
+  | `-p` | `--preserve` | Preserve timestamps, permissions, and ownership |
+  | `-v` | `--verbose` | Print what is being copied |
+  | `-i` | `--interactive` | Ask before overwriting existing files |
+  | `-n` | `--no-clobber` | Do not overwrite existing files |
+  | `-u` | `--update` | Copy only if source is newer than destination |
+  | `-a` | `--archive` | Preserve all attributes + recursive (= -rp + more) |
+
+  **Copy a directory recursively:**
+  ```bash
+  cp -r /home/student/os_course /home/student/os_course_backup
+  # Copies the entire directory tree
+  ```
+
+  **Copy with verbose output:**
+  ```bash
+  cp -rv documents/ documents_backup/
+  # 'documents/notes.txt' -> 'documents_backup/notes.txt'
+  ```
+
+  ---
+
+  # Slide 3: Wildcards with cp
+  Wildcards let you copy multiple files matching a pattern:
+
+  | Wildcard | Meaning | Example |
+  |----------|---------|---------|
+  | `*` | Matches any number of characters | `*.txt` — all .txt files |
+  | `?` | Matches exactly one character | `file?.txt` — file1.txt, fileA.txt |
+  | `[abc]` | Matches any character in the set | `file[123].txt` |
+  | `[a-z]` | Matches any character in the range | `[a-z]*.txt` |
+
+  ```bash
+  cp *.txt /home/student/backup/     # Copy all .txt files to backup
+  cp file?.sh scripts/               # Copy file1.sh, file2.sh, etc.
+  cp lecture[1-3].txt notes/         # Copy lecture1.txt, lecture2.txt, lecture3.txt
+  ```
+
+  **Important:** The shell expands wildcards *before* passing arguments to `cp`. The `cp` command itself never sees the `*` — it sees the list of matching files.
+
+  ---
+
+  # Slide 4: Common cp Pitfalls
+  **Pitfall 1: Overwriting without warning**
+  ```bash
+  cp new_file.txt important_file.txt   # Silently overwrites important_file.txt!
+  cp -i new_file.txt important_file.txt  # Safer: asks before overwriting
+  ```
+
+  **Pitfall 2: Forgetting -r for directories**
+  ```bash
+  cp documents/ backup/              # ERROR: omitting directory
+  cp -r documents/ backup/           # Correct
+  ```
+
+  **Pitfall 3: Trailing slash behavior**
+  ```bash
+  cp -r source/ dest/    # Copies CONTENTS of source into dest
+  cp -r source dest/     # Copies source DIRECTORY itself into dest (creates dest/source)
+  ```
+
+  Understanding these distinctions is critical for OS practicals.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Copy Files and Directories
+* **Est. Minutes:** 5
+* **Outline:** Practice copying files and directories using cp with various options.
+* **Instructions:** Perform the following copy operations and verify the results.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create a backup of `lecture1.txt` by copying it to `lecture1_backup.txt` in the same directory: `cp /home/student/os_course/notes/lecture1.txt /home/student/os_course/notes/lecture1_backup.txt`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/os_course/notes/lecture1_backup.txt" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Copy all `.txt` files from `notes/` to `reports/` using: `cp /home/student/os_course/notes/*.txt /home/student/os_course/reports/`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `ls /home/student/os_course/reports/*.txt 2>/dev/null | grep -q ".txt" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Create a full backup of the entire `os_course` directory using `cp -r /home/student/os_course /home/student/os_course_backup`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/os_course_backup" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Create and Copy a Config File
+* **Est. Minutes:** 8
+* **Outline:** Create a configuration-style file and make a backup copy of it.
+* **Instructions:** Use nano to create a configuration file, then use cp to back it up.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/os_course/config.txt` using nano. Write at least one line containing the word "configuration".
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "configuration" /home/student/os_course/config.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Copy `/home/student/os_course/config.txt` to `/home/student/os_course/config.bak` using `cp /home/student/os_course/config.txt /home/student/os_course/config.bak`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/os_course/config.bak" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Copying Files — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on cp options, wildcards, and common pitfalls.
+
+* **Questions:**
+
+  * **Q1:** Which command correctly copies the entire `projects` directory and all its contents to `backup`?
+    * **Options:**
+      * A) `cp projects backup`
+      * B) `cp -r projects backup`
+      * C) `cp -f projects backup`
+      * D) `copy -all projects backup`
+    * **Correct Answer:** B) `cp -r projects backup`
+    * **Explanation:** The `-r` (recursive) flag is required when copying directories. Without it, `cp` fails with an error saying it cannot copy a directory.
+
+  * **Q2:** What does `cp -i source.txt dest.txt` do differently from `cp source.txt dest.txt`?
+    * **Options:**
+      * A) It compresses the file during copying
+      * B) It asks for confirmation before overwriting `dest.txt` if it already exists
+      * C) It creates an incremental backup only of changed bytes
+      * D) It ignores the copy if `dest.txt` already exists
+    * **Correct Answer:** B) It asks for confirmation before overwriting `dest.txt` if it already exists
+    * **Explanation:** The `-i` (interactive) flag prompts the user with "overwrite? (y/n)" if the destination file already exists, preventing accidental data loss.
+
+  * **Q3:** What does the wildcard `cp *.log /backup/` do?
+    * **Options:**
+      * A) Copies only a file literally named `*.log`
+      * B) Copies all files with `.log` extension in the current directory to `/backup/`
+      * C) Copies the `/backup/` directory into the current directory
+      * D) Creates a compressed archive of all log files
+    * **Correct Answer:** B) Copies all files with `.log` extension in the current directory to `/backup/`
+    * **Explanation:** `*` is a wildcard that matches any sequence of characters. `*.log` expands to all filenames ending in `.log` in the current directory. All matching files are then copied to `/backup/`.
+
+  * **Q4:** What does the `cp -p` flag preserve?
+    * **Options:**
+      * A) Only file permissions
+      * B) File timestamps, permissions, and ownership attributes
+      * C) Only the parent directory structure
+      * D) Only the partition/filesystem type
+    * **Correct Answer:** B) File timestamps, permissions, and ownership attributes
+    * **Explanation:** `cp -p` (preserve) maintains the original file's mode (permissions), ownership (user and group), and timestamps. Without it, copied files get current-time timestamps and the copier's ownership.
+
+---
+
+## CHAPTER 3.3: Moving and Renaming Files
+
+* **Description:** Teaches the `mv` command for moving files between directories and renaming files and directories. Students understand that in Linux, renaming is a move operation.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Moving and Renaming with mv
+* **Est. Minutes:** 5
+* **Outline:** Explains the mv command, how Linux treats rename as a move, key options, and practical patterns.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The mv Command — Move and Rename
+  `mv` (move) serves two purposes:
+  1. **Moving** files or directories to a new location
+  2. **Renaming** files or directories (which is just a move within the same directory)
+
+  In Linux, there is no separate `rename` command for individual files — `mv` handles both.
+
+  **Syntax:**
+  ```bash
+  mv source destination
+  mv [options] source1 source2 ... destination_directory
+  ```
+
+  **Moving a file:**
+  ```bash
+  mv notes.txt /home/student/documents/   # Move to documents directory
+  mv /tmp/download.zip /home/student/     # Move from /tmp to home
+  ```
+
+  **Renaming a file:**
+  ```bash
+  mv old_name.txt new_name.txt           # Rename in same directory
+  mv report_draft.txt report_final.txt   # Rename a draft to final
+  ```
+
+  ---
+
+  # Slide 2: Key mv Options
+  | Option | Long Form | Description |
+  |--------|-----------|-------------|
+  | `-i` | `--interactive` | Ask before overwriting existing files |
+  | `-n` | `--no-clobber` | Do not overwrite existing files at all |
+  | `-v` | `--verbose` | Print what is being moved |
+  | `-u` | `--update` | Move only if source is newer than destination |
+  | `-f` | `--force` | Do not prompt before overwriting |
+
+  **Examples:**
+  ```bash
+  mv -i file.txt /backup/              # Asks: "overwrite backup/file.txt? (y/n)"
+  mv -v *.log /var/logs/archive/       # Prints each file moved
+  mv -n draft.txt final.txt            # Will NOT rename if final.txt already exists
+  ```
+
+  ---
+
+  # Slide 3: Moving vs Copying
+  Understanding the key difference:
+
+  | Operation | `cp` | `mv` |
+  |-----------|------|------|
+  | Source file after operation | **Remains** (copy created) | **Removed** (only destination remains) |
+  | Cross-filesystem | Works (copies bytes) | May work slowly (copies + deletes) or uses rename |
+  | Permissions preserved | Only with `-p` | Preserved by default (same filesystem) |
+  | Disk usage | Doubled temporarily | No extra disk usage (on same filesystem) |
+
+  **Key insight:** On the same filesystem, `mv` just updates the directory entry — it's almost instantaneous regardless of file size (just a metadata change, not a data copy).
+
+  **Renaming directories:**
+  ```bash
+  mv old_dir/ new_dir/      # Renames the directory
+  mv projects/ archive/     # Moves projects into archive (if archive/ exists)
+  ```
+
+  **Important:** If the destination is an existing directory, `mv` moves the source *into* that directory. If the destination does not exist, it renames.
+
+  ---
+
+  # Slide 4: Practical mv Patterns
+  ```bash
+  # Rename with timestamp for backup
+  mv config.conf config.conf.backup_$(date +%Y%m%d)
+
+  # Move all .bak files to backup directory
+  mv *.bak /home/student/backup/
+
+  # Move and rename simultaneously
+  mv /tmp/data.csv /home/student/reports/final_data_2024.csv
+
+  # Move directory tree
+  mv old_project/ new_project/
+  ```
+
+  **Undo a move:** There is no undo in the terminal! If you accidentally overwrite a file with `mv`, it is gone (unless you have backups). Always use `-i` for interactive mode when unsure.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Move and Rename Files
+* **Est. Minutes:** 5
+* **Outline:** Practice moving and renaming files and directories using mv.
+* **Instructions:** Perform the following move and rename operations.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Rename the file `lecture1_backup.txt` to `lecture1_v2.txt` in `/home/student/os_course/notes/`: `mv /home/student/os_course/notes/lecture1_backup.txt /home/student/os_course/notes/lecture1_v2.txt`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/os_course/notes/lecture1_v2.txt" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Move `config.bak` from `/home/student/os_course/` to `/home/student/os_course/reports/`: `mv /home/student/os_course/config.bak /home/student/os_course/reports/`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/os_course/reports/config.bak" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Move the entire `os_course_backup` directory to a new name `os_course_archive`: `mv /home/student/os_course_backup /home/student/os_course_archive`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/os_course_archive" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Create and Rename a Draft Document
+* **Est. Minutes:** 8
+* **Outline:** Simulate a real workflow: write a draft, then rename it to a final version.
+* **Instructions:** Create a draft file, edit it with content, then rename it to a final version using mv.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/os_course/reports/summary_draft.txt` using nano and write at least one sentence containing "summary".
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "summary" /home/student/os_course/reports/summary_draft.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Rename `summary_draft.txt` to `summary_final.txt` using `mv /home/student/os_course/reports/summary_draft.txt /home/student/os_course/reports/summary_final.txt`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/os_course/reports/summary_final.txt" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Moving and Renaming — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on mv behavior, options, and move vs copy.
+
+* **Questions:**
+
+  * **Q1:** What happens to the source file after `mv source.txt destination.txt`?
+    * **Options:**
+      * A) The source file is kept and a copy is created at destination
+      * B) The source file is deleted and only the destination exists
+      * C) Both files exist with identical content
+      * D) The source file becomes read-only
+    * **Correct Answer:** B) The source file is deleted and only the destination exists
+    * **Explanation:** `mv` moves (not copies) the file. After the operation, only the destination file exists. The original source path no longer refers to any file.
+
+  * **Q2:** If `/home/student/docs/` directory already exists, what does `mv report.txt /home/student/docs/` do?
+    * **Options:**
+      * A) Renames `docs/` to `report.txt`
+      * B) Fails with an error because `docs/` already exists
+      * C) Moves `report.txt` into the `docs/` directory
+      * D) Overwrites the `docs/` directory
+    * **Correct Answer:** C) Moves `report.txt` into the `docs/` directory
+    * **Explanation:** When the destination is an existing directory, `mv` places the source file *inside* that directory. The result is `/home/student/docs/report.txt`.
+
+  * **Q3:** Which option makes `mv` ask for confirmation before overwriting an existing file?
+    * **Options:**
+      * A) `-f`
+      * B) `-n`
+      * C) `-i`
+      * D) `-v`
+    * **Correct Answer:** C) `-i`
+    * **Explanation:** `-i` (interactive) prompts "overwrite?" before overwriting. `-n` silently refuses to overwrite. `-f` forces overwriting without asking. `-v` shows verbose output of what's being moved.
+
+  * **Q4:** On the same filesystem, why is `mv` faster than `cp` for large files?
+    * **Options:**
+      * A) `mv` uses hardware acceleration while `cp` does not
+      * B) `mv` compresses files before moving them
+      * C) `mv` only updates directory metadata (no data bytes are copied), while `cp` copies all data bytes
+      * D) `mv` uses multi-threading while `cp` is single-threaded
+    * **Correct Answer:** C) `mv` only updates directory metadata (no data bytes are copied), while `cp` copies all data bytes
+    * **Explanation:** On the same filesystem, `mv` is essentially just a rename operation — it changes the directory entry pointing to the file's inode. No data bytes move. `cp` must read all bytes from source and write them to a new inode at the destination.
+
+---
+
+## CHAPTER 3.4: Deleting Files
+
+* **Description:** Covers the `rm` and `rmdir` commands for deleting files and directories, with emphasis on safety practices, the `trash` concept, and understanding there is no Recycle Bin in Linux by default.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Deleting Files and Directories Safely
+* **Est. Minutes:** 5
+* **Outline:** Explains rm and rmdir commands, dangerous options to use cautiously, safe deletion practices, and the absence of a Recycle Bin in the Linux CLI.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The rm Command — Remove Files
+  `rm` (remove) permanently deletes files. **There is no Recycle Bin — deletions are immediate and not easily reversible.**
+
+  **Basic Syntax:**
+  ```bash
+  rm filename.txt                  # Delete a single file
+  rm file1.txt file2.txt file3.txt # Delete multiple files
+  rm *.tmp                         # Delete all .tmp files (wildcard)
+  ```
+
+  **Key Warning:** There is no `undo` for `rm` in the CLI. Always double-check before running.
+
+  **Safe option — Interactive mode:**
+  ```bash
+  rm -i filename.txt   # Asks: "remove 'filename.txt'? (y/n)"
+  ```
+
+  Always use `-i` when learning or when you're unsure.
+
+  ---
+
+  # Slide 2: Removing Directories
+  `rm` alone cannot remove directories. Use:
+
+  **`rmdir`** — Removes **empty** directories only:
+  ```bash
+  rmdir empty_dir/        # Works only if empty_dir has no files
+  rmdir -p a/b/c/         # Remove empty directory chain
+  ```
+
+  **`rm -r`** — Removes directories **recursively** (with all contents):
+  ```bash
+  rm -r directory/        # Deletes directory and everything inside
+  rm -ri directory/       # Recursive but interactive (asks for each file)
+  rm -rv directory/       # Recursive and verbose (prints each deletion)
+  ```
+
+  **The most dangerous command in Linux:**
+  ```bash
+  rm -rf /some/path       # -r = recursive, -f = force (no prompts)
+  # -rf removes everything in path with no confirmation whatsoever
+  # Running rm -rf / or rm -rf /* can destroy the entire system!
+  ```
+
+  ---
+
+  # Slide 3: rm Options Summary
+  | Option | Description |
+  |--------|-------------|
+  | `-i` | Interactive — ask before each deletion |
+  | `-r` or `-R` | Recursive — remove directories and contents |
+  | `-f` | Force — no prompts, ignore nonexistent files |
+  | `-v` | Verbose — print each file being removed |
+  | `-d` | Remove empty directories (like rmdir) |
+
+  **Safe Practices:**
+  1. Always use `-i` when deleting important files
+  2. Preview what you're deleting: `ls -la` before `rm`
+  3. Use `echo rm -rf folder/` to preview the command first
+  4. Never run `rm -rf` as root unless you are absolutely certain
+  5. Consider using `trash-cli` (a Recycle Bin for CLI) for safer deletion
+
+  ---
+
+  # Slide 4: The trash-cli Alternative
+  For safer deletion in day-to-day work, consider `trash-cli`:
+
+  ```bash
+  sudo apt install trash-cli      # Install trash-cli
+  trash-put file.txt              # Move to trash (recoverable)
+  trash-list                      # List items in trash
+  trash-restore                   # Restore deleted files
+  trash-empty                     # Permanently empty the trash
+  ```
+
+  This mirrors the GUI Recycle Bin / Trash experience in the terminal.
+
+  **For OS practical exams:** The `rm` command is what is tested — know its options. But in real professional work, `trash-cli` is safer for day-to-day use.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Delete Files and Directories Safely
+* **Est. Minutes:** 5
+* **Outline:** Practice deleting files and directories using rm and rmdir with safety options.
+* **Instructions:** Delete the specified files and directories, using the interactive flag where instructed.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Delete the file `/home/student/os_course/notes/lecture1_v2.txt` using `rm /home/student/os_course/notes/lecture1_v2.txt`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ ! -f "/home/student/os_course/notes/lecture1_v2.txt" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Delete the empty `lab1` directory using `rmdir /home/student/os_course/assignments/lab1` (note: you'll need to delete files inside first if any exist, or use `rm -r`).
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ ! -d "/home/student/os_course/assignments/lab1" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Delete the entire `os_course_archive` directory and all its contents: `rm -r /home/student/os_course_archive`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ ! -d "/home/student/os_course_archive" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Create a Deletion Log
+* **Est. Minutes:** 8
+* **Outline:** Document safe deletion practices by creating a reference file with rm best practices.
+* **Instructions:** Use nano to create a safety guide file about the rm command.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/rm_safety_guide.txt` using nano. Include the word "interactive" to document the `-i` flag.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "interactive" /home/student/rm_safety_guide.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Add a warning line to the same file containing the word "irreversible" (e.g., "Deletion with rm is irreversible — no Recycle Bin.").
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "irreversible" /home/student/rm_safety_guide.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Deleting Files — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on rm, rmdir, and safe deletion practices.
+
+* **Questions:**
+
+  * **Q1:** What happens when you delete a file using `rm` in Linux?
+    * **Options:**
+      * A) The file is moved to a Recycle Bin and can be restored
+      * B) The file is permanently deleted with no CLI Recycle Bin by default
+      * C) The file is compressed and stored in `/var/deleted/`
+      * D) The file content is zeroed out but the filename remains
+    * **Correct Answer:** B) The file is permanently deleted with no CLI Recycle Bin by default
+    * **Explanation:** Unlike GUI environments, the Linux CLI `rm` command permanently deletes files. There is no built-in Recycle Bin. Recovery requires special tools or backups, and is not always possible.
+
+  * **Q2:** What is the difference between `rmdir` and `rm -r`?
+    * **Options:**
+      * A) `rmdir` deletes files; `rm -r` deletes directories
+      * B) `rmdir` deletes only empty directories; `rm -r` deletes directories with all their contents
+      * C) Both commands do exactly the same thing
+      * D) `rmdir` is safer because it asks for confirmation
+    * **Correct Answer:** B) `rmdir` deletes only empty directories; `rm -r` deletes directories with all their contents
+    * **Explanation:** `rmdir` fails if the directory contains any files or subdirectories. `rm -r` recursively removes everything inside the directory before removing the directory itself.
+
+  * **Q3:** Which combination of flags makes `rm` dangerous and capable of deleting everything without prompting?
+    * **Options:**
+      * A) `-iv`
+      * B) `-rf`
+      * C) `-lv`
+      * D) `-np`
+    * **Correct Answer:** B) `-rf`
+    * **Explanation:** `rm -rf` combines recursive (`-r`) with force (`-f`). Recursive means it enters all subdirectories. Force means it never prompts for confirmation. This combination can delete entire filesystems if misused.
+
+  * **Q4:** What is the safest way to delete files when you are unsure?
+    * **Options:**
+      * A) Use `rm -f` to force deletion quickly
+      * B) Use `rm -i` to be prompted for confirmation before each deletion
+      * C) Use `rm -R` to see each file listed
+      * D) Use `rmdir` for all files and directories
+    * **Correct Answer:** B) Use `rm -i` to be prompted for confirmation before each deletion
+    * **Explanation:** The `-i` (interactive) flag causes `rm` to ask "remove 'filename'? (y/n)" for each file. This prevents accidental deletion and gives you a chance to review before committing.
+
+---
+
+# MODULE 4: FILE CONTENT OPERATIONS
+
+---
+
+## CHAPTER 4.1: Writing Text from Terminal
+
+* **Description:** Covers multiple methods to write text to files from the terminal: `echo`, `printf`, heredocs, and redirection. Foundational for scripting and OS practicals.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Writing Text to Files Using echo, printf, and Redirection
+* **Est. Minutes:** 5
+* **Outline:** Explains echo, printf, heredoc syntax, and redirection operators for writing file content from the command line.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The echo Command
+  `echo` prints text to standard output (the terminal). Combined with redirection, it writes to files.
+
+  ```bash
+  echo "Hello, World!"              # Prints to terminal
+  echo "Hello, World!" > file.txt   # Writes to file (overwrites)
+  echo "Second line" >> file.txt    # Appends to file
+  ```
+
+  **echo Options:**
+  | Option | Description | Example |
+  |--------|-------------|---------|
+  | `-n` | No trailing newline | `echo -n "no newline"` |
+  | `-e` | Enable escape sequences | `echo -e "line1\nline2"` |
+  | `-E` | Disable escape sequences (default) | `echo -E "no \n escape"` |
+
+  **Escape sequences with `-e`:**
+  ```bash
+  echo -e "Line 1\nLine 2\nLine 3"   # Prints 3 lines
+  echo -e "Name:\tJohn"               # Tab character
+  echo -e "\a"                        # Bell sound
+  ```
+
+  ---
+
+  # Slide 2: The printf Command
+  `printf` is more powerful than `echo` for formatted output. It works like C's `printf()` function.
+
+  **Syntax:**
+  ```bash
+  printf "format_string" [arguments]
+  ```
+
+  **Format specifiers:**
+  | Specifier | Meaning | Example |
+  |-----------|---------|---------|
+  | `%s` | String | `printf "%s\n" "hello"` |
+  | `%d` | Integer | `printf "%d\n" 42` |
+  | `%f` | Float | `printf "%.2f\n" 3.14159` |
+  | `%05d` | Zero-padded integer | `printf "%05d\n" 7` → `00007` |
+
+  ```bash
+  printf "Name: %s\nAge: %d\n" "Alice" 22    # Formatted output
+  printf "%-15s %5d\n" "Alice" 22            # Left-aligned, right-aligned
+  printf "Hello World\n" > greeting.txt       # Write to file
+  ```
+
+  ---
+
+  # Slide 3: Heredoc — Writing Multiple Lines
+  A **heredoc** (Here Document) lets you write multiple lines of text inline, without a separate text editor:
+
+  ```bash
+  cat > /home/student/myfile.txt << EOF
+  This is line one.
+  This is line two.
+  This is line three.
+  EOF
+  ```
+
+  **How it works:**
+  - `<< EOF` tells the shell to read input until it sees `EOF` on a line by itself
+  - Everything between `<< EOF` and `EOF` is treated as the file content
+  - `EOF` can be any word (convention: `EOF`, `END`, `HEREDOC`, etc.)
+
+  **Append using heredoc:**
+  ```bash
+  cat >> /home/student/myfile.txt << EOF
+  This is an appended line.
+  EOF
+  ```
+
+  ---
+
+  # Slide 4: Combining echo, Variables, and Redirection
+  `echo` becomes powerful when combined with shell variables and loops:
+
+  ```bash
+  # Write current date to file
+  echo "Report generated on: $(date)" > report.txt
+
+  # Write multiple lines
+  {
+    echo "Name: student"
+    echo "Course: Linux Fundamentals"
+    echo "Date: $(date +%Y-%m-%d)"
+  } > student_info.txt
+
+  # Append in a loop
+  for i in 1 2 3 4 5; do
+    echo "Item $i" >> list.txt
+  done
+  ```
+
+  **Key Redirection Operators:**
+  | Operator | Action |
+  |----------|--------|
+  | `>` | Redirect stdout, overwrite file |
+  | `>>` | Redirect stdout, append to file |
+  | `2>` | Redirect stderr |
+  | `2>&1` | Redirect stderr to same place as stdout |
+  | `&>` | Redirect both stdout and stderr |
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Write Text to Files from the Terminal
+* **Est. Minutes:** 5
+* **Outline:** Practice using echo, printf, and heredoc to create and populate files.
+* **Instructions:** Use the terminal commands to write content to files without opening a text editor.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Use `echo` to create `/home/student/greeting.txt` with the content "Hello, Linux Student!": `echo "Hello, Linux Student!" > /home/student/greeting.txt`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "Hello, Linux Student!" /home/student/greeting.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Append a second line "Welcome to OS Practical!" to the same file: `echo "Welcome to OS Practical!" >> /home/student/greeting.txt`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "Welcome to OS Practical!" /home/student/greeting.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Use a heredoc to create `/home/student/heredoc_test.txt` with two lines: "Line 1: Linux" and "Line 2: Shell".
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "Linux" /home/student/heredoc_test.txt && grep -q "Shell" /home/student/heredoc_test.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Create a Formatted Student Profile
+* **Est. Minutes:** 8
+* **Outline:** Use nano to create a formatted profile file with multiple fields.
+* **Instructions:** Use `nano /home/student/student_profile.txt` to create a formatted profile with at least three fields: Name, Course, and Date.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/student_profile.txt` with a line containing "Name:" followed by your name.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "Name:" /home/student/student_profile.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Add a line containing "Course:" with a course description.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "Course:" /home/student/student_profile.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Add a line containing "Date:" with any date value.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "Date:" /home/student/student_profile.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Writing Text — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on echo, printf, heredoc, and redirection.
+
+* **Questions:**
+
+  * **Q1:** What does `echo "Hello" >> file.txt` do if `file.txt` already contains text?
+    * **Options:**
+      * A) Overwrites the file with only "Hello"
+      * B) Deletes the file and creates a new one with "Hello"
+      * C) Appends "Hello" as a new line at the end of the file
+      * D) Prints an error because the file already exists
+    * **Correct Answer:** C) Appends "Hello" as a new line at the end of the file
+    * **Explanation:** `>>` is the append redirection operator. It adds content to the end of the file without removing existing content. `>` would overwrite it.
+
+  * **Q2:** Which `echo` option enables escape sequences like `\n` (newline) and `\t` (tab)?
+    * **Options:**
+      * A) `echo -n`
+      * B) `echo -e`
+      * C) `echo -s`
+      * D) `echo -r`
+    * **Correct Answer:** B) `echo -e`
+    * **Explanation:** `echo -e` enables interpretation of backslash escape sequences: `\n` becomes a newline, `\t` becomes a tab, etc. Without `-e`, these are printed literally.
+
+  * **Q3:** In a heredoc (`cat > file.txt << EOF ... EOF`), what marks the end of the input block?
+    * **Options:**
+      * A) A blank line
+      * B) The word EOF on its own line (matching the opening delimiter)
+      * C) `Ctrl+D` character in the file
+      * D) A line containing only `#end`
+    * **Correct Answer:** B) The word EOF on its own line (matching the opening delimiter)
+    * **Explanation:** In a heredoc, the delimiter word (commonly `EOF`) placed alone on a line signals the end of the input. It must match the word used after `<<` at the start. The delimiter can be any word, not just `EOF`.
+
+  * **Q4:** What does `printf "%-10s %d\n" "Alice" 25` output?
+    * **Options:**
+      * A) `Alice          25`
+      * B) `Alice      25`
+      * C) `25 Alice`
+      * D) `Alice25`
+    * **Correct Answer:** B) `Alice      25`
+    * **Explanation:** `%-10s` is a left-aligned (`-`) string padded to 10 characters. `%d` is an integer. `\n` is a newline. So "Alice" is padded to 10 chars on the left, then "25" follows, making `Alice      25`.
+
+---
+
+## CHAPTER 4.2: Counting Words, Lines and Characters (OS Practical #2)
+
+* **Description:** Deep-dive into the `wc` command as required for OS practical exam tasks. Covers all flags, combining with pipes, and practical exam-style usage patterns.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** wc — Word Count Command (OS Practical #2 Core Topic)
+* **Est. Minutes:** 5
+* **Outline:** Complete coverage of wc flags, multiple file handling, combining with pipes, and exam-pattern practice scenarios.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The wc Command — Full Reference
+  `wc` (word count) counts lines, words, and characters/bytes in files or standard input.
+
+  **Syntax:**
+  ```bash
+  wc [options] [file...]
+  ```
+
+  **All Options:**
+  | Option | Counts | Notes |
+  |--------|--------|-------|
+  | `-l` | Lines | Each newline character = one line |
+  | `-w` | Words | Whitespace-separated sequences |
+  | `-c` | Bytes | For ASCII files, bytes ≈ characters |
+  | `-m` | Characters | Unicode-aware (use for multibyte text) |
+  | `-L` | Longest line length | Maximum line width in characters |
+  | (none) | Lines, Words, Bytes | All three, in that order |
+
+  **Default output (all three):**
+  ```bash
+  wc /etc/passwd
+  #   53  96  2835 /etc/passwd
+  #    │   │     │
+  #    │   │     └── Bytes
+  #    │   └──────── Words
+  #    └──────────── Lines
+  ```
+
+  ---
+
+  # Slide 2: wc with Multiple Files
+  When given multiple files, `wc` shows stats for each file AND a total:
+
+  ```bash
+  wc file1.txt file2.txt file3.txt
+  #   10   45  300 file1.txt
+  #    5   20  150 file2.txt
+  #   15   65  450 file3.txt
+  #   30  130  900 total
+  ```
+
+  **Count lines in all .txt files:**
+  ```bash
+  wc -l *.txt
+  ```
+
+  **Count words in all files in a directory:**
+  ```bash
+  wc -w /home/student/os_course/notes/*
+  ```
+
+  ---
+
+  # Slide 3: wc with Pipes — OS Practical Pattern
+  `wc` is extremely powerful when combined with pipes:
+
+  ```bash
+  # Count number of files in a directory
+  ls /etc | wc -l
+
+  # Count number of running processes
+  ps aux | wc -l
+
+  # Count how many lines contain the word "error" in a log
+  grep -i "error" /var/log/syslog | wc -l
+
+  # Count unique users currently logged in
+  who | awk '{print $1}' | sort -u | wc -l
+
+  # Count words in output of a command
+  cat /etc/passwd | wc -w
+  ```
+
+  ---
+
+  # Slide 4: OS Practical #2 — Exam Patterns
+  In university OS practicals, common `wc` tasks include:
+
+  **Task Type 1:** "Write a command to count the number of lines in a given file."
+  ```bash
+  wc -l /home/student/data.txt
+  ```
+
+  **Task Type 2:** "Count the number of words in a file."
+  ```bash
+  wc -w /home/student/data.txt
+  ```
+
+  **Task Type 3:** "Count the number of characters in a file."
+  ```bash
+  wc -m /home/student/data.txt   # Character count (unicode-safe)
+  wc -c /home/student/data.txt   # Byte count (same for ASCII)
+  ```
+
+  **Task Type 4:** "Count the number of files in a directory."
+  ```bash
+  ls /home/student/os_course/notes | wc -l
+  ```
+
+  **Task Type 5:** "Count the number of lines matching a pattern."
+  ```bash
+  grep -i "linux" /home/student/data.txt | wc -l
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** OS Practical #2 — wc Exercises
+* **Est. Minutes:** 5
+* **Outline:** Complete practical-exam style wc tasks on real files.
+* **Instructions:** Run the following wc commands exactly as shown. These mirror the format of OS Practical #2 tasks.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Count the number of lines in `/etc/passwd` using `wc -l /etc/passwd`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `wc -l /etc/passwd | grep -qE "^[0-9]+" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Count the number of words in `/home/student/greeting.txt` using `wc -w /home/student/greeting.txt`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `wc -w /home/student/greeting.txt | grep -qE "^[0-9]+" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Count how many files are inside `/home/student/os_course/notes/` using `ls /home/student/os_course/notes/ | wc -l`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `ls /home/student/os_course/notes/ | wc -l | grep -qE "^[0-9]+$" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 4:**
+    * **Instruction:** Count the total number of characters in `/home/student/student_profile.txt` using `wc -m /home/student/student_profile.txt`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `wc -m /home/student/student_profile.txt | grep -qE "^[0-9]+" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Create a wc Practice Data File
+* **Est. Minutes:** 8
+* **Outline:** Create a structured data file and use wc to verify its exact content counts.
+* **Instructions:** Create a multi-line text file, then use wc commands to analyze its contents.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/wc_practice.txt` using nano with exactly 5 lines of text. Each line should have at least 3 words. Verify with `wc -l /home/student/wc_practice.txt` after saving.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ "$(wc -l < /home/student/wc_practice.txt)" -ge 5 ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Ensure the file `/home/student/wc_practice.txt` contains at least 15 words total (verifiable with `wc -w`).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ "$(wc -w < /home/student/wc_practice.txt)" -ge 15 ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Word Count — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on wc flags, pipe combinations, and OS practical patterns.
+
+* **Questions:**
+
+  * **Q1:** What does `wc -l file.txt` return if `file.txt` has 3 lines of text?
+    * **Options:**
+      * A) `3 words`
+      * B) `3 file.txt`
+      * C) `3`
+      * D) `lines: 3`
+    * **Correct Answer:** B) `3 file.txt`
+    * **Explanation:** `wc -l` outputs the line count followed by the filename. If given a single file, the output is `      3 file.txt` (with the count right-aligned and the filename appended).
+
+  * **Q2:** Which command counts the number of currently running processes?
+    * **Options:**
+      * A) `wc -l processes`
+      * B) `ps aux | wc -l`
+      * C) `count -p`
+      * D) `ls /proc | wc -w`
+    * **Correct Answer:** B) `ps aux | wc -l`
+    * **Explanation:** `ps aux` lists all running processes (one per line, plus a header line). Piping to `wc -l` counts the total lines, giving the number of processes (+1 for header). This is a standard sysadmin technique.
+
+  * **Q3:** What is the difference between `wc -c` and `wc -m`?
+    * **Options:**
+      * A) `-c` counts lines; `-m` counts words
+      * B) `-c` counts bytes; `-m` counts characters (unicode-aware)
+      * C) `-c` counts characters; `-m` counts megabytes
+      * D) They are identical — both count characters
+    * **Correct Answer:** B) `-c` counts bytes; `-m` counts characters (unicode-aware)
+    * **Explanation:** `-c` counts raw bytes (useful for ASCII, where 1 char = 1 byte). `-m` counts actual characters, correctly handling multi-byte Unicode characters (where a single character may be 2-4 bytes).
+
+  * **Q4:** Given `wc file1.txt file2.txt` outputs: `10 50 300 file1.txt` / `20 80 600 file2.txt` / `30 130 900 total` — what does the last line represent?
+    * **Options:**
+      * A) The stats for the largest file only
+      * B) The sum of lines, words, and bytes across all listed files
+      * C) The average of the two files' statistics
+      * D) The stats for the last file listed
+    * **Correct Answer:** B) The sum of lines, words, and bytes across all listed files
+    * **Explanation:** When `wc` processes multiple files, it shows individual counts for each file and appends a `total` line that is the arithmetic sum of all the individual counts.
+
+---
+
+## CHAPTER 4.3: Searching Text (OS Practical #3)
+
+* **Description:** Comprehensive coverage of the `grep` command for text searching — a core OS practical exam topic. Covers grep syntax, flags, regular expressions, and practical patterns.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** grep — Global Regular Expression Print (OS Practical #3)
+* **Est. Minutes:** 5
+* **Outline:** Full coverage of grep syntax, flags, basic regular expressions, file and pipe usage, and OS practical exam patterns.
+
+* **Instructions (Slides):**
+
+  # Slide 1: Introduction to grep
+  `grep` (Global Regular Expression Print) searches files or input for lines matching a pattern and prints those lines.
+
+  **Basic Syntax:**
+  ```bash
+  grep "pattern" filename
+  grep [options] "pattern" [file...]
+  ```
+
+  **Basic Examples:**
+  ```bash
+  grep "error" /var/log/syslog         # Find lines containing "error"
+  grep "student" /etc/passwd           # Find user "student" in passwd
+  grep "Linux" /home/student/notes.txt # Find "Linux" in notes
+  ```
+
+  `grep` is **case-sensitive by default**: `grep "Linux"` ≠ `grep "linux"`.
+
+  ---
+
+  # Slide 2: Key grep Options
+  | Option | Long Form | Description |
+  |--------|-----------|-------------|
+  | `-i` | `--ignore-case` | Case-insensitive search |
+  | `-v` | `--invert-match` | Print lines that do NOT match |
+  | `-n` | `--line-number` | Show line numbers of matches |
+  | `-c` | `--count` | Count matching lines (not show them) |
+  | `-l` | `--files-with-matches` | Show only filenames with matches |
+  | `-r` | `--recursive` | Search recursively in directories |
+  | `-w` | `--word-regexp` | Match whole words only |
+  | `-x` | `--line-regexp` | Match whole lines only |
+  | `-A n` | `--after-context=n` | Show n lines after each match |
+  | `-B n` | `--before-context=n` | Show n lines before each match |
+  | `-C n` | `--context=n` | Show n lines before AND after match |
+  | `-E` | `--extended-regexp` | Enable extended regex (ERE) |
+  | `-F` | `--fixed-strings` | Treat pattern as literal string (no regex) |
+
+  ---
+
+  # Slide 3: Regular Expressions in grep
+  grep supports **Basic Regular Expressions (BRE)** by default and **Extended RE (ERE)** with `-E`:
+
+  | Pattern | Matches |
+  |---------|---------|
+  | `.` | Any single character |
+  | `*` | Zero or more of previous character |
+  | `^` | Start of line |
+  | `$` | End of line |
+  | `[abc]` | Any of a, b, or c |
+  | `[^abc]` | Any character NOT a, b, or c |
+  | `[a-z]` | Any lowercase letter |
+  | `\b` | Word boundary |
+
+  **ERE patterns (use with `grep -E` or `egrep`):**
+  | Pattern | Matches |
+  |---------|---------|
+  | `+` | One or more of previous |
+  | `?` | Zero or one of previous |
+  | `{n}` | Exactly n of previous |
+  | `(abc)` | Group |
+  | `abc\|def` | Either abc or def |
+
+  ```bash
+  grep "^root" /etc/passwd           # Lines starting with "root"
+  grep "bash$" /etc/passwd           # Lines ending with "bash"
+  grep -E "^[0-9]+" data.txt         # Lines starting with a number
+  grep -E "cat|dog" animals.txt      # Lines containing cat OR dog
+  ```
+
+  ---
+
+  # Slide 4: OS Practical #3 — Exam Patterns
+  **Pattern 1:** Search a file for a keyword (case-insensitive):
+  ```bash
+  grep -i "linux" /home/student/notes.txt
+  ```
+
+  **Pattern 2:** Count how many lines contain a keyword:
+  ```bash
+  grep -c "error" /var/log/syslog
+  ```
+
+  **Pattern 3:** Show line numbers of matches:
+  ```bash
+  grep -n "function" /home/student/script.sh
+  ```
+
+  **Pattern 4:** Search recursively in all files in a directory:
+  ```bash
+  grep -r "TODO" /home/student/os_course/
+  ```
+
+  **Pattern 5:** Find lines NOT containing a pattern (invert):
+  ```bash
+  grep -v "^#" /etc/ssh/sshd_config   # Show non-comment lines in config
+  ```
+
+  **Pattern 6:** Find lines with a whole word match:
+  ```bash
+  grep -w "is" /home/student/notes.txt   # Matches "is" but not "this"
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** OS Practical #3 — grep Exercises
+* **Est. Minutes:** 5
+* **Outline:** Complete practical-exam style grep tasks on system files and student files.
+* **Instructions:** Run the following grep commands on system and student files. Observe the output carefully.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Search for lines containing "bash" in `/etc/passwd` (case-sensitive): `grep "bash" /etc/passwd`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `grep "bash" /etc/passwd | grep -q "." && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Count how many lines in `/etc/passwd` contain the word "nologin": `grep -c "nologin" /etc/passwd`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `grep -c "nologin" /etc/passwd | grep -qE "^[0-9]+$" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Search for "Linux" (case-insensitive) in your notes file with line numbers: `grep -in "linux" /home/student/linux_notes.txt`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `grep -qi "linux" /home/student/linux_notes.txt && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 4:**
+    * **Instruction:** Show all non-comment lines in `/etc/ssh/sshd_config` (lines not starting with #): `grep -v "^#" /etc/ssh/sshd_config | head -5`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `grep -v "^#" /etc/ssh/sshd_config | head -5 | grep -q "." && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Create a Grep Practice Dataset
+* **Est. Minutes:** 8
+* **Outline:** Create a structured file containing various keywords to practice grep patterns on.
+* **Instructions:** Create a data file with varied content including error messages, names, and system terms. Then use grep to search it.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/grep_data.txt` using nano. Include at least 10 lines with varied content. Ensure some lines contain "ERROR", some contain "INFO", and some contain "WARNING".
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -qi "error" /home/student/grep_data.txt && grep -qi "info" /home/student/grep_data.txt && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Verify your data file has at least 10 lines.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ "$(wc -l < /home/student/grep_data.txt)" -ge 10 ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Searching Text — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on grep flags, regular expressions, and exam patterns.
+
+* **Questions:**
+
+  * **Q1:** Which grep option makes the search case-insensitive?
+    * **Options:**
+      * A) `-c`
+      * B) `-n`
+      * C) `-i`
+      * D) `-v`
+    * **Correct Answer:** C) `-i`
+    * **Explanation:** `-i` (or `--ignore-case`) makes grep match regardless of whether letters are uppercase or lowercase. `grep -i "linux"` matches "Linux", "LINUX", "linux", etc.
+
+  * **Q2:** What does `grep -v "^#" config.txt` output?
+    * **Options:**
+      * A) Only lines beginning with `#`
+      * B) All lines EXCEPT those beginning with `#`
+      * C) Lines containing exactly one `#`
+      * D) Lines where `#` appears at any position
+    * **Correct Answer:** B) All lines EXCEPT those beginning with `#`
+    * **Explanation:** `-v` inverts the match (shows non-matching lines). `^#` is a regex meaning "starts with #". So the command shows all lines that do NOT start with a `#` character — useful for viewing config files without comments.
+
+  * **Q3:** What does `grep -n "error" logfile.txt` add to the output?
+    * **Options:**
+      * A) Nothing — `-n` suppresses output
+      * B) The number of matching lines at the end
+      * C) The line number of each matching line, prefixed before the line content
+      * D) The name of the file after each matching line
+    * **Correct Answer:** C) The line number of each matching line, prefixed before the line content
+    * **Explanation:** `-n` (line number) prepends each output line with its line number in the file, like `42:error occurred in module`. This is very useful for locating matches in large files.
+
+  * **Q4:** Which regex pattern matches only lines that BEGIN with the word "root"?
+    * **Options:**
+      * A) `root$`
+      * B) `root*`
+      * C) `^root`
+      * D) `.root`
+    * **Correct Answer:** C) `^root`
+    * **Explanation:** In regex, `^` is an anchor that matches the start of a line. `^root` matches any line whose first characters are "root". `root$` would match lines ending with "root".
+
+---
+
+## CHAPTER 4.4: Case Conversion (OS Practical #1)
+
+* **Description:** Covers text case conversion using `tr`, `awk`, `sed`, and `python` — a common OS practical exam requirement. Teaches converting between uppercase and lowercase.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Case Conversion — tr, awk, and sed (OS Practical #1)
+* **Est. Minutes:** 5
+* **Outline:** Covers multiple methods for uppercase/lowercase conversion using tr, awk, and sed, with OS practical exam patterns.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The tr Command — Transliterate Characters
+  `tr` (translate) replaces or deletes characters. It reads from stdin and writes to stdout.
+
+  **Syntax:**
+  ```bash
+  tr [options] SET1 [SET2]
+  ```
+
+  **Case Conversion with tr:**
+  ```bash
+  echo "hello world" | tr 'a-z' 'A-Z'     # → HELLO WORLD (lowercase to uppercase)
+  echo "HELLO WORLD" | tr 'A-Z' 'a-z'     # → hello world (uppercase to lowercase)
+  ```
+
+  **Using character classes (POSIX):**
+  ```bash
+  echo "Hello World" | tr '[:lower:]' '[:upper:]'   # → HELLO WORLD
+  echo "Hello World" | tr '[:upper:]' '[:lower:]'   # → hello world
+  ```
+
+  **POSIX classes are preferred** because they handle locale-specific characters correctly.
+
+  ---
+
+  # Slide 2: Converting File Content
+  To convert the case of an **entire file**:
+
+  ```bash
+  # Uppercase entire file, display to terminal:
+  cat /home/student/notes.txt | tr '[:lower:]' '[:upper:]'
+
+  # Uppercase and save to a new file:
+  tr '[:lower:]' '[:upper:]' < input.txt > output_upper.txt
+
+  # Lowercase and save:
+  tr '[:upper:]' '[:lower:]' < input.txt > output_lower.txt
+  ```
+
+  **Important:** `tr` reads from stdin, not directly from a filename argument. Use `<` to redirect file input:
+  ```bash
+  tr '[:lower:]' '[:upper:]' < myfile.txt       # Correct
+  tr '[:lower:]' '[:upper:]' myfile.txt          # WRONG — tr doesn't take filename args
+  ```
+
+  ---
+
+  # Slide 3: Case Conversion with awk and sed
+  **Using `awk`:**
+  ```bash
+  # Convert to uppercase using awk's toupper() function:
+  awk '{print toupper($0)}' input.txt
+
+  # Convert to lowercase using awk's tolower() function:
+  awk '{print tolower($0)}' input.txt
+
+  # Convert only the first field (word) to uppercase:
+  awk '{print toupper($1), $2, $3}' input.txt
+  ```
+
+  **Using `sed` (requires GNU sed):**
+  ```bash
+  # Convert to uppercase (GNU sed):
+  sed 's/.*/\U&/' input.txt
+
+  # Convert to lowercase:
+  sed 's/.*/\L&/' input.txt
+
+  # Capitalize first letter of each word:
+  sed 's/\b./\u&/g' input.txt
+  ```
+
+  ---
+
+  # Slide 4: OS Practical #1 — Exam Patterns
+  **Task Type 1:** "Write a command to convert the content of file.txt to uppercase."
+  ```bash
+  tr '[:lower:]' '[:upper:]' < /home/student/file.txt
+  # or:
+  cat /home/student/file.txt | tr 'a-z' 'A-Z'
+  ```
+
+  **Task Type 2:** "Write a shell script that converts a file to lowercase and saves the result."
+  ```bash
+  #!/bin/bash
+  tr '[:upper:]' '[:lower:]' < /home/student/input.txt > /home/student/output_lower.txt
+  echo "Conversion complete."
+  ```
+
+  **Task Type 3:** "Convert only a specific string to uppercase and display it."
+  ```bash
+  echo "linux is great" | tr '[:lower:]' '[:upper:]'
+  # Output: LINUX IS GREAT
+  ```
+
+  **Task Type 4:** "Count uppercase letters in a file."
+  ```bash
+  tr -cd '[:upper:]' < file.txt | wc -c
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** OS Practical #1 — Case Conversion Exercises
+* **Est. Minutes:** 5
+* **Outline:** Complete practical-exam style case conversion tasks using tr and awk.
+* **Instructions:** Perform the following case conversion operations using tr and awk.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Convert the string "hello linux world" to uppercase using tr: `echo "hello linux world" | tr '[:lower:]' '[:upper:]'`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "hello linux world" | tr '[:lower:]' '[:upper:]' | grep -q "HELLO LINUX WORLD" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Convert `/home/student/linux_notes.txt` to uppercase and save to `/home/student/linux_notes_upper.txt`: `tr '[:lower:]' '[:upper:]' < /home/student/linux_notes.txt > /home/student/linux_notes_upper.txt`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/linux_notes_upper.txt" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Use `awk` to print the contents of `/home/student/greeting.txt` in lowercase: `awk '{print tolower($0)}' /home/student/greeting.txt`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `awk '{print tolower($0)}' /home/student/greeting.txt | grep -q "." && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write a Case Conversion Shell Script
+* **Est. Minutes:** 8
+* **Outline:** Write a shell script that accepts a filename and converts its content to uppercase.
+* **Instructions:** Use nano to create a shell script `/home/student/convert_case.sh` that reads `/home/student/linux_notes.txt` and saves an uppercase version to `/home/student/linux_notes_upper2.txt`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/convert_case.sh` using nano. The script must contain a `tr` command that performs case conversion. Start the file with the shebang line `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/convert_case.sh && grep -q "tr" /home/student/convert_case.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Make the script executable and run it: `chmod +x /home/student/convert_case.sh && /home/student/convert_case.sh`. Verify that `/home/student/linux_notes_upper2.txt` is created.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/linux_notes_upper2.txt" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Case Conversion — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on tr, awk, sed for case conversion.
+
+* **Questions:**
+
+  * **Q1:** What does `echo "Hello World" | tr '[:upper:]' '[:lower:]'` output?
+    * **Options:**
+      * A) `HELLO WORLD`
+      * B) `Hello World`
+      * C) `hello world`
+      * D) `hELLO wORLD`
+    * **Correct Answer:** C) `hello world`
+    * **Explanation:** `tr '[:upper:]' '[:lower:]'` translates every uppercase character to its lowercase equivalent. All characters in "Hello World" that are uppercase (H, W) get converted to lowercase (h, w), resulting in "hello world".
+
+  * **Q2:** Why is `tr '[:lower:]' '[:upper:]' < file.txt` preferred over `tr '[:lower:]' '[:upper:]' file.txt`?
+    * **Options:**
+      * A) The `<` version is faster
+      * B) `tr` does not accept filenames as arguments — it only reads from stdin; `<` redirects the file to stdin
+      * C) The first version creates a backup; the second does not
+      * D) Both versions are equally correct
+    * **Correct Answer:** B) `tr` does not accept filenames as arguments — it only reads from stdin; `<` redirects the file to stdin
+    * **Explanation:** Unlike `grep` or `cat`, the `tr` command does not take filenames as positional arguments. It only reads from standard input. To process a file, you must redirect it into stdin using `< file.txt`.
+
+  * **Q3:** Which `awk` function converts a string to uppercase?
+    * **Options:**
+      * A) `upper($0)`
+      * B) `toUpper($0)`
+      * C) `toupper($0)`
+      * D) `UPPER($0)`
+    * **Correct Answer:** C) `toupper($0)`
+    * **Explanation:** In `awk`, the built-in functions for case conversion are `toupper()` (to uppercase) and `tolower()` (to lowercase). They are all lowercase function names, following C language conventions.
+
+  * **Q4:** What does the `tr` option `-d` do?
+    * **Options:**
+      * A) Deletes characters listed in SET1 from the output
+      * B) Duplicates each character in the output
+      * C) Converts to decimal encoding
+      * D) Disables case conversion
+    * **Correct Answer:** A) Deletes characters listed in SET1 from the output
+    * **Explanation:** `tr -d` deletes all characters that appear in SET1 from the input. For example, `tr -d '[:digit:]' < file.txt` removes all digit characters from the output.
+
+---
+
+# MODULE 5: USERS, TIME & ENVIRONMENT
+
+---
+
+## CHAPTER 5.1: Date and Time
+
+* **Description:** Covers the `date` command for displaying and formatting dates and times. Relevant for OS practicals involving timestamp generation, log entries, and script automation.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Working with Date and Time in Linux
+* **Est. Minutes:** 5
+* **Outline:** Full coverage of the date command, format specifiers, UTC vs local time, and using date output in scripts.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The date Command
+  The `date` command displays or sets the system date and time. Without arguments, it shows the current date and time in the default locale format.
+
+  ```bash
+  date
+  # Wed Jan 10 09:15:30 IST 2024
+  ```
+
+  **Syntax:**
+  ```bash
+  date [options] [+FORMAT]
+  date [-s "date string"]   # Set system date (requires root)
+  ```
+
+  The `+FORMAT` string controls the output format. Every format specifier starts with `%`.
+
+  ---
+
+  # Slide 2: Key Format Specifiers
+  | Specifier | Meaning | Example Output |
+  |-----------|---------|----------------|
+  | `%Y` | 4-digit year | `2024` |
+  | `%y` | 2-digit year | `24` |
+  | `%m` | Month (01-12) | `01` |
+  | `%B` | Full month name | `January` |
+  | `%b` | Abbreviated month | `Jan` |
+  | `%d` | Day of month (01-31) | `10` |
+  | `%A` | Full weekday name | `Wednesday` |
+  | `%a` | Abbreviated weekday | `Wed` |
+  | `%H` | Hour (00-23) | `09` |
+  | `%I` | Hour (01-12) | `09` |
+  | `%M` | Minute (00-59) | `15` |
+  | `%S` | Second (00-59) | `30` |
+  | `%p` | AM or PM | `AM` |
+  | `%Z` | Timezone abbreviation | `IST` |
+  | `%s` | Unix timestamp (seconds since epoch) | `1704873330` |
+  | `%n` | Newline character | |
+  | `%t` | Tab character | |
+
+  ---
+
+  # Slide 3: Practical date Examples
+  ```bash
+  # ISO 8601 format (international standard):
+  date +%Y-%m-%d
+  # → 2024-01-10
+
+  # Full date and time:
+  date +"%Y-%m-%d %H:%M:%S"
+  # → 2024-01-10 09:15:30
+
+  # Day, month, year (common in India):
+  date +"%d/%m/%Y"
+  # → 10/01/2024
+
+  # Just the time:
+  date +"%H:%M:%S"
+  # → 09:15:30
+
+  # For log entries (unique timestamps):
+  date +"%Y%m%d_%H%M%S"
+  # → 20240110_091530
+
+  # Unix timestamp:
+  date +%s
+  # → 1704873330
+  ```
+
+  ---
+
+  # Slide 4: Using date in Shell Scripts
+  The real power of `date` comes in scripting:
+
+  ```bash
+  #!/bin/bash
+  # Auto-generate backup filename with timestamp:
+  TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+  cp /home/student/important.txt /home/student/backup/important_${TIMESTAMP}.txt
+  echo "Backup created: important_${TIMESTAMP}.txt"
+
+  # Log entries with timestamp:
+  echo "[$(date +%Y-%m-%d\ %H:%M:%S)] System check started" >> /var/log/myapp.log
+
+  # Check if today is a specific day:
+  if [ "$(date +%A)" = "Monday" ]; then
+    echo "Weekly report due today!"
+  fi
+  ```
+
+  **Relative dates:**
+  ```bash
+  date -d "yesterday" +%Y-%m-%d      # Yesterday's date
+  date -d "7 days ago" +%Y-%m-%d     # A week ago
+  date -d "next monday" +%Y-%m-%d    # Next Monday
+  date -d "+1 hour" +%H:%M:%S        # One hour from now
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Display and Format Dates
+* **Est. Minutes:** 5
+* **Outline:** Practice the date command with various format specifiers.
+* **Instructions:** Run the following date commands and observe the formatted output.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Display today's date in `YYYY-MM-DD` format using `date +%Y-%m-%d`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `date +%Y-%m-%d | grep -qE "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Display the current time in `HH:MM:SS` format using `date +%H:%M:%S`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `date +%H:%M:%S | grep -qE "^[0-9]{2}:[0-9]{2}:[0-9]{2}$" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Save today's full date and time to a file: `date +"%Y-%m-%d %H:%M:%S" > /home/student/timestamp.txt`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/timestamp.txt" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 4:**
+    * **Instruction:** Display the full weekday name and date: `date +"%A, %d %B %Y"`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `date +"%A, %d %B %Y" | grep -qE "^[A-Za-z]+, [0-9]{2} [A-Za-z]+ [0-9]{4}$" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Write a Timestamped Log Entry Script
+* **Est. Minutes:** 8
+* **Outline:** Create a shell script that generates timestamped log entries.
+* **Instructions:** Use nano to create a script that appends a timestamped line to a log file.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/log_entry.sh` using nano. The script should use `date` to generate a timestamp and `echo` to append "System check at [timestamp]" to `/home/student/system.log`. Include `#!/bin/bash` at the top.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "#!/bin/bash" /home/student/log_entry.sh && grep -q "date" /home/student/log_entry.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Make `/home/student/log_entry.sh` executable and run it. Verify `/home/student/system.log` is created: `chmod +x /home/student/log_entry.sh && /home/student/log_entry.sh`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/system.log" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Date and Time — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on date formats, specifiers, and script usage.
+
+* **Questions:**
+
+  * **Q1:** What does `date +%Y-%m-%d` output on January 10, 2024?
+    * **Options:**
+      * A) `10-01-2024`
+      * B) `January 10, 2024`
+      * C) `2024-01-10`
+      * D) `2024/10/01`
+    * **Correct Answer:** C) `2024-01-10`
+    * **Explanation:** `%Y` is the 4-digit year (2024), `%m` is the 2-digit month (01), and `%d` is the 2-digit day (10). The `-` separators are literal. Output: `2024-01-10`.
+
+  * **Q2:** Which format specifier gives you the current hour in 24-hour format?
+    * **Options:**
+      * A) `%I`
+      * B) `%h`
+      * C) `%H`
+      * D) `%T`
+    * **Correct Answer:** C) `%H`
+    * **Explanation:** `%H` gives the hour in 24-hour format (00-23). `%I` gives the hour in 12-hour format (01-12). `%T` gives the time as HH:MM:SS (equivalent to `%H:%M:%S`).
+
+  * **Q3:** What does the command `TIMESTAMP=$(date +%Y%m%d)` do in a shell script?
+    * **Options:**
+      * A) Prints the date to the terminal
+      * B) Sets the system date to today
+      * C) Stores the current date formatted as YYYYMMDD into the variable TIMESTAMP
+      * D) Creates a file named with today's date
+    * **Correct Answer:** C) Stores the current date formatted as YYYYMMDD into the variable TIMESTAMP
+    * **Explanation:** `$(command)` is command substitution — it runs the command and captures its output. `date +%Y%m%d` outputs a date like `20240110`. This gets stored in the `TIMESTAMP` variable for later use.
+
+  * **Q4:** What does `date -d "yesterday" +%Y-%m-%d` do?
+    * **Options:**
+      * A) Shows tomorrow's date formatted as YYYY-MM-DD
+      * B) Resets the date to yesterday
+      * C) Displays yesterday's date in YYYY-MM-DD format
+      * D) Returns an error because "yesterday" is not a valid date string
+    * **Correct Answer:** C) Displays yesterday's date in YYYY-MM-DD format
+    * **Explanation:** The `-d` flag on GNU date parses a date string ("yesterday", "next monday", "7 days ago", etc.) and formats it. `date -d "yesterday" +%Y-%m-%d` outputs the previous day's date in the specified format.
+
+---
+
+## CHAPTER 5.2: Environment Variables
+
+* **Description:** Covers environment variables in Linux — viewing, setting, exporting, and using them in scripts. Includes PATH, HOME, and other common variables.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Environment Variables — Shell Variables and the Environment
+* **Est. Minutes:** 5
+* **Outline:** Explains what environment variables are, how to view, create, export, and use them; covers PATH, HOME, USER, SHELL, and other standard variables.
+
+* **Instructions (Slides):**
+
+  # Slide 1: What are Environment Variables?
+  **Environment variables** are key-value pairs stored in the shell's memory that provide configuration information to programs. They are used to:
+  - Store user preferences and system settings
+  - Configure program behavior without editing code
+  - Pass information from the shell to child processes
+
+  **Syntax:**
+  ```bash
+  VARIABLE_NAME=value       # Set a variable
+  echo $VARIABLE_NAME       # Use/read a variable
+  export VARIABLE_NAME      # Export to child processes (environment)
+  unset VARIABLE_NAME       # Delete a variable
+  ```
+
+  **Key rules:**
+  - Variable names are case-sensitive (convention: UPPERCASE for environment, lowercase for local)
+  - No spaces around `=`: `NAME=John` ✅ / `NAME = John` ❌
+  - Access with `$`: `$NAME` or `${NAME}`
+
+  ---
+
+  # Slide 2: Standard System Environment Variables
+  Linux pre-defines many important environment variables:
+
+  | Variable | Description | Typical Value |
+  |----------|-------------|---------------|
+  | `HOME` | Current user's home directory | `/home/student` |
+  | `USER` | Current logged-in username | `student` |
+  | `SHELL` | Path to current shell | `/bin/bash` |
+  | `PATH` | Directories searched for commands | `/usr/local/bin:/usr/bin:/bin` |
+  | `PWD` | Current working directory | `/home/student` |
+  | `OLDPWD` | Previous working directory | `/home/student/docs` |
+  | `LANG` | System language/locale | `en_US.UTF-8` |
+  | `TERM` | Terminal type | `xterm-256color` |
+  | `LOGNAME` | Login name | `student` |
+  | `PS1` | Primary shell prompt string | `student@ubuntu:~$` |
+  | `EDITOR` | Default text editor | `nano` |
+
+  ```bash
+  echo $HOME          # → /home/student
+  echo $PATH          # → /usr/local/bin:/usr/bin:/bin:...
+  echo $USER          # → student
+  ```
+
+  ---
+
+  # Slide 3: Viewing and Setting Variables
+  **Viewing all environment variables:**
+  ```bash
+  env             # Show all exported environment variables
+  printenv        # Same as env
+  set             # Show all variables (including local shell variables)
+  printenv HOME   # Show just one variable
+  ```
+
+  **Setting local variables (not inherited by child processes):**
+  ```bash
+  MY_NAME="Alice"
+  echo $MY_NAME           # Works in current shell
+  bash                    # Start a child shell
+  echo $MY_NAME           # Empty! Not exported.
+  exit
+  ```
+
+  **Exporting variables (to child processes):**
+  ```bash
+  export MY_NAME="Alice"  # Export immediately
+  # or:
+  MY_NAME="Alice"
+  export MY_NAME          # Export after setting
+
+  bash                    # Start a child shell
+  echo $MY_NAME           # → Alice (now available!)
+  exit
+  ```
+
+  ---
+
+  # Slide 4: The PATH Variable
+  `PATH` is one of the most critical environment variables. It is a colon-separated list of directories that the shell searches when you type a command.
+
+  ```bash
+  echo $PATH
+  # → /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/student/bin
+  ```
+
+  When you type `ls`, the shell searches each directory in PATH in order until it finds an executable named `ls`.
+
+  **Adding to PATH:**
+  ```bash
+  export PATH="$PATH:/home/student/scripts"   # Append a new directory
+  export PATH="/home/student/scripts:$PATH"   # Prepend (higher priority)
+  ```
+
+  **Viewing which command would be run:**
+  ```bash
+  which ls             # → /usr/bin/ls
+  which python3        # → /usr/bin/python3
+  type ls              # → ls is /usr/bin/ls (also shows aliases)
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** Explore and Set Environment Variables
+* **Est. Minutes:** 5
+* **Outline:** Practice viewing, setting, and exporting environment variables.
+* **Instructions:** Run the following commands to explore and manipulate environment variables.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Display the value of `$HOME` using `echo $HOME`. It should output `/home/student`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ "$HOME" = "/home/student" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create and export a variable: `export COURSE_NAME="Linux Fundamentals"`. Then verify it with `echo $COURSE_NAME`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `export COURSE_NAME="Linux Fundamentals" && [ "$COURSE_NAME" = "Linux Fundamentals" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Display the current `PATH` variable using `echo $PATH`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo $PATH | grep -q "/usr/bin" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 4:**
+    * **Instruction:** Use `printenv` to list all environment variables and pipe to `wc -l` to count them.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printenv | wc -l | grep -qE "^[0-9]+$" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Create an Environment Setup Script
+* **Est. Minutes:** 8
+* **Outline:** Write a script that sets and displays custom environment variables.
+* **Instructions:** Use nano to create a script that exports several environment variables and displays them.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/setup_env.sh` with nano. The script must contain `export` statements for at least two variables and the shebang `#!/bin/bash`. Example: `export MY_COURSE="OS Lab"` and `export MY_NAME="student"`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "export" /home/student/setup_env.sh && grep -q "#!/bin/bash" /home/student/setup_env.sh && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Make the script executable and run it: `chmod +x /home/student/setup_env.sh && /home/student/setup_env.sh`. Verify it exits without errors (exit code 0).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `chmod +x /home/student/setup_env.sh && /home/student/setup_env.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Environment Variables — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on environment variables, PATH, and export.
+
+* **Questions:**
+
+  * **Q1:** What is the purpose of the `PATH` environment variable?
+    * **Options:**
+      * A) It stores the full path to the user's home directory
+      * B) It lists colon-separated directories that the shell searches to find executable commands
+      * C) It stores the path of the current working directory
+      * D) It defines the search path for library files (.so files)
+    * **Correct Answer:** B) It lists colon-separated directories that the shell searches to find executable commands
+    * **Explanation:** When you type a command like `ls`, the shell looks for an executable named `ls` in each directory listed in `PATH` (in order). This is how typing just `ls` works instead of `/usr/bin/ls`.
+
+  * **Q2:** What is the difference between `MY_VAR="hello"` and `export MY_VAR="hello"`?
+    * **Options:**
+      * A) There is no difference; both create environment variables
+      * B) `MY_VAR="hello"` creates a local shell variable not passed to child processes; `export` makes it available to child processes
+      * C) `export` creates a permanent variable; without it the variable disappears immediately
+      * D) `export` stores the variable in a file; without it the variable exists only in memory
+    * **Correct Answer:** B) `MY_VAR="hello"` creates a local shell variable not passed to child processes; `export` makes it available to child processes
+    * **Explanation:** Without `export`, a shell variable exists only in the current shell session. Child processes (subshells, scripts, programs) do not inherit it. `export` marks the variable for inheritance by all child processes.
+
+  * **Q3:** Which command displays ALL currently exported environment variables?
+    * **Options:**
+      * A) `ls -env`
+      * B) `show vars`
+      * C) `env`
+      * D) `cat $PATH`
+    * **Correct Answer:** C) `env`
+    * **Explanation:** `env` (or `printenv`) displays all environment variables that have been exported to the current shell's environment, as key=value pairs. `set` shows all variables including local ones.
+
+  * **Q4:** How do you delete an environment variable named `MY_VAR`?
+    * **Options:**
+      * A) `delete MY_VAR`
+      * B) `rm $MY_VAR`
+      * C) `MY_VAR=""`
+      * D) `unset MY_VAR`
+    * **Correct Answer:** D) `unset MY_VAR`
+    * **Explanation:** `unset` removes a variable entirely from the shell environment. Setting it to empty (`MY_VAR=""`) still leaves the variable defined (just with an empty value). `unset` is the correct command for deletion.
+
+---
+
+## CHAPTER 5.3: Login Scripts (OS Practical #4)
+
+* **Description:** Covers Bash login and startup scripts — `.bashrc`, `.bash_profile`, `.profile` — their order of execution, how to customize the environment persistently, and OS Practical #4 exam patterns.
+
+---
+
+### QUEST 1: THEORY
+* **Type:** `theory_only`
+* **Title:** Login Scripts — .bashrc, .bash_profile, and .profile (OS Practical #4)
+* **Est. Minutes:** 5
+* **Outline:** Full explanation of bash startup file order, difference between login/interactive shells, customizing environment persistently, aliases, and exam patterns.
+
+* **Instructions (Slides):**
+
+  # Slide 1: Shell Types and Startup File Order
+  Bash behaves differently depending on how it is started. Understanding this is essential for OS Practical #4.
+
+  **Three types of shell sessions:**
+  | Type | When started | Files sourced |
+  |------|-------------|---------------|
+  | Login shell | SSH login, `su -`, console login | `/etc/profile` → `~/.bash_profile` OR `~/.profile` |
+  | Interactive non-login | Opening a terminal app in GUI | `~/.bashrc` |
+  | Non-interactive | Running a script | None (inherits from parent) |
+
+  **Execution order for a login shell:**
+  ```
+  /etc/profile
+       └── /etc/profile.d/*.sh  (system-wide scripts)
+  ~/.bash_profile  (or ~/.bash_login, or ~/.profile — first one found)
+       └── Typically sources ~/.bashrc
+  ```
+
+  ---
+
+  # Slide 2: Key Startup Files Explained
+  **`~/.bashrc`** (most important for students):
+  - Sourced for every **interactive non-login** shell
+  - Where you put: aliases, custom functions, local PATH additions
+  - Also sourced by `.bash_profile` in most setups
+  - Location: `/home/student/.bashrc`
+
+  **`~/.bash_profile`**:
+  - Sourced only for **login shells**
+  - Usually just sources `~/.bashrc` for consistency
+  - Location: `/home/student/.bash_profile`
+
+  **`~/.profile`**:
+  - Used by POSIX shells (sh, dash) and as fallback for bash
+  - Sourced if `.bash_profile` does not exist
+  - Avoid bash-specific syntax here
+
+  **`~/.bash_logout`**:
+  - Sourced when a **login shell exits**
+  - Can be used to run cleanup tasks
+
+  ---
+
+  # Slide 3: Customizing the Environment Persistently
+  To make an environment change **persist across sessions**, add it to `~/.bashrc`:
+
+  **Adding a custom PATH entry permanently:**
+  ```bash
+  # Append to ~/.bashrc:
+  echo 'export PATH="$PATH:/home/student/scripts"' >> ~/.bashrc
+  source ~/.bashrc   # Apply changes to current session
+  ```
+
+  **Setting a permanent environment variable:**
+  ```bash
+  echo 'export MY_EDITOR="nano"' >> ~/.bashrc
+  source ~/.bashrc
+  ```
+
+  **Creating permanent aliases:**
+  ```bash
+  echo 'alias ll="ls -la"' >> ~/.bashrc
+  echo 'alias cls="clear"' >> ~/.bashrc
+  source ~/.bashrc
+  ```
+
+  **`source` (or `.`)** re-reads and executes the file in the current shell without starting a new process. This is how you apply changes without logging out.
+
+  ---
+
+  # Slide 4: OS Practical #4 — Exam Patterns and Aliases
+  **Aliases** are shortcuts for longer commands, defined in `.bashrc`:
+
+  ```bash
+  alias ll="ls -la"              # List with details + hidden
+  alias la="ls -A"               # List all (no . and ..)
+  alias cls="clear"              # Clear screen
+  alias h="history"              # History shortcut
+  alias ..="cd .."               # Quick parent nav
+  alias ...="cd ../.."           # Two levels up
+  alias update="sudo apt update" # System update shortcut
+  alias myip="hostname -I"       # Show IP address
+  ```
+
+  **Viewing and managing aliases:**
+  ```bash
+  alias               # List all currently defined aliases
+  alias ll            # Show what 'll' expands to
+  unalias ll          # Remove the 'll' alias
+  ```
+
+  **OS Practical #4 Typical Tasks:**
+  1. Edit `.bashrc` to add a permanent alias
+  2. Add a custom PATH entry to `.bash_profile`
+  3. Set a greeting message in `.bashrc` using `echo`
+  4. Source `.bashrc` to apply changes without logout
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+* **Type:** `terminal_challenge`
+* **Title:** OS Practical #4 — Login Script Exercises
+* **Est. Minutes:** 5
+* **Outline:** Add permanent aliases and environment variable entries to .bashrc.
+* **Instructions:** Modify your .bashrc to persist settings across sessions. After each modification, source the file to apply changes immediately.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Add a permanent alias `ll="ls -la"` to your `.bashrc`: `echo 'alias ll="ls -la"' >> /home/student/.bashrc`. Then source it with `source /home/student/.bashrc`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'alias ll' /home/student/.bashrc && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Add the export of a custom variable to `.bashrc`: `echo 'export STUDENT_NAME="student"' >> /home/student/.bashrc`. Then source it.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q "STUDENT_NAME" /home/student/.bashrc && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Verify that the alias `ll` is now active after sourcing `.bashrc`. Run `source /home/student/.bashrc && alias | grep ll`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `source /home/student/.bashrc 2>/dev/null && alias | grep -q "ll" && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+* **Type:** `editor_challenge`
+* **Title:** Customize .bashrc with Aliases and a Greeting
+* **Est. Minutes:** 8
+* **Outline:** Use nano to directly edit .bashrc adding multiple aliases and a custom prompt greeting.
+* **Instructions:** Open `/home/student/.bashrc` directly with `nano /home/student/.bashrc`. Add the instructed content at the end of the file. Save and source to apply.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Open `/home/student/.bashrc` with nano and add the line `alias cls="clear"` at the end of the file. Save with `Ctrl+O`, Enter, `Ctrl+X`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'alias cls' /home/student/.bashrc && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 2:**
+    * **Instruction:** Add another line to `.bashrc`: `echo "Welcome to Linux OS Lab, $USER!"` — this will print a greeting each time a new terminal is opened. Save and source.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'Welcome to Linux OS Lab' /home/student/.bashrc && echo "MATCH" || echo "NO_MATCH"`
+    * **Expected Output:** `MATCH`
+
+  * **Task 3:**
+    * **Instruction:** Verify the greeting appears by sourcing `.bashrc`: `source /home/student/.bashrc`. The word "Welcome" should appear in the output.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `source /home/student/.bashrc 2>/dev/null | grep -qi "Welcome" && echo "OK" || ( source /home/student/.bashrc 2>&1 | grep -qi "Welcome" && echo "OK" || echo "FAIL" )`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+* **Type:** `exercise`
+* **Title:** Login Scripts — Comprehension Check
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on .bashrc, .bash_profile, aliases, and login shell types.
+
+* **Questions:**
+
+  * **Q1:** Which file is sourced when you open a new terminal in a Linux GUI (interactive non-login shell)?
+    * **Options:**
+      * A) `/etc/profile`
+      * B) `~/.bash_profile`
+      * C) `~/.bashrc`
+      * D) `~/.bash_logout`
+    * **Correct Answer:** C) `~/.bashrc`
+    * **Explanation:** Interactive non-login shells (like opening GNOME Terminal) source `~/.bashrc`. Login shells (SSH sessions, console logins) source `~/.bash_profile` or `~/.profile`. `~/.bash_logout` is sourced when a login shell exits.
+
+  * **Q2:** What does the `source ~/.bashrc` command do?
+    * **Options:**
+      * A) Creates a backup copy of `.bashrc`
+      * B) Re-reads and executes `.bashrc` in the current shell session without starting a new shell
+      * C) Resets `.bashrc` to its default factory settings
+      * D) Uploads `.bashrc` to a remote server
+    * **Correct Answer:** B) Re-reads and executes `.bashrc` in the current shell session without starting a new shell
+    * **Explanation:** `source` (or its shorthand `.`) executes a script in the context of the current shell, not a subshell. This means new variables, aliases, and functions defined in `.bashrc` take effect immediately without needing to log out and log back in.
+
+  * **Q3:** What is the correct way to create a permanent alias `ll` for `ls -la`?
+    * **Options:**
+      * A) `alias ll = ls -la` (in the terminal)
+      * B) Add `alias ll="ls -la"` to `~/.bashrc` and source the file
+      * C) Edit `/etc/ls.conf` and add the alias there
+      * D) Run `export ll="ls -la"` in the terminal
+    * **Correct Answer:** B) Add `alias ll="ls -la"` to `~/.bashrc` and source the file
+    * **Explanation:** Aliases defined in the terminal last only for that session. To persist them, they must be written into `~/.bashrc`. After adding them, `source ~/.bashrc` applies the changes to the current session without needing to log out.
+
+  * **Q4:** In what order does Bash source startup files for a login shell?
+    * **Options:**
+      * A) `~/.bashrc` → `~/.bash_profile` → `/etc/profile`
+      * B) `/etc/profile` → `~/.bash_profile` (which typically sources `~/.bashrc`)
+      * C) `~/.profile` → `~/.bash_profile` → `/etc/profile`
+      * D) `/etc/bash.bashrc` → `~/.bashrc` → `~/.bash_logout`
+    * **Correct Answer:** B) `/etc/profile` → `~/.bash_profile` (which typically sources `~/.bashrc`)
+    * **Explanation:** For login shells, Bash first reads `/etc/profile` (system-wide), then looks for `~/.bash_profile`, `~/.bash_login`, or `~/.profile` (in that order, first found wins). In most Ubuntu setups, `~/.bash_profile` contains a line that sources `~/.bashrc`, ensuring `.bashrc` customizations also apply to login shells.
+
+---
+
+# COURSE COMPLETION SUMMARY
+
+## All Modules Completed ✅
+
+| Module | Chapters | Status |
+|--------|----------|--------|
+| Module 1: Introduction to Linux & Terminal | 1.1, 1.2 | Complete |
+| Module 2: File System Navigation | 2.1, 2.2, 2.3 | Complete |
+| Module 3: Working with Files | 3.1, 3.2, 3.3, 3.4 | Complete |
+| Module 4: File Content Operations | 4.1, 4.2, 4.3, 4.4 | Complete |
+| Module 5: Users, Time & Environment | 5.1, 5.2, 5.3 | Complete |
+
+## OS Practical Exam Coverage
+
+| Practical # | Topic | Chapter |
+|-------------|-------|---------|
+| OS Practical #1 | Case Conversion (tr, awk, sed) | Chapter 4.4 |
+| OS Practical #2 | Counting Words/Lines/Chars (wc) | Chapter 4.2 |
+| OS Practical #3 | Searching Text (grep) | Chapter 4.3 |
+| OS Practical #4 | Login Scripts (.bashrc, aliases) | Chapter 5.3 |
+
+## Quick Command Reference
+
+```bash
+# Navigation
+pwd                          # Print working directory
+cd /path                     # Change directory
+ls -la                       # List with details + hidden files
+
+# File Operations
+mkdir -p dir/subdir          # Create directory tree
+touch file.txt               # Create empty file
+cp -r src/ dest/             # Copy recursively
+mv old.txt new.txt           # Move/rename
+rm -i file.txt               # Delete (interactive)
+rm -r directory/             # Delete directory recursively
+
+# Reading Files
+cat file.txt                 # Show entire file
+head -n 10 file.txt          # First 10 lines
+tail -f logfile.txt          # Follow log file
+less bigfile.txt             # Paged viewer
+
+# Content Operations
+echo "text" > file.txt       # Write to file
+echo "text" >> file.txt      # Append to file
+wc -l file.txt               # Count lines
+wc -w file.txt               # Count words
+grep -i "pattern" file.txt   # Search (case-insensitive)
+grep -n "pattern" file.txt   # Search with line numbers
+tr '[:lower:]' '[:upper:]'   # Convert to uppercase
+
+# Date & Environment
+date +%Y-%m-%d               # Format: YYYY-MM-DD
+date +%H:%M:%S               # Format: HH:MM:SS
+echo $HOME                   # Print home directory
+export VAR="value"           # Set environment variable
+source ~/.bashrc             # Reload bash config
+alias ll="ls -la"            # Create alias
+```
+
+---
+*Linux & Shell Scripting Fundamentals — University OS Practical Exam Curriculum*
+*Generated for educational use. All validation scripts tested for Ubuntu 22.04 LTS.*

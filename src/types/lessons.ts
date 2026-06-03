@@ -5,6 +5,13 @@ export interface StarterFile {
   content: string;
 }
 
+export interface MCQQuestion {
+  question: string;
+  options: string[];
+  answer: string;
+  explanation: string;
+}
+
 export interface LessonData {
   id:                 string;
   moduleId:           string;
@@ -20,6 +27,8 @@ export interface LessonData {
   order:              number;         // Chronological order within module
   prerequisiteId?:    string;
   starterFiles?:      StarterFile[];
+  type?:              'theory_only' | 'terminal_challenge' | 'editor_challenge' | 'exercise';
+  questions?:         MCQQuestion[];
 }
 
 export interface LessonModule {

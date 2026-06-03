@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Animated, Modal, Alert } from 'react-native';
+import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Animated, Modal, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { Theme } from '../../tokens';
-import { IconButton, MaterialIcon, ConnectionBadge, StatusIndicatorBadge, SafeText } from '../../atoms';
+import { IconButton, MaterialIcon, ConnectionBadge, StatusIndicatorBadge, SafeText, BorderedSurface, SecondaryActionButton, MonoText } from '../../atoms';
 import { BodyText } from '../../atoms/text/BodyText';
 import { 
   AppBackground, 
@@ -29,9 +29,17 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
     runValidation,
     dismissTaskSheet,
     selectLesson,
+    completeExerciseLesson,
   } = useLessonsContext();
 
   const [inputText, setInputText] = useState('');
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedQuizOption, setSelectedQuizOption] = useState<string | null>(null);
+
+  useEffect(() => {
+    setCurrentQuestionIndex(0);
+    setSelectedQuizOption(null);
+  }, [activeLessonData]);
   const [vimMode, setVimMode] = useState<VimMode>('NORMAL');
   const [isCtrlActive, setIsCtrlActive] = useState(false);
   const [isAltActive, setIsAltActive] = useState(false);
@@ -185,52 +193,162 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
               />
             )}
 
-            {/* Main Terminal Workspace */}
-            <TerminalWorkspace
-              filepath={`/home/lessons/${activeLessonData?.id ?? 'workspace'}`}
-              connectionState={connectionState}
-              lines={displayLines}
-              currentInput={inputText}
-              onInputChange={handleInputChange}
-              onSubmit={handleSubmitCommand}
-              vimMode={vimMode}
-              cursorRow={displayLines.length}
-              cursorCol={inputText.length + 1}
-              onKeyPress={handleKeyPress}
-              promptPrefix={promptPrefix}
-            />
-
-            {/* Floating Task Bottom Sheet */}
-            <TaskBottomSheet
-              title="Practice Checklist"
-              translateY={sheetTranslateY}
-              onClose={dismissTaskSheet}
-              onCheck={runValidation}
-              onHint={() => Alert.alert('Lesson Hint', activeLessonData?.description || 'Follow instructions and complete command operations.')}
-              isChecking={isValidating}
-            >
-              <View style={styles.sheetBody}>
-                <BodyText style={styles.instructionsText}>
-                  {activeLessonData?.instructions || 'Execute required validations to pass this lesson.'}
-                </BodyText>
-                
-                {lastValidationResult && (
-                  <View style={styles.resultContainer}>
-                    <StatusIndicatorBadge 
-                      label={lastValidationResult.passed ? 'PASSED' : 'FAILED'} 
-                      variant={lastValidationResult.passed ? 'success' : 'error'} 
-                      style={styles.badgeMargin}
-                    />
-                    <SafeText style={[
-                      styles.resultOutput,
-                      lastValidationResult.passed ? styles.textSuccess : styles.textError
-                    ]} numberOfLines={3}>
-                      {lastValidationResult.output}
+            {/* Conditional Quiz Workspace vs CLI Terminal Workspace */}
+            {activeLessonData?.type === 'exercise' ? (
+              <ScrollView contentContainerStyle={styles.quizScrollContent}>
+                <BorderedSurface level="default" style={styles.quizCard}>
+                  <View style={styles.quizHeader}>
+                    <SafeText style={styles.quizProgressText}>
+                      Question {currentQuestionIndex + 1} of {activeLessonData.questions?.length || 0}
                     </SafeText>
+                    <MonoText size={Theme.fontSize.labelSM} color={Theme.colors.syntax.orange || '#ffb95f'} weight="bold">
+                      EXERCISE (MCQ)
+                    </MonoText>
                   </View>
-                )}
-              </View>
-            </TaskBottomSheet>
+                  
+                  {activeLessonData.questions && activeLessonData.questions.length > 0 ? (
+                    (() => {
+                      const q = activeLessonData.questions[currentQuestionIndex];
+                      const isLastQuestion = currentQuestionIndex === activeLessonData.questions.length - 1;
+                      
+                      return (
+                        <View style={styles.quizBody}>
+                          <SafeText style={styles.quizQuestionText}>
+                            {q.question}
+                          </SafeText>
+
+                          <View style={styles.quizOptionsList}>
+                            {q.options.map((option, idx) => {
+                              const isSelected = selectedQuizOption === option;
+                              const isCorrect = option === q.answer;
+                              const showResult = selectedQuizOption !== null;
+
+                              let optionItemStyle: any = styles.quizOptionItem;
+                              let textColor: string = Theme.colors.text.secondary;
+                              let radioStyle: any = styles.quizRadioOutline;
+                              let innerRadio = null;
+
+                              if (showResult) {
+                                if (isCorrect) {
+                                  optionItemStyle = [styles.quizOptionItem, styles.quizOptionItemCorrect];
+                                  textColor = Theme.colors.syntax.green;
+                                  radioStyle = [styles.quizRadioOutline, styles.quizRadioOutlineCorrect];
+                                  innerRadio = <View style={styles.quizRadioSelectedCorrect} />;
+                                } else if (isSelected) {
+                                  optionItemStyle = [styles.quizOptionItem, styles.quizOptionItemIncorrect];
+                                  textColor = Theme.colors.semantic.error;
+                                  radioStyle = [styles.quizRadioOutline, { borderColor: Theme.colors.semantic.error }];
+                                  innerRadio = <View style={styles.quizRadioSelectedIncorrect} />;
+                                }
+                              }
+
+                              return (
+                                <TouchableOpacity 
+                                  key={idx}
+                                  style={optionItemStyle}
+                                  onPress={() => {
+                                    if (selectedQuizOption === null) {
+                                      setSelectedQuizOption(option);
+                                    }
+                                  }}
+                                  activeOpacity={0.7}
+                                  disabled={showResult}
+                                >
+                                  <View style={radioStyle}>
+                                    {innerRadio}
+                                  </View>
+                                  <MonoText size={Theme.fontSize.codeBase} color={textColor} style={styles.quizOptionCode}>
+                                    {option}
+                                  </MonoText>
+                                </TouchableOpacity>
+                              );
+                            })}
+                          </View>
+
+                          {selectedQuizOption !== null && (
+                            <View style={styles.quizExplanationContainer}>
+                              <MonoText size={Theme.fontSize.labelSM} color={Theme.colors.syntax.orange || '#ffb95f'} weight="bold" style={styles.quizExplanationTitle}>
+                                EXPLANATION:
+                              </MonoText>
+                              <SafeText style={styles.quizExplanationText}>
+                                {q.explanation}
+                              </SafeText>
+                              
+                              <SecondaryActionButton
+                                label={isLastQuestion ? "FINISH QUIZ" : "NEXT QUESTION"}
+                                onPress={async () => {
+                                  if (isLastQuestion) {
+                                    await completeExerciseLesson();
+                                    onClose();
+                                  } else {
+                                    setCurrentQuestionIndex(prev => prev + 1);
+                                    setSelectedQuizOption(null);
+                                  }
+                                }}
+                                style={styles.quizNextBtn}
+                              />
+                            </View>
+                          )}
+                        </View>
+                      );
+                    })()
+                  ) : (
+                    <SafeText style={styles.quizQuestionText}>
+                      No quiz questions defined for this exercise.
+                    </SafeText>
+                  )}
+                </BorderedSurface>
+              </ScrollView>
+            ) : (
+              <>
+                {/* Main Terminal Workspace */}
+                <TerminalWorkspace
+                  filepath={`/home/lessons/${activeLessonData?.id ?? 'workspace'}`}
+                  connectionState={connectionState}
+                  lines={displayLines}
+                  currentInput={inputText}
+                  onInputChange={handleInputChange}
+                  onSubmit={handleSubmitCommand}
+                  vimMode={vimMode}
+                  cursorRow={displayLines.length}
+                  cursorCol={inputText.length + 1}
+                  onKeyPress={handleKeyPress}
+                  promptPrefix={promptPrefix}
+                />
+
+                {/* Floating Task Bottom Sheet */}
+                <TaskBottomSheet
+                  title="Practice Checklist"
+                  translateY={sheetTranslateY}
+                  onClose={dismissTaskSheet}
+                  onCheck={runValidation}
+                  onHint={() => Alert.alert('Lesson Hint', activeLessonData?.description || 'Follow instructions and complete command operations.')}
+                  isChecking={isValidating}
+                >
+                  <View style={styles.sheetBody}>
+                    <BodyText style={styles.instructionsText}>
+                      {activeLessonData?.instructions || 'Execute required validations to pass this lesson.'}
+                    </BodyText>
+                    
+                    {lastValidationResult && (
+                      <View style={styles.resultContainer}>
+                        <StatusIndicatorBadge 
+                          label={lastValidationResult.passed ? 'PASSED' : 'FAILED'} 
+                          variant={lastValidationResult.passed ? 'success' : 'error'} 
+                          style={styles.badgeMargin}
+                        />
+                        <SafeText style={[
+                          styles.resultOutput,
+                          lastValidationResult.passed ? styles.textSuccess : styles.textError
+                        ]} numberOfLines={3}>
+                          {lastValidationResult.output}
+                        </SafeText>
+                      </View>
+                    )}
+                  </View>
+                </TaskBottomSheet>
+              </>
+            )}
 
           </KeyboardAvoidingView>
         </SafeAreaView>
@@ -291,5 +409,109 @@ const styles = StyleSheet.create({
   },
   textError: {
     color: Theme.colors.semantic.error,
+  },
+  quizScrollContent: {
+    padding: Theme.spacing.md,
+    paddingBottom: Theme.spacing.xxl,
+  },
+  quizCard: {
+    padding: Theme.spacing.md,
+    backgroundColor: '#0D0D0D',
+    borderRadius: Theme.borderRadius.lg,
+    borderWidth: Theme.borderWidth.hairline,
+    borderColor: Theme.colors.border.subtle,
+  },
+  quizHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Theme.spacing.md,
+    borderBottomWidth: Theme.borderWidth.hairline,
+    borderBottomColor: Theme.colors.border.subtle,
+    paddingBottom: Theme.spacing.sm,
+  },
+  quizProgressText: {
+    color: Theme.colors.text.secondary,
+    fontFamily: Theme.fontFamily.mono,
+    fontSize: Theme.fontSize.labelSM,
+  },
+  quizBody: {
+    marginTop: Theme.spacing.xs,
+  },
+  quizQuestionText: {
+    color: Theme.colors.text.primary,
+    fontSize: Theme.fontSize.bodyMD,
+    lineHeight: Theme.lineHeight.normal,
+    marginBottom: Theme.spacing.lg,
+    fontWeight: 'bold',
+  },
+  quizOptionsList: {
+    gap: Theme.spacing.sm,
+  },
+  quizOptionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: Theme.spacing.md,
+    backgroundColor: Theme.colors.background.floor,
+    borderWidth: 1,
+    borderColor: Theme.colors.border.subtle,
+    borderRadius: Theme.borderRadius.default,
+    minHeight: Theme.layout.minTouchTarget,
+  },
+  quizOptionItemCorrect: {
+    borderColor: Theme.colors.semantic.success,
+    backgroundColor: 'rgba(79, 223, 148, 0.04)',
+  },
+  quizOptionItemIncorrect: {
+    borderColor: Theme.colors.semantic.error,
+    backgroundColor: 'rgba(255, 107, 107, 0.04)',
+  },
+  quizRadioOutline: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 1.5,
+    borderColor: Theme.colors.text.secondary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: Theme.spacing.md,
+  },
+  quizRadioOutlineCorrect: {
+    borderColor: Theme.colors.syntax.green,
+  },
+  quizRadioSelectedCorrect: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: Theme.colors.syntax.green,
+  },
+  quizRadioSelectedIncorrect: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: Theme.colors.semantic.error,
+  },
+  quizOptionCode: {
+    flex: 1,
+  },
+  quizExplanationContainer: {
+    marginTop: Theme.spacing.lg,
+    padding: Theme.spacing.md,
+    backgroundColor: Theme.colors.background.floor,
+    borderRadius: Theme.borderRadius.default,
+    borderWidth: Theme.borderWidth.hairline,
+    borderColor: Theme.colors.border.subtle,
+  },
+  quizExplanationTitle: {
+    marginBottom: Theme.spacing.xs,
+  },
+  quizExplanationText: {
+    color: Theme.colors.text.secondary,
+    fontSize: Theme.fontSize.bodySM,
+    lineHeight: Theme.lineHeight.normal,
+    marginBottom: Theme.spacing.md,
+  },
+  quizNextBtn: {
+    marginTop: Theme.spacing.sm,
   },
 });

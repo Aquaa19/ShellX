@@ -20,7 +20,7 @@ import {
   LabelCapsText, 
   IconButton 
 } from '../components/atoms';
-import type { LessonModule, Chapter, Lesson, TaskValidation } from '../types';
+import type { LessonModule, Chapter, Lesson, TaskValidation, MCQQuestion } from '../types';
 import { INITIAL_MODULES } from './mockCurriculumData';
 import { collection, getDocs, doc, writeBatch } from 'firebase/firestore';
 import { db } from '../config/firebase';
@@ -37,15 +37,11 @@ export const CurriculumScreen: React.FC = () => {
   const [modules, setModules] = useState<LessonModule[]>([]);
   const [isLoadingCurriculum, setIsLoadingCurriculum] = useState(true);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<SelectedItem>(null);
   
-  // Navigation expand states
-  const [expandedModules, setExpandedModules] = useState<Record<string, boolean>>({ 'mod-1': true });
-  const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>({ 'ch-1-1': true, 'ch-1-3': true });
+  const [expandedModules, setExpandedModules] = useState<Record<string, boolean>>({});
+  const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>({});
   
-  // Active selected item in CMS
-  const [selectedItem, setSelectedItem] = useState<SelectedItem>({ type: 'lesson', id: 'les-1-3-1', chapterId: 'ch-1-3', moduleId: 'mod-1' });
-
-  // Right-side Form editing states
   const [modTitle, setModTitle] = useState('');
   
   const [chTitle, setChTitle] = useState('');
@@ -57,6 +53,41 @@ export const CurriculumScreen: React.FC = () => {
   const [lesMinutes, setLesMinutes] = useState(initialLes.estimatedMinutes);
   const [lesType, setLesType] = useState<Lesson['type']>(initialLes.type);
   const [lesTasks, setLesTasks] = useState<TaskValidation[]>(initialLes.tasks);
+  const [lesQuestions, setLesQuestions] = useState<MCQQuestion[]>([]);
+
+  const handleAddQuestion = () => {
+    const newQuestion: MCQQuestion = {
+      question: 'Question text here?',
+      options: ['Option A', 'Option B', 'Option C', 'Option D'],
+      answer: 'Option A',
+      explanation: 'Explanation here.'
+    };
+    setLesQuestions(prev => [...prev, newQuestion]);
+  };
+
+  const handleUpdateQuestion = (idx: number, updated: Partial<MCQQuestion>) => {
+    setLesQuestions(prev => prev.map((q, i) => i === idx ? { ...q, ...updated } : q));
+  };
+
+  const handleUpdateOption = (qIdx: number, oIdx: number, value: string) => {
+    setLesQuestions(prev => prev.map((q, i) => {
+      if (i !== qIdx) return q;
+      const nextOpts = [...q.options];
+      nextOpts[oIdx] = value;
+      // If the answer was the old option text, update it to the new option text automatically
+      const oldOptText = q.options[oIdx];
+      const isAnswerMatched = q.answer === oldOptText;
+      return { 
+        ...q, 
+        options: nextOpts,
+        answer: isAnswerMatched ? value : q.answer
+      };
+    }));
+  };
+
+  const handleDeleteQuestion = (idx: number) => {
+    setLesQuestions(prev => prev.filter((_, i) => i !== idx));
+  };
 
   // Fetch curriculum on mount
   const fetchCurriculum = useCallback(async () => {
@@ -97,6 +128,7 @@ export const CurriculumScreen: React.FC = () => {
               order: lData.order || 0,
               tasks: lData.tasks || [],
               starterFiles: lData.starterFiles || [],
+              questions: lData.questions || [],
             };
           }).sort((a, b) => a.order - b.order);
           
@@ -168,6 +200,7 @@ export const CurriculumScreen: React.FC = () => {
         setLesMinutes(les.estimatedMinutes);
         setLesType(les.type);
         setLesTasks(les.tasks);
+        setLesQuestions(les.questions || []);
       }
     }
   };
@@ -217,7 +250,8 @@ export const CurriculumScreen: React.FC = () => {
               instructions: lesInstructions,
               estimatedMinutes: lesMinutes,
               type: lesType,
-              tasks: lesTasks
+              tasks: lesTasks,
+              questions: lesQuestions
             } : l)
           };
         })
@@ -275,7 +309,8 @@ export const CurriculumScreen: React.FC = () => {
       type: 'theory_only',
       estimatedMinutes: 5,
       order: len + 1,
-      tasks: []
+      tasks: [],
+      questions: []
     };
     
     setModules(prev => prev.map(m => {
@@ -293,6 +328,7 @@ export const CurriculumScreen: React.FC = () => {
     setLesMinutes(newLes.estimatedMinutes);
     setLesType(newLes.type);
     setLesTasks(newLes.tasks);
+    setLesQuestions([]);
   };
 
   // Task Actions inside Lessons
@@ -473,7 +509,8 @@ export const CurriculumScreen: React.FC = () => {
                 estimatedMinutes: les.estimatedMinutes,
                 order: les.order,
                 tasks: les.tasks,
-                starterFiles: les.starterFiles || []
+                starterFiles: les.starterFiles || [],
+                questions: les.questions || []
               },
               type: 'set'
             });
@@ -519,6 +556,8 @@ export const CurriculumScreen: React.FC = () => {
             order: number;
             starterFiles: import('../types').StarterFile[];
             prerequisiteId?: string | null;
+            type: string;
+            questions?: import('../types').MCQQuestion[];
           } = {
             title: lesson.title,
             description: lesson.description,
@@ -528,7 +567,9 @@ export const CurriculumScreen: React.FC = () => {
             validationExpected: valExp,
             instructions: lesson.instructions,
             order: i + 1,
-            starterFiles: lesson.starterFiles || []
+            starterFiles: lesson.starterFiles || [],
+            type: lesson.type,
+            questions: lesson.questions || []
           };
           
           if (prereqId) {
@@ -861,6 +902,7 @@ export const CurriculumScreen: React.FC = () => {
                         <option value="theory_only">THEORY / SLIDES</option>
                         <option value="terminal_challenge">TERMINAL CHALLENGE</option>
                         <option value="editor_challenge">FILE EDITOR TASK</option>
+                        <option value="exercise">EXERCISE (MCQ)</option>
                       </select>
                     </div>
                   </div>
@@ -907,7 +949,7 @@ export const CurriculumScreen: React.FC = () => {
                   </div>
 
                   {/* Task steps builder */}
-                  {lesType !== 'theory_only' && (
+                  {(lesType === 'terminal_challenge' || lesType === 'editor_challenge') && (
                     <div style={{ borderTop: '1px solid var(--color-border-subtle)', paddingTop: 'var(--spacing-md)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -978,6 +1020,112 @@ export const CurriculumScreen: React.FC = () => {
                         {lesTasks.length === 0 && (
                           <div style={{ padding: 'var(--spacing-md)', border: '1px dashed var(--color-border-subtle)', borderRadius: 'var(--radius-default)', textAlign: 'center', color: 'var(--color-text-tertiary)' }}>
                             [ NO VALIDATION STEPS DEFINED. ADD AN EXERCISE STEP ABOVE ]
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* MCQ quiz builder */}
+                  {lesType === 'exercise' && (
+                    <div style={{ borderTop: '1px solid var(--color-border-subtle)', paddingTop: 'var(--spacing-md)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <Layers size={14} color="var(--color-syntax-orange)" />
+                          <LabelCapsText size="10px" color="var(--color-syntax-orange)">
+                            Multiple Choice Questions (Quiz)
+                          </LabelCapsText>
+                        </div>
+                        <IconButton 
+                          icon={<Plus size={12} />} 
+                          onClick={handleAddQuestion}
+                          style={{ width: '28px', height: '28px' }}
+                          title="Add MCQ Question"
+                        />
+                      </div>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+                        {lesQuestions.map((q, qIdx) => (
+                          <div 
+                            key={qIdx} 
+                            style={{ 
+                              padding: 'var(--spacing-md)', 
+                              backgroundColor: '#000000', 
+                              border: '1px dashed var(--color-border-strong)', 
+                              borderRadius: 'var(--radius-default)',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: 'var(--spacing-sm)'
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <MonoText size="11px" weight="bold" color="var(--color-syntax-orange)">
+                                Question #{qIdx + 1}
+                              </MonoText>
+                              <IconButton 
+                                icon={<Trash2 size={12} />} 
+                                onClick={() => handleDeleteQuestion(qIdx)}
+                                style={{ width: '22px', height: '22px', border: 'none', color: 'var(--color-semantic-error)' }}
+                                title="Remove Question"
+                              />
+                            </div>
+
+                            <TextInput 
+                              label="Question Prompt" 
+                              value={q.question} 
+                              onChange={(e) => handleUpdateQuestion(qIdx, { question: e.target.value })} 
+                            />
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-sm)' }}>
+                              {q.options.map((opt, oIdx) => (
+                                <TextInput 
+                                  key={oIdx}
+                                  label={`Option ${String.fromCharCode(65 + oIdx)}`} 
+                                  value={opt} 
+                                  onChange={(e) => handleUpdateOption(qIdx, oIdx, e.target.value)} 
+                                />
+                              ))}
+                            </div>
+
+                            <div style={{ display: 'flex', gap: 'var(--spacing-md)' }}>
+                              <div style={{ flex: 1 }}>
+                                <label style={{ fontSize: '11px', fontFamily: 'monospace', textTransform: 'uppercase', color: 'var(--color-text-secondary)', fontWeight: '600', display: 'block', marginBottom: '4px' }}>
+                                  Correct Answer
+                                </label>
+                                <select
+                                  value={q.answer}
+                                  onChange={(e) => handleUpdateQuestion(qIdx, { answer: e.target.value })}
+                                  style={{
+                                    width: '100%',
+                                    height: '36px',
+                                    backgroundColor: 'var(--color-background-input)',
+                                    border: '1px solid var(--color-border-subtle)',
+                                    borderRadius: 'var(--radius-default)',
+                                    color: 'var(--color-text-primary)',
+                                    fontFamily: '"JetBrains Mono", monospace',
+                                    fontSize: '13px',
+                                    padding: '0 8px',
+                                    outline: 'none',
+                                    cursor: 'pointer'
+                                  }}
+                                >
+                                  {q.options.map((opt, oIdx) => (
+                                    <option key={oIdx} value={opt}>{opt}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+
+                            <TextInput 
+                              label="Explanation (Optional)" 
+                              value={q.explanation} 
+                              onChange={(e) => handleUpdateQuestion(qIdx, { explanation: e.target.value })} 
+                            />
+                          </div>
+                        ))}
+                        {lesQuestions.length === 0 && (
+                          <div style={{ padding: 'var(--spacing-md)', border: '1px dashed var(--color-border-subtle)', borderRadius: 'var(--radius-default)', textAlign: 'center', color: 'var(--color-text-tertiary)' }}>
+                            [ NO QUIZ QUESTIONS DEFINED. ADD A QUESTION ABOVE ]
                           </div>
                         )}
                       </div>

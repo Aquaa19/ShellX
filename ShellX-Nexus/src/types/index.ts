@@ -30,6 +30,13 @@ export interface StarterFile {
   content: string;
 }
 
+export interface MCQQuestion {
+  question: string;
+  options: string[];
+  answer: string;
+  explanation: string;
+}
+
 export interface TaskValidation {
   id: string;
   instruction: string;
@@ -44,11 +51,12 @@ export interface Lesson {
   title: string;
   description: string;
   instructions: string; // Markdown text
-  type: 'theory_only' | 'terminal_challenge' | 'editor_challenge';
+  type: 'theory_only' | 'terminal_challenge' | 'editor_challenge' | 'exercise';
   estimatedMinutes: number;
   order: number;
   tasks: TaskValidation[];
   starterFiles?: StarterFile[];
+  questions?: MCQQuestion[];
 }
 
 export interface Chapter {
