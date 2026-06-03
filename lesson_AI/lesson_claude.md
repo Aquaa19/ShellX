@@ -3508,3 +3508,3423 @@ alias ll="ls -la"            # Create alias
 ---
 *Linux & Shell Scripting Fundamentals — University OS Practical Exam Curriculum*
 *Generated for educational use. All validation scripts tested for Ubuntu 22.04 LTS.*
+
+# Linux & Shell Scripting Fundamentals
+### University OS Practical Exam Preparation — Modules 6–10
+
+---
+
+# MODULE 6: SHELL SCRIPTING BASICS
+
+## CHAPTER 6.1: First Shell Script
+
+* **Description:** Introduces students to writing, saving, and executing their first Bash shell script — covering shebang lines, execution permissions, and script output.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** What is a Shell Script?
+* **Est. Minutes:** 5
+* **Outline:** Explain what shell scripts are, how the shebang works, and how to make a script executable.
+
+* **Instructions (Slides):**
+
+  # Slide 1: What is a Shell Script?
+
+  A **shell script** is a plain-text file containing a sequence of commands that the shell (Bash, sh, zsh, etc.) interprets and executes line by line — exactly as if you had typed each command manually in the terminal.
+
+  Shell scripts are used for:
+  - **Automation** — repeat tasks without retyping commands
+  - **System administration** — backups, log rotation, user management
+  - **OS Practical exams** — demonstrating control flow, algorithms, and file manipulation
+
+  A shell script file typically has the `.sh` extension (though Linux does not require it).
+
+  ---
+
+  # Slide 2: The Shebang Line
+
+  The very first line of every shell script should be a **shebang** (also called hashbang):
+
+  ```bash
+  #!/bin/bash
+  ```
+
+  - `#!` tells the OS kernel: "use the following program to interpret this file"
+  - `/bin/bash` is the path to the Bash interpreter
+  - Without the shebang, the OS may pick the wrong shell or refuse to run the script
+
+  **Example — minimal script:**
+  ```bash
+  #!/bin/bash
+  echo "Hello, World!"
+  ```
+
+  The `echo` command prints text to standard output (your terminal screen).
+
+  ---
+
+  # Slide 3: Making a Script Executable
+
+  By default a newly created file is **not executable**. You must grant execute permission:
+
+  ```bash
+  chmod +x script.sh
+  ```
+
+  Then run it with:
+  ```bash
+  ./script.sh
+  ```
+
+  The `./` means "look in the current directory". Without it, the shell searches only directories in your `$PATH`.
+
+  **Full workflow:**
+  ```bash
+  nano hello.sh          # open editor, write script
+  chmod +x hello.sh      # grant execute permission
+  ./hello.sh             # run the script
+  ```
+
+  ---
+
+  # Slide 4: Comments in Shell Scripts
+
+  Comments begin with `#` and are ignored by the interpreter:
+
+  ```bash
+  #!/bin/bash
+  # This is a comment — it won't execute
+  echo "This line runs"   # inline comment
+  ```
+
+  Best practices:
+  - Add a comment block at the top (author, date, purpose)
+  - Comment complex logic inline
+  - Keep comments current when you change code
+
+  ---
+
+  # Slide 5: Running Scripts Without chmod
+
+  You can also invoke a script by explicitly calling the interpreter:
+
+  ```bash
+  bash hello.sh
+  sh hello.sh
+  ```
+
+  This works even if the file lacks execute permission. However, for exam submissions always use `chmod +x` and `./script.sh` — it proves you understand Unix permissions.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** Create and Run Your First Script
+* **Est. Minutes:** 5
+* **Outline:** Practice creating a directory, writing a script via `echo` redirect, setting permissions, and executing it.
+* **Instructions:** Follow each task in order inside your terminal. All files must reside under `/home/student/`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create a directory called `scripts` inside `/home/student/`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -d "/home/student/scripts" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Create a file `/home/student/scripts/hello.sh` containing exactly two lines: `#!/bin/bash` and `echo "Hello, World!"` — use any method (nano, echo redirect, heredoc).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q '#!/bin/bash' /home/student/scripts/hello.sh && grep -q 'Hello, World!' /home/student/scripts/hello.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Grant execute permission to `/home/student/scripts/hello.sh`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `[ -x "/home/student/scripts/hello.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 4:**
+    * **Instruction:** Execute the script and confirm it prints "Hello, World!".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `/home/student/scripts/hello.sh | grep -q "Hello, World!" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Write a Script With a Header Comment Block
+* **Est. Minutes:** 8
+* **Outline:** Students write a properly commented shell script that prints system info.
+* **Instructions:**
+  1. Open a new file `/home/student/scripts/sysinfo.sh` in your preferred editor (nano, vim, or gedit).
+  2. Add the shebang on line 1: `#!/bin/bash`
+  3. Add a comment block (lines 2–5) with: `# Author: student`, `# Date: today`, `# Description: Prints system information`
+  4. Add the command `echo "Hostname: $(hostname)"` on line 6.
+  5. Add the command `echo "Current User: $(whoami)"` on line 7.
+  6. Save, close, grant execute permission, and run the script to verify output.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** The file `/home/student/scripts/sysinfo.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/sysinfo.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** The script must contain the shebang `#!/bin/bash`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `head -1 /home/student/scripts/sysinfo.sh | grep -q '#!/bin/bash' && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** The script must contain a line with `hostname`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'hostname' /home/student/scripts/sysinfo.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 4:**
+    * **Instruction:** The script must contain a line with `whoami`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'whoami' /home/student/scripts/sysinfo.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 5:**
+    * **Instruction:** The script must be executable and produce output containing "Hostname:".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `chmod +x /home/student/scripts/sysinfo.sh 2>/dev/null; /home/student/scripts/sysinfo.sh | grep -q "Hostname:" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** Shell Script Basics Quiz
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on shebang, permissions, and execution.
+
+* **Questions:**
+
+  * **Q1:** What is the purpose of `#!/bin/bash` at the top of a shell script?
+    * **Options:**
+      * A) It is a comment that documents the file type
+      * B) It tells the OS which interpreter to use for the script
+      * C) It grants execute permission to the script
+      * D) It imports the bash library
+    * **Correct Answer:** B) It tells the OS which interpreter to use for the script
+    * **Explanation:** The shebang (`#!`) followed by the interpreter path instructs the kernel which program should execute the script. Without it, the default shell may be used or execution may fail.
+
+  * **Q2:** Which command makes a script file executable?
+    * **Options:**
+      * A) `exec script.sh`
+      * B) `run +x script.sh`
+      * C) `chmod +x script.sh`
+      * D) `bash -x script.sh`
+    * **Correct Answer:** C) `chmod +x script.sh`
+    * **Explanation:** `chmod` changes file mode bits. The `+x` flag adds execute permission for the owner, group, and others.
+
+  * **Q3:** How do you run a script located in the current directory?
+    * **Options:**
+      * A) `script.sh`
+      * B) `/script.sh`
+      * C) `./script.sh`
+      * D) `run script.sh`
+    * **Correct Answer:** C) `./script.sh`
+    * **Explanation:** `./` explicitly tells the shell to look in the current working directory. Without it, the shell only searches directories listed in `$PATH`.
+
+  * **Q4:** Which symbol begins a single-line comment in Bash?
+    * **Options:**
+      * A) `//`
+      * B) `--`
+      * C) `/* */`
+      * D) `#`
+    * **Correct Answer:** D) `#`
+    * **Explanation:** In Bash, any text following `#` on a line (except the shebang on line 1) is treated as a comment and is not executed.
+
+---
+
+## CHAPTER 6.2: Variables
+
+* **Description:** Covers declaring, assigning, and using variables in Bash — including string and numeric variables, environment variables, and command substitution.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Variables in Bash
+* **Est. Minutes:** 5
+* **Outline:** Explain variable declaration, assignment rules, referencing with `$`, environment variables, and command substitution.
+
+* **Instructions (Slides):**
+
+  # Slide 1: Declaring and Assigning Variables
+
+  In Bash, a variable is declared by simply assigning a value — **no type declaration needed**:
+
+  ```bash
+  name="Alice"
+  age=20
+  gpa=3.85
+  ```
+
+  **Rules:**
+  - No spaces around `=` (spaces cause errors)
+  - Variable names are case-sensitive (`Name` ≠ `name`)
+  - Names can contain letters, digits, underscores — must start with a letter or underscore
+  - By convention, local variables use lowercase; environment variables use UPPERCASE
+
+  ---
+
+  # Slide 2: Referencing Variables
+
+  Prefix the variable name with `$` to read its value:
+
+  ```bash
+  name="Alice"
+  echo $name          # prints: Alice
+  echo "Hello, $name" # prints: Hello, Alice
+  echo "Hello, ${name}!" # braces for clarity/concatenation
+  ```
+
+  Use `${}` (curly braces) when the variable name immediately precedes other text:
+
+  ```bash
+  fruit="banana"
+  echo "${fruit}s are yellow"   # prints: bananas are yellow
+  ```
+
+  ---
+
+  # Slide 3: Numeric Variables and Arithmetic
+
+  Bash variables are strings by default. For arithmetic use `$(( ))`:
+
+  ```bash
+  a=10
+  b=3
+  sum=$((a + b))
+  diff=$((a - b))
+  prod=$((a * b))
+  quot=$((a / b))   # integer division
+  mod=$((a % b))
+  echo "$a + $b = $sum"
+  ```
+
+  You can also use the `let` command or `expr`:
+  ```bash
+  let result=a*b
+  result=$(expr $a + $b)   # older style
+  ```
+
+  ---
+
+  # Slide 4: Environment Variables
+
+  Environment variables are available system-wide and are set by the OS or shell startup files:
+
+  | Variable | Meaning |
+  |----------|---------|
+  | `$HOME`  | Current user's home directory |
+  | `$USER`  | Logged-in username |
+  | `$PATH`  | Colon-separated list of executable search directories |
+  | `$PWD`   | Present working directory |
+  | `$SHELL` | Path to current shell |
+  | `$?`     | Exit status of last command (0 = success) |
+
+  Print all environment variables with `env` or `printenv`.
+
+  Export a custom variable to child processes:
+  ```bash
+  export MY_VAR="hello"
+  ```
+
+  ---
+
+  # Slide 5: Command Substitution
+
+  Capture the output of a command into a variable:
+
+  ```bash
+  today=$(date)
+  echo "Today is: $today"
+
+  files=$(ls /home/student)
+  count=$(ls | wc -l)
+  echo "There are $count files here"
+  ```
+
+  The backtick syntax `` `command` `` is equivalent but deprecated:
+  ```bash
+  today=`date`   # old style — avoid in new scripts
+  ```
+
+  Always prefer `$(...)` — it is readable and nestable:
+  ```bash
+  result=$(echo $(date +%Y))   # nested substitution
+  ```
+
+  ---
+
+  # Slide 6: Read-only and Unset Variables
+
+  Make a variable read-only (constant):
+  ```bash
+  readonly PI=3.14159
+  PI=3   # Error: PI is read only
+  ```
+
+  Remove a variable:
+  ```bash
+  myvar="hello"
+  unset myvar
+  echo $myvar   # prints nothing
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** Variables in the Terminal
+* **Est. Minutes:** 5
+* **Outline:** Practice declaring variables, arithmetic, and command substitution at the prompt.
+* **Instructions:** Type each command directly in the terminal. Do not wrap in a script file for this quest.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create a script `/home/student/scripts/vars_demo.sh` that declares `name="student"` and prints `Hello, student` using the variable.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/scripts/vars_demo.sh 2>/dev/null | grep -q "Hello, student" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 2:**
+    * **Instruction:** In `/home/student/scripts/vars_demo.sh` also declare `x=7` and `y=3`, compute their sum, and print `Sum: 10`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/scripts/vars_demo.sh 2>/dev/null | grep -q "Sum: 10" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 3:**
+    * **Instruction:** Add a line to the script that stores the output of `date +%Y` in a variable `year` and prints `Year: <current_year>`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/scripts/vars_demo.sh 2>/dev/null | grep -q "Year:" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Personal Info Script Using Variables
+* **Est. Minutes:** 8
+* **Outline:** Write a script that stores personal info in variables and prints a formatted profile card.
+* **Instructions:**
+  1. Create `/home/student/scripts/profile.sh`.
+  2. Add shebang `#!/bin/bash`.
+  3. Declare variables: `name`, `roll_no`, `branch`, `year`.
+  4. Assign values: your name, a 10-digit roll number, your branch (e.g., "CSE"), and current year (e.g., 2).
+  5. Use `echo` statements to print a formatted profile:
+     ```
+     ===== Student Profile =====
+     Name   : Alice
+     Roll No: 2023CS001
+     Branch : CSE
+     Year   : 2
+     ===========================
+     ```
+  6. Save, make executable, and test.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/profile.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/profile.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** The script must declare a variable named `name`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'name=' /home/student/scripts/profile.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** The script must declare a variable named `roll_no`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'roll_no=' /home/student/scripts/profile.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 4:**
+    * **Instruction:** The script output must contain the line `===== Student Profile =====`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `chmod +x /home/student/scripts/profile.sh 2>/dev/null; /home/student/scripts/profile.sh | grep -q "Student Profile" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** Variables Quiz
+* **Est. Minutes:** 3
+* **Outline:** Chapter comprehension check on variables, arithmetic, and substitution.
+
+* **Questions:**
+
+  * **Q1:** Which of the following correctly assigns a value to a variable in Bash?
+    * **Options:**
+      * A) `name = "Alice"`
+      * B) `name="Alice"`
+      * C) `$name="Alice"`
+      * D) `set name "Alice"`
+    * **Correct Answer:** B) `name="Alice"`
+    * **Explanation:** Bash variable assignment requires no spaces around `=`. Spaces cause the shell to interpret the tokens as a command and arguments, resulting in an error.
+
+  * **Q2:** What is the output of `echo $((10 % 3))`?
+    * **Options:**
+      * A) 3
+      * B) 0
+      * C) 1
+      * D) 10
+    * **Correct Answer:** C) 1
+    * **Explanation:** `%` is the modulo operator. `10 % 3 = 1` (10 divided by 3 gives remainder 1).
+
+  * **Q3:** Which syntax performs command substitution in modern Bash?
+    * **Options:**
+      * A) `` `command` ``
+      * B) `$(command)`
+      * C) `${command}`
+      * D) `!command!`
+    * **Correct Answer:** B) `$(command)`
+    * **Explanation:** `$(...)` is the preferred modern syntax for command substitution. It is nestable and more readable than the deprecated backtick syntax.
+
+  * **Q4:** What does `$?` hold in Bash?
+    * **Options:**
+      * A) The process ID of the script
+      * B) The current shell version
+      * C) The exit status of the last executed command
+      * D) The number of arguments passed to the script
+    * **Correct Answer:** C) The exit status of the last executed command
+    * **Explanation:** `$?` is a special variable that stores the exit status (return code) of the most recently executed command. `0` means success; non-zero values indicate errors.
+
+---
+
+## CHAPTER 6.3: User Input
+
+* **Description:** Teaches students how to read interactive user input using the `read` command, handle input with prompts, and validate input at a basic level.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Reading Input With `read`
+* **Est. Minutes:** 5
+* **Outline:** Cover the `read` command, prompt options, reading multiple values, silent input, and command-line arguments.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The `read` Command
+
+  `read` pauses the script and waits for the user to type input, then stores it in a variable:
+
+  ```bash
+  #!/bin/bash
+  echo "Enter your name:"
+  read name
+  echo "Hello, $name!"
+  ```
+
+  The user types their name and presses Enter. The value is stored in `$name`.
+
+  ---
+
+  # Slide 2: Inline Prompt with `-p`
+
+  The `-p` flag lets you display a prompt on the same line:
+
+  ```bash
+  read -p "Enter your age: " age
+  echo "You are $age years old."
+  ```
+
+  This is cleaner than a separate `echo` + `read` pair and is the preferred exam style.
+
+  ---
+
+  # Slide 3: Reading Multiple Variables at Once
+
+  `read` can accept multiple variable names; it splits input on whitespace:
+
+  ```bash
+  read -p "Enter first and last name: " first last
+  echo "First: $first"
+  echo "Last:  $last"
+  ```
+
+  If the user enters more words than variables, the last variable captures everything remaining.
+
+  ---
+
+  # Slide 4: Silent Input with `-s`
+
+  For passwords or sensitive data, use `-s` (silent — no echo):
+
+  ```bash
+  read -s -p "Enter password: " passwd
+  echo ""   # print newline after silent input
+  echo "Password accepted."
+  ```
+
+  Combine `-s` and `-p` freely.
+
+  ---
+
+  # Slide 5: Command-Line Arguments
+
+  Scripts can also receive input as arguments (positional parameters):
+
+  ```bash
+  #!/bin/bash
+  # Usage: ./greet.sh Alice 20
+  name=$1
+  age=$2
+  echo "Hello, $name! You are $age years old."
+  ```
+
+  | Variable | Meaning |
+  |----------|---------|
+  | `$0` | Script name |
+  | `$1`, `$2`, … | Positional arguments |
+  | `$#` | Number of arguments |
+  | `$@` | All arguments as separate words |
+  | `$*` | All arguments as one string |
+
+  ---
+
+  # Slide 6: Default Values
+
+  Provide a default if the user presses Enter without typing:
+
+  ```bash
+  read -p "Enter city [Kolkata]: " city
+  city=${city:-Kolkata}
+  echo "City: $city"
+  ```
+
+  `${var:-default}` returns `default` if `var` is unset or empty.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** Interactive Input Script
+* **Est. Minutes:** 5
+* **Outline:** Build a script that greets the user by name and prints a custom message.
+* **Instructions:** Create and test `/home/student/scripts/greet.sh`. Use non-interactive testing by piping input.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/scripts/greet.sh` that reads a name with prompt "Enter your name: " and prints "Hello, <name>! Welcome to Linux." — use `read -p`.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/greet.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** The script must use `read` to capture input.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'read' /home/student/scripts/greet.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** When provided input "TestUser", the script must output a line containing "Hello, TestUser!".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "TestUser" | bash /home/student/scripts/greet.sh 2>/dev/null | grep -q "Hello, TestUser!" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Student Registration Form Script
+* **Est. Minutes:** 8
+* **Outline:** Create a script that collects multiple fields of student data and prints a summary.
+* **Instructions:**
+  1. Create `/home/student/scripts/register.sh`.
+  2. Add shebang.
+  3. Use `read -p` to collect: `name`, `roll`, `branch`, `sem` (semester).
+  4. After collecting all inputs, print:
+     ```
+     --- Registration Summary ---
+     Name    : <name>
+     Roll No : <roll>
+     Branch  : <branch>
+     Semester: <sem>
+     ----------------------------
+     ```
+  5. Save, make executable, and verify.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/register.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/register.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** The script must contain at least 4 `read` statements.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `[ $(grep -c 'read' /home/student/scripts/register.sh) -ge 4 ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** When fed inputs "Alice\n2023CS001\nCSE\n3" the script must output a line containing "Registration Summary".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "Alice\n2023CS001\nCSE\n3\n" | bash /home/student/scripts/register.sh 2>/dev/null | grep -q "Registration Summary" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** User Input Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehension check on `read`, arguments, and default values.
+
+* **Questions:**
+
+  * **Q1:** Which flag of `read` displays a prompt on the same line?
+    * **Options:**
+      * A) `-i`
+      * B) `-n`
+      * C) `-p`
+      * D) `-t`
+    * **Correct Answer:** C) `-p`
+    * **Explanation:** `read -p "prompt" var` displays the prompt string before waiting for input, keeping everything on one line for a cleaner user experience.
+
+  * **Q2:** In a script called as `./calc.sh 10 20`, what is the value of `$2`?
+    * **Options:**
+      * A) `./calc.sh`
+      * B) `10`
+      * C) `20`
+      * D) `2`
+    * **Correct Answer:** C) `20`
+    * **Explanation:** `$1` is the first argument (`10`) and `$2` is the second argument (`20`). `$0` is the script name.
+
+  * **Q3:** What does `${city:-Kolkata}` return if `city` is empty?
+    * **Options:**
+      * A) An error
+      * B) An empty string
+      * C) `city`
+      * D) `Kolkata`
+    * **Correct Answer:** D) `Kolkata`
+    * **Explanation:** The `:-` operator provides a default value. If the variable is unset or empty, the default (here `Kolkata`) is returned without modifying the variable.
+
+  * **Q4:** Which variable holds the total number of arguments passed to a script?
+    * **Options:**
+      * A) `$@`
+      * B) `$*`
+      * C) `$#`
+      * D) `$0`
+    * **Correct Answer:** C) `$#`
+    * **Explanation:** `$#` is a special variable that stores the count of positional parameters (arguments) passed to the script, not counting `$0` (the script name).
+
+---
+
+# MODULE 7: DECISION MAKING
+
+## CHAPTER 7.1: if Statement
+
+* **Description:** Introduces conditional branching with the `if` statement — covering test expressions, comparison operators for numbers and strings, and file test operators.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Making Decisions with `if`
+* **Est. Minutes:** 5
+* **Outline:** Explain `if` syntax, `test`/`[ ]`/`[[ ]]`, numeric comparisons, string comparisons, and file tests.
+
+* **Instructions (Slides):**
+
+  # Slide 1: Basic `if` Syntax
+
+  ```bash
+  if [ condition ]; then
+      # commands executed when condition is TRUE
+  fi
+  ```
+
+  - `if` starts the block; `fi` (if spelled backward) ends it
+  - `then` must follow the condition (same line or next line)
+  - The condition is tested using `[ ]` (the `test` command) or `[[ ]]` (bash built-in)
+  - **Spaces inside brackets are mandatory**: `[ -f file ]` ✓  `[-f file]` ✗
+
+  ---
+
+  # Slide 2: Numeric Comparison Operators
+
+  | Operator | Meaning | Example |
+  |----------|---------|---------|
+  | `-eq` | equal | `[ $a -eq $b ]` |
+  | `-ne` | not equal | `[ $a -ne $b ]` |
+  | `-lt` | less than | `[ $a -lt $b ]` |
+  | `-le` | less than or equal | `[ $a -le $b ]` |
+  | `-gt` | greater than | `[ $a -gt $b ]` |
+  | `-ge` | greater than or equal | `[ $a -ge $b ]` |
+
+  ```bash
+  read -p "Enter a number: " n
+  if [ $n -gt 0 ]; then
+      echo "Positive"
+  fi
+  ```
+
+  ---
+
+  # Slide 3: String Comparison Operators
+
+  | Operator | Meaning |
+  |----------|---------|
+  | `=` or `==` | strings are equal |
+  | `!=` | strings are not equal |
+  | `-z "$s"` | string is empty (zero length) |
+  | `-n "$s"` | string is non-empty |
+
+  ```bash
+  read -p "Enter password: " pass
+  if [ "$pass" = "secret123" ]; then
+      echo "Access granted"
+  fi
+  ```
+
+  Always quote string variables to handle spaces: `"$var"`.
+
+  ---
+
+  # Slide 4: File Test Operators
+
+  | Operator | Meaning |
+  |----------|---------|
+  | `-f file` | exists and is a regular file |
+  | `-d dir` | exists and is a directory |
+  | `-e path` | exists (any type) |
+  | `-r file` | readable |
+  | `-w file` | writable |
+  | `-x file` | executable |
+  | `-s file` | exists and is non-empty |
+
+  ```bash
+  if [ -f "/home/student/notes.txt" ]; then
+      echo "File exists"
+  fi
+  ```
+
+  ---
+
+  # Slide 5: Logical Operators Inside `[ ]`
+
+  | Operator | Meaning |
+  |----------|---------|
+  | `-a` | AND (inside `[ ]`) |
+  | `-o` | OR (inside `[ ]`) |
+  | `!` | NOT |
+
+  With `[[ ]]` (preferred):
+  ```bash
+  if [[ $a -gt 0 && $a -lt 100 ]]; then
+      echo "Between 1 and 99"
+  fi
+  ```
+
+  `&&` and `||` work naturally inside `[[ ]]`.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** Write Conditional Scripts
+* **Est. Minutes:** 5
+* **Outline:** Practice using `if` to check a number and a file.
+* **Instructions:** Create the following scripts in `/home/student/scripts/`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/scripts/check_positive.sh` that reads a number and prints "Positive" if it is greater than 0, otherwise prints nothing.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "5" | bash /home/student/scripts/check_positive.sh 2>/dev/null | grep -q "Positive" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 2:**
+    * **Instruction:** Create `/home/student/scripts/check_file.sh` that checks if `/home/student/scripts/hello.sh` exists and prints "File found" if true.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/scripts/check_file.sh 2>/dev/null | grep -q "File found" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Even or Odd Checker
+* **Est. Minutes:** 8
+* **Outline:** Write a script that determines if a number is even or odd.
+* **Instructions:**
+  1. Create `/home/student/scripts/even_odd.sh`.
+  2. Add shebang.
+  3. Use `read -p` to get a number from the user.
+  4. Use `if` with arithmetic to test if `n % 2 -eq 0`.
+  5. Print "Even" if true.
+  6. Save and make executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/even_odd.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/even_odd.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Script must use `if` statement.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q '\bif\b' /home/student/scripts/even_odd.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** When input is 4, output must contain "Even".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "4" | bash /home/student/scripts/even_odd.sh 2>/dev/null | grep -qi "even" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** if Statement Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehension check on if syntax and test operators.
+
+* **Questions:**
+
+  * **Q1:** Which operator checks if two integers are equal in Bash `[ ]`?
+    * **Options:**
+      * A) `==`
+      * B) `-eq`
+      * C) `=`
+      * D) `-is`
+    * **Correct Answer:** B) `-eq`
+    * **Explanation:** For numeric comparisons inside `[ ]`, Bash uses flag-style operators: `-eq` (equal), `-ne` (not equal), `-lt` (less than), etc. `==` and `=` are for string comparison.
+
+  * **Q2:** What keyword ends an `if` block in Bash?
+    * **Options:**
+      * A) `end`
+      * B) `endif`
+      * C) `done`
+      * D) `fi`
+    * **Correct Answer:** D) `fi`
+    * **Explanation:** Bash uses `fi` (reverse of `if`) to close an if block, following the pattern of `do`/`done` for loops.
+
+  * **Q3:** What does the `-d` flag test in `[ -d "/path" ]`?
+    * **Options:**
+      * A) Whether the path is readable
+      * B) Whether the path is a directory
+      * C) Whether the path is a device
+      * D) Whether the path is deletable
+    * **Correct Answer:** B) Whether the path is a directory
+    * **Explanation:** `-d` is a file test operator that returns true if the given path exists and is a directory.
+
+  * **Q4:** Which of the following is the correct way to check if `$a` is greater than `$b`?
+    * **Options:**
+      * A) `[ $a > $b ]`
+      * B) `[ $a -gt $b ]`
+      * C) `[ $a GT $b ]`
+      * D) `[ $a greater $b ]`
+    * **Correct Answer:** B) `[ $a -gt $b ]`
+    * **Explanation:** `-gt` is the "greater than" numeric comparison operator in Bash test expressions. Using `>` inside `[ ]` would be interpreted as file redirection.
+
+---
+
+## CHAPTER 7.2: if-else
+
+* **Description:** Extends conditional logic with `else` and `elif` branches, allowing scripts to respond differently to multiple conditions.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Branching With if-else and elif
+* **Est. Minutes:** 5
+* **Outline:** Explain if-else syntax, elif chaining, and case statement as an alternative.
+
+* **Instructions (Slides):**
+
+  # Slide 1: The if-else Structure
+
+  ```bash
+  if [ condition ]; then
+      # runs when condition is TRUE
+  else
+      # runs when condition is FALSE
+  fi
+  ```
+
+  Example — check if a number is positive or negative:
+  ```bash
+  read -p "Enter number: " n
+  if [ $n -gt 0 ]; then
+      echo "Positive"
+  else
+      echo "Non-positive (zero or negative)"
+  fi
+  ```
+
+  ---
+
+  # Slide 2: The elif Ladder
+
+  Use `elif` (else-if) to test multiple mutually exclusive conditions:
+
+  ```bash
+  if [ condition1 ]; then
+      # runs if condition1 is true
+  elif [ condition2 ]; then
+      # runs if condition2 is true
+  elif [ condition3 ]; then
+      # runs if condition3 is true
+  else
+      # runs if none of the above is true
+  fi
+  ```
+
+  ---
+
+  # Slide 3: Grade Calculator Example
+
+  ```bash
+  read -p "Enter marks (0-100): " marks
+  if [ $marks -ge 90 ]; then
+      echo "Grade: A+"
+  elif [ $marks -ge 80 ]; then
+      echo "Grade: A"
+  elif [ $marks -ge 70 ]; then
+      echo "Grade: B"
+  elif [ $marks -ge 60 ]; then
+      echo "Grade: C"
+  elif [ $marks -ge 40 ]; then
+      echo "Grade: D (Pass)"
+  else
+      echo "Grade: F (Fail)"
+  fi
+  ```
+
+  Conditions are evaluated top to bottom; the first true branch executes and the rest are skipped.
+
+  ---
+
+  # Slide 4: The `case` Statement
+
+  `case` is a cleaner alternative to long elif chains when comparing a variable against fixed patterns:
+
+  ```bash
+  read -p "Enter day (1-7): " day
+  case $day in
+      1) echo "Monday" ;;
+      2) echo "Tuesday" ;;
+      3) echo "Wednesday" ;;
+      4) echo "Thursday" ;;
+      5) echo "Friday" ;;
+      6) echo "Saturday" ;;
+      7) echo "Sunday" ;;
+      *) echo "Invalid day" ;;
+  esac
+  ```
+
+  - `*)` is the wildcard / default case
+  - `;;` ends each case branch
+  - `esac` (case reversed) closes the block
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** Build an if-else Grade Script
+* **Est. Minutes:** 5
+* **Outline:** Create a marks-based grade calculator.
+* **Instructions:** Create `/home/student/scripts/grade.sh` with a complete if-elif-else chain.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/scripts/grade.sh` that reads marks and prints `Grade: A+` for marks >= 90.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "95" | bash /home/student/scripts/grade.sh 2>/dev/null | grep -q "A+" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 2:**
+    * **Instruction:** The same script must print `Grade: F` (or contain "F") for marks below 40.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "30" | bash /home/student/scripts/grade.sh 2>/dev/null | grep -qi "F" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 3:**
+    * **Instruction:** The script must contain `elif`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'elif' /home/student/scripts/grade.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Day-of-Week Selector Using `case`
+* **Est. Minutes:** 8
+* **Outline:** Write a script using the `case` statement to print the day name.
+* **Instructions:**
+  1. Create `/home/student/scripts/day_name.sh`.
+  2. Add shebang.
+  3. Prompt: "Enter day number (1-7): " and read into variable `day`.
+  4. Use a `case` block to print Monday through Sunday.
+  5. Add a `*)` default case printing "Invalid input".
+  6. Save and make executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/day_name.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/day_name.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Script must use `case` and `esac`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'case' /home/student/scripts/day_name.sh && grep -q 'esac' /home/student/scripts/day_name.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Input `3` must produce output containing "Wednesday".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "3" | bash /home/student/scripts/day_name.sh 2>/dev/null | grep -q "Wednesday" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** Input `9` must produce output containing "Invalid".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "9" | bash /home/student/scripts/day_name.sh 2>/dev/null | grep -qi "invalid" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** if-else and case Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehension check on if-else chains and the case statement.
+
+* **Questions:**
+
+  * **Q1:** What keyword is used to add additional conditions after an initial `if`?
+    * **Options:**
+      * A) `else if`
+      * B) `elseif`
+      * C) `elif`
+      * D) `orif`
+    * **Correct Answer:** C) `elif`
+    * **Explanation:** Bash uses `elif` (not `else if` as in C/Java) to add additional conditional branches before the final `else`.
+
+  * **Q2:** In a `case` statement, what does `*)`  represent?
+    * **Options:**
+      * A) The first case
+      * B) A required empty case
+      * C) The default/wildcard case
+      * D) The end of the case block
+    * **Correct Answer:** C) The default/wildcard case
+    * **Explanation:** `*)` matches any value not matched by earlier patterns, functioning as the "default" or "catch-all" branch of a case statement.
+
+  * **Q3:** What keyword closes a `case` block?
+    * **Options:**
+      * A) `fi`
+      * B) `done`
+      * C) `end`
+      * D) `esac`
+    * **Correct Answer:** D) `esac`
+    * **Explanation:** `esac` (case spelled backward) closes the `case` block, consistent with Bash's `fi` closing `if` and `done` closing `do`.
+
+  * **Q4:** In an if-elif-else chain, how many branches can execute?
+    * **Options:**
+      * A) All branches that match
+      * B) Exactly one branch
+      * C) Only the first and last
+      * D) Only the `else` branch
+    * **Correct Answer:** B) Exactly one branch
+    * **Explanation:** Bash evaluates conditions top to bottom and executes only the first matching branch. Once a true condition is found, the remaining conditions are skipped entirely.
+
+---
+
+## CHAPTER 7.3: Nested Conditions (OS Practical #4)
+
+* **Description:** Demonstrates nesting `if` blocks inside other `if` blocks and covers compound conditions — preparing students for OS Practical exam question #4 style problems.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Nested if and Compound Conditions
+* **Est. Minutes:** 5
+* **Outline:** Explain nested if syntax, compound AND/OR conditions, and real-world exam-style examples.
+
+* **Instructions (Slides):**
+
+  # Slide 1: What Is a Nested if?
+
+  A **nested if** is an `if` block placed inside another `if` or `else` block:
+
+  ```bash
+  if [ outer_condition ]; then
+      if [ inner_condition ]; then
+          echo "Both conditions true"
+      else
+          echo "Outer true, inner false"
+      fi
+  else
+      echo "Outer condition false"
+  fi
+  ```
+
+  Use nested ifs when the inner check only makes sense after the outer check passes. For example: first check if a number is positive, then check if it's even.
+
+  ---
+
+  # Slide 2: Compound Conditions — AND
+
+  Instead of nesting, combine conditions with `&&`:
+
+  ```bash
+  # Using [[ ]]
+  if [[ $n -gt 0 && $n -lt 100 ]]; then
+      echo "Between 1 and 99"
+  fi
+
+  # Using [ ] with -a
+  if [ $n -gt 0 -a $n -lt 100 ]; then
+      echo "Between 1 and 99"
+  fi
+  ```
+
+  Both conditions must be true for the body to execute.
+
+  ---
+
+  # Slide 3: Compound Conditions — OR
+
+  ```bash
+  if [[ $day -eq 6 || $day -eq 7 ]]; then
+      echo "Weekend"
+  fi
+
+  # Using [ ] with -o
+  if [ $day -eq 6 -o $day -eq 7 ]; then
+      echo "Weekend"
+  fi
+  ```
+
+  At least one condition must be true.
+
+  ---
+
+  # Slide 4: OS Practical #4 — Exam Style Problem
+
+  **Problem:** Read a year from the user and determine if it is a **leap year**.
+
+  A year is a leap year if:
+  - Divisible by 4 **AND**
+  - (Not divisible by 100 **OR** divisible by 400)
+
+  ```bash
+  #!/bin/bash
+  read -p "Enter year: " year
+  if [ $((year % 4)) -eq 0 ]; then
+      if [ $((year % 100)) -ne 0 ]; then
+          echo "$year is a Leap Year"
+      elif [ $((year % 400)) -eq 0 ]; then
+          echo "$year is a Leap Year"
+      else
+          echo "$year is NOT a Leap Year"
+      fi
+  else
+      echo "$year is NOT a Leap Year"
+  fi
+  ```
+
+  This is a classic example of nested conditions used in OS practicals.
+
+  ---
+
+  # Slide 5: Triangle Validity Checker
+
+  Another common exam problem — check if three sides form a valid triangle:
+
+  ```bash
+  read -p "Enter three sides (a b c): " a b c
+  if [ $a -gt 0 -a $b -gt 0 -a $c -gt 0 ]; then
+      if [ $((a + b)) -gt $c -a $((b + c)) -gt $a -a $((a + c)) -gt $b ]; then
+          echo "Valid triangle"
+      else
+          echo "Not a triangle"
+      fi
+  else
+      echo "Sides must be positive"
+  fi
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** Nested Condition Scripts
+* **Est. Minutes:** 5
+* **Outline:** Build a nested if script to classify a number as positive/negative/zero and even/odd.
+* **Instructions:** Create `/home/student/scripts/classify.sh`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/scripts/classify.sh` that reads a number, checks if positive, negative or zero, and if positive additionally checks even/odd. For input 6: print "Positive" and "Even".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "6" | bash /home/student/scripts/classify.sh 2>/dev/null | grep -q "Positive" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 2:**
+    * **Instruction:** For input 6, also output "Even".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "6" | bash /home/student/scripts/classify.sh 2>/dev/null | grep -qi "even" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 3:**
+    * **Instruction:** For input 0, output must contain "Zero".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "0" | bash /home/student/scripts/classify.sh 2>/dev/null | grep -qi "zero" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Leap Year Checker (OS Practical #4)
+* **Est. Minutes:** 8
+* **Outline:** Write the complete leap year script using nested conditions.
+* **Instructions:**
+  1. Create `/home/student/scripts/leap_year.sh`.
+  2. Add shebang and a comment: `# OS Practical #4 - Leap Year Checker`.
+  3. Prompt and read `year`.
+  4. Implement the nested leap year logic:
+     - If `year % 4 == 0`: enter inner block
+       - If `year % 100 != 0`: print "Leap Year"
+       - Elif `year % 400 == 0`: print "Leap Year"
+       - Else: print "Not a Leap Year"
+     - Else: print "Not a Leap Year"
+  5. Save and make executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/leap_year.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/leap_year.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Script must contain nested `if` (at least 2 `if` keywords).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `[ $(grep -c '\bif\b' /home/student/scripts/leap_year.sh) -ge 2 ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** Input 2000 must produce output containing "Leap Year".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "2000" | bash /home/student/scripts/leap_year.sh 2>/dev/null | grep -qi "leap" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** Input 1900 must produce output containing "Not a Leap Year".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "1900" | bash /home/student/scripts/leap_year.sh 2>/dev/null | grep -qi "not" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 5:**
+    * **Instruction:** Input 2024 must produce output containing "Leap Year".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "2024" | bash /home/student/scripts/leap_year.sh 2>/dev/null | grep -qi "leap" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** Nested Conditions Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehension check on nested if and compound conditions.
+
+* **Questions:**
+
+  * **Q1:** A leap year must be divisible by 4. Century years (divisible by 100) are leap years only if they are also divisible by which number?
+    * **Options:**
+      * A) 200
+      * B) 400
+      * C) 1000
+      * D) 500
+    * **Correct Answer:** B) 400
+    * **Explanation:** The Gregorian calendar rule: a year is a leap year if divisible by 4, EXCEPT century years (÷100) unless also divisible by 400. So 2000 was a leap year, but 1900 was not.
+
+  * **Q2:** Which operator combines two conditions so both must be true in `[[ ]]`?
+    * **Options:**
+      * A) `||`
+      * B) `&`
+      * C) `&&`
+      * D) `-o`
+    * **Correct Answer:** C) `&&`
+    * **Explanation:** `&&` is the logical AND operator inside `[[ ]]`. Both the left and right conditions must evaluate to true for the combined expression to be true.
+
+  * **Q3:** When is nesting an `if` inside another `if` more appropriate than using `&&`?
+    * **Options:**
+      * A) When conditions are unrelated
+      * B) When the inner check only makes sense if the outer check passes, and you need different error messages for each level
+      * C) When you want to save typing
+      * D) `&&` is always preferred
+    * **Correct Answer:** B) When the inner check only makes sense if the outer check passes, and you need different error messages for each level
+    * **Explanation:** Nested if allows different handling at each level — you can print a specific message for why the outer check failed vs. why the inner check failed. `&&` merges both conditions and only gives one outcome.
+
+  * **Q4:** What is the output of the following snippet if `a=5` and `b=10`?
+    ```bash
+    if [ $a -gt 0 ]; then
+      if [ $b -gt 20 ]; then
+        echo "Both"
+      else
+        echo "Only outer"
+      fi
+    fi
+    ```
+    * **Options:**
+      * A) `Both`
+      * B) `Only outer`
+      * C) No output
+      * D) Error
+    * **Correct Answer:** B) `Only outer`
+    * **Explanation:** `a=5 > 0` is true so the outer if passes. `b=10 > 20` is false so the inner else executes, printing "Only outer".
+
+---
+
+# MODULE 8: LOOPS
+
+## CHAPTER 8.1: for Loop
+
+* **Description:** Introduces iteration using the `for` loop in Bash — covering list iteration, C-style loops, range sequences, and practical use cases.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Iteration with the for Loop
+* **Est. Minutes:** 5
+* **Outline:** Explain list-based for loops, C-style for loops, `seq` and brace expansion, and `break`/`continue`.
+
+* **Instructions (Slides):**
+
+  # Slide 1: List-Based for Loop
+
+  ```bash
+  for variable in list; do
+      # commands using $variable
+  done
+  ```
+
+  The loop iterates over each item in `list`, assigning it to `variable` one at a time:
+
+  ```bash
+  for color in red green blue; do
+      echo "Color: $color"
+  done
+  ```
+
+  Output:
+  ```
+  Color: red
+  Color: green
+  Color: blue
+  ```
+
+  ---
+
+  # Slide 2: Numeric Range with `seq` and Brace Expansion
+
+  ```bash
+  # Using seq
+  for i in $(seq 1 5); do
+      echo "Number: $i"
+  done
+
+  # Using brace expansion (Bash 3.0+)
+  for i in {1..5}; do
+      echo "Number: $i"
+  done
+
+  # With step: {start..end..step}
+  for i in {0..10..2}; do
+      echo "Even: $i"
+  done
+  ```
+
+  ---
+
+  # Slide 3: C-Style for Loop
+
+  ```bash
+  for (( init; condition; increment )); do
+      # commands
+  done
+  ```
+
+  Example — print 1 to 10:
+  ```bash
+  for (( i=1; i<=10; i++ )); do
+      echo "i = $i"
+  done
+  ```
+
+  This is identical in structure to C/Java for loops and is preferred for numeric iterations in exams.
+
+  ---
+
+  # Slide 4: Iterating Over Files and Arrays
+
+  ```bash
+  # Iterate over files in a directory
+  for file in /home/student/scripts/*.sh; do
+      echo "Script: $file"
+  done
+
+  # Iterate over command output
+  for user in $(cat /etc/passwd | cut -d: -f1); do
+      echo "User: $user"
+  done
+  ```
+
+  ---
+
+  # Slide 5: break and continue
+
+  - `break` — exits the loop immediately
+  - `continue` — skips the rest of the current iteration and goes to the next
+
+  ```bash
+  for (( i=1; i<=10; i++ )); do
+      if [ $i -eq 5 ]; then
+          continue    # skip 5
+      fi
+      if [ $i -eq 8 ]; then
+          break       # stop at 8
+      fi
+      echo $i
+  done
+  # Output: 1 2 3 4 6 7
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** for Loop Practice
+* **Est. Minutes:** 5
+* **Outline:** Print multiplication table and sum of numbers using for loops.
+* **Instructions:** Create scripts in `/home/student/scripts/`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/scripts/print_1_to_10.sh` that prints numbers 1 to 10 using a C-style for loop, one per line.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/scripts/print_1_to_10.sh 2>/dev/null | grep -q "^10$" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 2:**
+    * **Instruction:** Create `/home/student/scripts/sum_1_to_n.sh` that reads N and prints "Sum: <value>" for the sum of 1 to N. For N=5, output "Sum: 15".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "5" | bash /home/student/scripts/sum_1_to_n.sh 2>/dev/null | grep -q "Sum: 15" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Multiplication Table Generator
+* **Est. Minutes:** 8
+* **Outline:** Write a script that generates the multiplication table for a given number.
+* **Instructions:**
+  1. Create `/home/student/scripts/mul_table.sh`.
+  2. Add shebang.
+  3. Read a number `n` with `read -p`.
+  4. Use a `for` C-style loop from 1 to 10.
+  5. Print: `<n> x <i> = <result>` for each iteration.
+  6. Save and make executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/mul_table.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/mul_table.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Script must contain a `for` loop.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q '\bfor\b' /home/student/scripts/mul_table.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** For input 5, output must contain `5 x 5 = 25`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "5" | bash /home/student/scripts/mul_table.sh 2>/dev/null | grep -q "5 x 5 = 25" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** For input 5, output must contain `5 x 10 = 50`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "5" | bash /home/student/scripts/mul_table.sh 2>/dev/null | grep -q "5 x 10 = 50" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** for Loop Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehension check on for loop syntax and usage.
+
+* **Questions:**
+
+  * **Q1:** What is the correct C-style for loop to print 1 through 5?
+    * **Options:**
+      * A) `for i in 1..5; do echo $i; done`
+      * B) `for (( i=1; i<=5; i++ )); do echo $i; done`
+      * C) `for i = 1 to 5; do echo $i; done`
+      * D) `loop i from 1 to 5; echo $i; endloop`
+    * **Correct Answer:** B) `for (( i=1; i<=5; i++ )); do echo $i; done`
+    * **Explanation:** The C-style for loop in Bash uses double parentheses `(( ))` and follows the `init; condition; increment` structure, identical to C language syntax.
+
+  * **Q2:** What does `continue` do inside a loop?
+    * **Options:**
+      * A) Terminates the entire script
+      * B) Exits the loop
+      * C) Skips to the next iteration of the loop
+      * D) Restarts the loop from iteration 1
+    * **Correct Answer:** C) Skips to the next iteration of the loop
+    * **Explanation:** `continue` causes the shell to skip the remaining commands in the current loop body and jump directly to the next iteration's condition check.
+
+  * **Q3:** What does `{1..5..2}` expand to?
+    * **Options:**
+      * A) 1 2 3 4 5
+      * B) 1 3 5
+      * C) 2 4
+      * D) 1 5 2
+    * **Correct Answer:** B) 1 3 5
+    * **Explanation:** Brace expansion `{start..end..step}` generates numbers from 1 to 5 with a step of 2, giving 1, 3, 5.
+
+  * **Q4:** What keyword ends a `for` loop body in Bash?
+    * **Options:**
+      * A) `end`
+      * B) `fi`
+      * C) `esac`
+      * D) `done`
+    * **Correct Answer:** D) `done`
+    * **Explanation:** All loop constructs in Bash (`for`, `while`, `until`) are closed with `done`.
+
+---
+
+## CHAPTER 8.2: while Loop
+
+* **Description:** Covers the `while` loop for condition-based repetition — including infinite loops, loop counters, and menu-driven programs.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Condition-Based Loops with `while`
+* **Est. Minutes:** 5
+* **Outline:** Explain while loop syntax, counter patterns, infinite loops with break, and `until`.
+
+* **Instructions (Slides):**
+
+  # Slide 1: while Loop Syntax
+
+  ```bash
+  while [ condition ]; do
+      # commands
+  done
+  ```
+
+  The loop continues as long as `condition` is **true**. The condition is tested *before* each iteration.
+
+  ```bash
+  i=1
+  while [ $i -le 5 ]; do
+      echo "i = $i"
+      i=$((i + 1))
+  done
+  ```
+
+  **Important:** Always increment the counter inside the loop to avoid infinite loops.
+
+  ---
+
+  # Slide 2: while with C-Style Arithmetic
+
+  ```bash
+  i=1
+  while (( i <= 10 )); do
+      echo "$i"
+      (( i++ ))
+  done
+  ```
+
+  `(( ))` allows C-style arithmetic and increments without the `$` prefix.
+
+  ---
+
+  # Slide 3: Infinite Loop with `while true`
+
+  ```bash
+  while true; do
+      read -p "Enter command (q to quit): " cmd
+      if [ "$cmd" = "q" ]; then
+          echo "Goodbye!"
+          break
+      fi
+      echo "You typed: $cmd"
+  done
+  ```
+
+  `while true` creates a loop that never stops on its own — `break` is required to exit.
+
+  ---
+
+  # Slide 4: Menu-Driven Programs
+
+  A common exam pattern — display a menu, read choice, perform action, repeat:
+
+  ```bash
+  #!/bin/bash
+  while true; do
+      echo "=== MENU ==="
+      echo "1. Say Hello"
+      echo "2. Show Date"
+      echo "3. Exit"
+      read -p "Choose: " choice
+      case $choice in
+          1) echo "Hello!" ;;
+          2) date ;;
+          3) echo "Bye!"; break ;;
+          *) echo "Invalid" ;;
+      esac
+  done
+  ```
+
+  ---
+
+  # Slide 5: The `until` Loop
+
+  `until` is the opposite of `while` — it loops until the condition becomes **true**:
+
+  ```bash
+  i=1
+  until [ $i -gt 5 ]; do
+      echo "i = $i"
+      i=$((i + 1))
+  done
+  ```
+
+  This is less common but may appear in exams. Prefer `while` unless the question specifically asks for `until`.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** while Loop Counter and Factorial
+* **Est. Minutes:** 5
+* **Outline:** Build a countdown and factorial calculator using while loops.
+* **Instructions:** Create scripts in `/home/student/scripts/`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/scripts/countdown.sh` that counts down from 5 to 1 using a while loop and prints each number.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/scripts/countdown.sh 2>/dev/null | grep -q "^1$" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 2:**
+    * **Instruction:** Create `/home/student/scripts/factorial.sh` that reads N and prints "Factorial: <value>". For N=5 output "Factorial: 120".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "5" | bash /home/student/scripts/factorial.sh 2>/dev/null | grep -q "Factorial: 120" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Number Guessing Game (Simplified)
+* **Est. Minutes:** 8
+* **Outline:** Write a while-loop-based guessing game where the script has a hardcoded answer.
+* **Instructions:**
+  1. Create `/home/student/scripts/guess.sh`.
+  2. Add shebang.
+  3. Set `secret=42`.
+  4. Use `while true`; inside: prompt "Guess: ", read `guess`.
+  5. If guess equals secret: print "Correct! You got it." and `break`.
+  6. Elif guess < secret: print "Too low!"
+  7. Else: print "Too high!"
+  8. Save and make executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/guess.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/guess.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Script must use `while` loop.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q '\bwhile\b' /home/student/scripts/guess.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** When given inputs "10\n42", output must contain "Correct".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "10\n42\n" | bash /home/student/scripts/guess.sh 2>/dev/null | grep -qi "correct" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** When given input "10\n42", output must first contain "Too low".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "10\n42\n" | bash /home/student/scripts/guess.sh 2>/dev/null | grep -qi "low" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** while Loop Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehension check on while loops.
+
+* **Questions:**
+
+  * **Q1:** When is a `while` loop's condition checked?
+    * **Options:**
+      * A) After each iteration
+      * B) Before each iteration
+      * C) Only once at the start
+      * D) Only once at the end
+    * **Correct Answer:** B) Before each iteration
+    * **Explanation:** A `while` loop tests its condition before executing the loop body. If the condition is false from the start, the body never executes (zero iterations).
+
+  * **Q2:** What command inside a loop will exit it immediately?
+    * **Options:**
+      * A) `exit`
+      * B) `stop`
+      * C) `break`
+      * D) `quit`
+    * **Correct Answer:** C) `break`
+    * **Explanation:** `break` immediately terminates the innermost loop and transfers control to the statement after `done`. `exit` would terminate the entire script.
+
+  * **Q3:** What is the key difference between `while` and `until`?
+    * **Options:**
+      * A) `until` runs only once
+      * B) `while` loops while condition is true; `until` loops while condition is false
+      * C) `until` requires `fi` to close
+      * D) There is no difference
+    * **Correct Answer:** B) `while` loops while condition is true; `until` loops while condition is false
+    * **Explanation:** `while` continues as long as the condition is TRUE. `until` continues as long as the condition is FALSE — it exits when the condition becomes true.
+
+  * **Q4:** What is wrong with this loop?
+    ```bash
+    i=1
+    while [ $i -le 10 ]; do
+        echo $i
+    done
+    ```
+    * **Options:**
+      * A) `le` is not a valid operator
+      * B) Missing `do` keyword
+      * C) Missing increment of `i` — creates an infinite loop
+      * D) The condition should be `[ $i < 10 ]`
+    * **Correct Answer:** C) Missing increment of `i` — creates an infinite loop
+    * **Explanation:** Since `i` is never updated inside the loop, the condition `$i -le 10` is always true (i stays at 1 forever), creating an infinite loop. You must add `i=$((i+1))` inside the loop body.
+
+---
+
+## CHAPTER 8.3: Nested Loops
+
+* **Description:** Covers placing loops inside loops to solve 2D pattern problems, matrix-style iterations, and the foundation for the pattern programs in OS Practical #5.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Nested Loops and 2D Patterns
+* **Est. Minutes:** 5
+* **Outline:** Explain nested for loop structure, outer/inner loop roles, `echo -n`, and pattern logic.
+
+* **Instructions (Slides):**
+
+  # Slide 1: Structure of a Nested Loop
+
+  ```bash
+  for (( i=1; i<=rows; i++ )); do
+      for (( j=1; j<=cols; j++ )); do
+          echo -n "* "
+      done
+      echo ""   # newline after each row
+  done
+  ```
+
+  - The **outer loop** controls the **row** (how many lines)
+  - The **inner loop** controls the **column** (what is printed per line)
+  - `echo -n` prints without a trailing newline
+  - A bare `echo` at the end of the outer body moves to the next line
+
+  ---
+
+  # Slide 2: Rectangle Pattern
+
+  Print a rectangle of `*` with R rows and C columns:
+
+  ```bash
+  #!/bin/bash
+  R=4; C=6
+  for (( i=1; i<=R; i++ )); do
+      for (( j=1; j<=C; j++ )); do
+          echo -n "* "
+      done
+      echo
+  done
+  ```
+
+  Output:
+  ```
+  * * * * * *
+  * * * * * *
+  * * * * * *
+  * * * * * *
+  ```
+
+  ---
+
+  # Slide 3: Right-Angled Triangle Pattern
+
+  ```bash
+  n=5
+  for (( i=1; i<=n; i++ )); do
+      for (( j=1; j<=i; j++ )); do
+          echo -n "* "
+      done
+      echo
+  done
+  ```
+
+  Key: inner loop runs up to `i` (not a fixed column count).
+
+  Output:
+  ```
+  *
+  * *
+  * * *
+  * * * *
+  * * * * *
+  ```
+
+  ---
+
+  # Slide 4: Number Triangle Pattern
+
+  ```bash
+  n=5
+  for (( i=1; i<=n; i++ )); do
+      for (( j=1; j<=i; j++ )); do
+          echo -n "$j "
+      done
+      echo
+  done
+  ```
+
+  Output:
+  ```
+  1
+  1 2
+  1 2 3
+  1 2 3 4
+  1 2 3 4 5
+  ```
+
+  ---
+
+  # Slide 5: Inverted Triangle
+
+  ```bash
+  n=5
+  for (( i=n; i>=1; i-- )); do
+      for (( j=1; j<=i; j++ )); do
+          echo -n "* "
+      done
+      echo
+  done
+  ```
+
+  Outer loop counts **down**. Output:
+  ```
+  * * * * *
+  * * * *
+  * * *
+  * *
+  *
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** Print Triangle Patterns
+* **Est. Minutes:** 5
+* **Outline:** Build star triangle and number square scripts.
+* **Instructions:** Create scripts in `/home/student/scripts/`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/scripts/star_triangle.sh` that reads `n` and prints a right-angled star triangle of height n. For n=3 the last line should be `* * *`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "3" | bash /home/student/scripts/star_triangle.sh 2>/dev/null | tail -1 | grep -q '\* \* \*' && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 2:**
+    * **Instruction:** Create `/home/student/scripts/num_square.sh` that reads `n` and prints an n×n grid of the row number. For n=3 every number in row 2 should be `2`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "3" | bash /home/student/scripts/num_square.sh 2>/dev/null | sed -n '2p' | grep -q "2" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Multiplication Table Grid
+* **Est. Minutes:** 8
+* **Outline:** Write a nested loop script to print a full N×N multiplication table grid.
+* **Instructions:**
+  1. Create `/home/student/scripts/mul_grid.sh`.
+  2. Add shebang.
+  3. Read `n`.
+  4. Outer loop `i` from 1 to `n`, inner loop `j` from 1 to `n`.
+  5. Print `$((i * j))` with `printf "%4d"` for alignment.
+  6. After each row: `echo`.
+  7. Save and make executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/mul_grid.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/mul_grid.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Script must contain two `for` loops (nested).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `[ $(grep -c '\bfor\b' /home/student/scripts/mul_grid.sh) -ge 2 ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** For n=3, the last line of output must contain `9` (3×3=9).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "3" | bash /home/student/scripts/mul_grid.sh 2>/dev/null | tail -1 | grep -q "9" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** Nested Loops Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehension check on nested loops and pattern logic.
+
+* **Questions:**
+
+  * **Q1:** In a nested loop pattern program, the outer loop typically controls:
+    * **Options:**
+      * A) The column count
+      * B) The specific character printed
+      * C) The row (line) number
+      * D) The line separator
+    * **Correct Answer:** C) The row (line) number
+    * **Explanation:** In pattern programs, the outer loop iterates over rows, and the inner loop iterates over columns within each row, printing characters before the row-ending newline.
+
+  * **Q2:** What does `echo -n` do differently from `echo`?
+    * **Options:**
+      * A) Prints in reverse
+      * B) Prints to stderr
+      * C) Suppresses the trailing newline
+      * D) Formats numbers
+    * **Correct Answer:** C) Suppresses the trailing newline
+    * **Explanation:** `echo -n` prints its arguments without appending a newline at the end. This is essential for printing characters on the same line within an inner loop.
+
+  * **Q3:** For a right-angled triangle where row `i` has `i` stars, the inner loop should run:
+    * **Options:**
+      * A) From 1 to `n` always
+      * B) From 1 to `i`
+      * C) From `i` to `n`
+      * D) From 1 to `n - i`
+    * **Correct Answer:** B) From 1 to `i`
+    * **Explanation:** In a right-angled triangle, row 1 has 1 star, row 2 has 2 stars, etc. The inner loop limit equals the current outer loop variable `i`.
+
+  * **Q4:** How many total iterations does a nested loop with outer=4 and inner=3 perform?
+    * **Options:**
+      * A) 7
+      * B) 4
+      * C) 3
+      * D) 12
+    * **Correct Answer:** D) 12
+    * **Explanation:** The inner loop runs fully (3 times) for each iteration of the outer loop (4 times). Total iterations = 4 × 3 = 12.
+
+---
+
+## CHAPTER 8.4: Pascal Triangle & Diamond Logic (OS Practical #5)
+
+* **Description:** Implements Pascal's Triangle and Diamond pattern programs — the signature nested loop challenges of OS Practical Exam #5. Covers combinatorics, space management, and multi-loop diamond construction.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Pascal's Triangle and Diamond Patterns
+* **Est. Minutes:** 5
+* **Outline:** Explain Pascal's Triangle construction using combinations, leading spaces, and the two-part diamond (upper + lower half).
+
+* **Instructions (Slides):**
+
+  # Slide 1: What is Pascal's Triangle?
+
+  Pascal's Triangle is a triangular array of numbers where each number is the sum of the two numbers directly above it:
+
+  ```
+      1
+     1 1
+    1 2 1
+   1 3 3 1
+  1 4 6 4 1
+  ```
+
+  Row 0: 1
+  Row 1: 1 1
+  Row 2: 1 2 1
+  Row n, position k: C(n,k) = n! / (k! × (n-k)!)
+
+  In Bash, we compute each element using the previous row.
+
+  ---
+
+  # Slide 2: Pascal's Triangle — Script Logic
+
+  Strategy: Use an array to hold the current row. Start from right to left to avoid overwriting values:
+
+  ```bash
+  #!/bin/bash
+  read -p "Enter number of rows: " rows
+  declare -a row
+  for (( i=0; i<rows; i++ )); do
+      # Print leading spaces for centering
+      for (( s=i; s<rows-1; s++ )); do
+          echo -n " "
+      done
+      # Build row values (right to left to avoid overwriting)
+      row[i]=1
+      for (( j=i-1; j>0; j-- )); do
+          row[j]=$((row[j] + row[j-1]))
+      done
+      # Print row
+      for (( j=0; j<=i; j++ )); do
+          echo -n "${row[j]} "
+      done
+      echo
+  done
+  ```
+
+  ---
+
+  # Slide 3: Diamond Pattern — Upper Half
+
+  A diamond has a upper half (expanding) and lower half (shrinking):
+
+  ```
+      *
+     ***
+    *****
+   *******
+  ```
+
+  For a diamond of size `n` (half-width), the upper half from row 1 to n:
+  - Spaces: `n - i`
+  - Stars: `2*i - 1`
+
+  ```bash
+  # Upper half
+  for (( i=1; i<=n; i++ )); do
+      for (( s=1; s<=n-i; s++ )); do echo -n " "; done
+      for (( j=1; j<=2*i-1; j++ )); do echo -n "*"; done
+      echo
+  done
+  ```
+
+  ---
+
+  # Slide 4: Diamond Pattern — Lower Half
+
+  ```
+   *******
+    *****
+     ***
+      *
+  ```
+
+  Lower half from row `n-1` down to 1:
+  - Spaces: `n - i`
+  - Stars: `2*i - 1`
+
+  ```bash
+  # Lower half
+  for (( i=n-1; i>=1; i-- )); do
+      for (( s=1; s<=n-i; s++ )); do echo -n " "; done
+      for (( j=1; j<=2*i-1; j++ )); do echo -n "*"; done
+      echo
+  done
+  ```
+
+  ---
+
+  # Slide 5: Full Diamond Script
+
+  ```bash
+  #!/bin/bash
+  read -p "Enter diamond size (n): " n
+  # Upper half
+  for (( i=1; i<=n; i++ )); do
+      for (( s=1; s<=n-i; s++ )); do printf " "; done
+      for (( j=1; j<=2*i-1; j++ )); do printf "*"; done
+      echo
+  done
+  # Lower half
+  for (( i=n-1; i>=1; i-- )); do
+      for (( s=1; s<=n-i; s++ )); do printf " "; done
+      for (( j=1; j<=2*i-1; j++ )); do printf "*"; done
+      echo
+  done
+  ```
+
+  For n=4, widest row has `2*4-1 = 7` stars.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** Diamond Pattern in the Terminal
+* **Est. Minutes:** 5
+* **Outline:** Build and test the diamond script from the terminal.
+* **Instructions:** Create `/home/student/scripts/diamond.sh` and test it.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/scripts/diamond.sh` implementing the full diamond pattern.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/diamond.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** For n=3, the middle row (row 3) must contain exactly 5 stars (`*****`).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "3" | bash /home/student/scripts/diamond.sh 2>/dev/null | grep -q '\*\*\*\*\*' && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 3:**
+    * **Instruction:** For n=3, the first and last rows must contain exactly 1 star.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "3" | bash /home/student/scripts/diamond.sh 2>/dev/null | head -1 | grep -q '\*' && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Pascal's Triangle (OS Practical #5)
+* **Est. Minutes:** 8
+* **Outline:** Write the Pascal's Triangle script with correct centering and row computation.
+* **Instructions:**
+  1. Create `/home/student/scripts/pascal.sh`.
+  2. Add shebang and comment `# OS Practical #5 - Pascal Triangle`.
+  3. Read number of rows into `rows`.
+  4. Declare an integer array `row`.
+  5. Implement the nested loop to compute and print Pascal's triangle (use the right-to-left update strategy).
+  6. Include leading spaces for visual centering.
+  7. Save and make executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/pascal.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/pascal.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Script must use `declare -a` or array syntax.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'declare\|row\[' /home/student/scripts/pascal.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** For rows=5, the first line of output must contain only `1`.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "5" | bash /home/student/scripts/pascal.sh 2>/dev/null | head -1 | grep -q '1' && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** For rows=5, the 5th line must contain `1 4 6 4 1` (the 5th row of Pascal's triangle).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `echo "5" | bash /home/student/scripts/pascal.sh 2>/dev/null | sed -n '5p' | grep -q '6' && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** Pascal & Diamond Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehension check on Pascal's Triangle and Diamond pattern logic.
+
+* **Questions:**
+
+  * **Q1:** In Pascal's Triangle, each number equals:
+    * **Options:**
+      * A) The product of the two numbers above it
+      * B) The sum of the two numbers directly above it
+      * C) The difference of the two numbers above it
+      * D) The square of the row number
+    * **Correct Answer:** B) The sum of the two numbers directly above it
+    * **Explanation:** Pascal's Triangle is defined by the recurrence: every interior element equals the sum of the two elements in the row above to its left and right. All edge elements are 1.
+
+  * **Q2:** For a diamond of size n=4, how many stars are in the widest (middle) row?
+    * **Options:**
+      * A) 4
+      * B) 6
+      * C) 7
+      * D) 8
+    * **Correct Answer:** C) 7
+    * **Explanation:** The widest row of the diamond has `2*n - 1` stars. For n=4: `2*4 - 1 = 7`.
+
+  * **Q3:** Why is the Pascal's Triangle array updated right-to-left?
+    * **Options:**
+      * A) For printing alignment
+      * B) To avoid overwriting values needed for computing later positions in the same row
+      * C) Left-to-right doesn't work in Bash
+      * D) It produces the same result either way
+    * **Correct Answer:** B) To avoid overwriting values needed for computing later positions in the same row
+    * **Explanation:** When computing in-place using a single array, updating left-to-right would corrupt values before they are used. Right-to-left ensures each element is computed using the unchanged previous-row values.
+
+  * **Q4:** The 3rd row (0-indexed) of Pascal's Triangle is:
+    * **Options:**
+      * A) 1 1 1
+      * B) 1 2 1
+      * C) 1 3 3 1
+      * D) 1 4 6 4 1
+    * **Correct Answer:** C) 1 3 3 1
+    * **Explanation:** Row 0: `1`, Row 1: `1 1`, Row 2: `1 2 1`, Row 3: `1 3 3 1`. Each element in row 3 is the sum of adjacent elements from row 2.
+
+---
+
+# MODULE 9: FUNCTIONS
+
+## CHAPTER 9.1: Shell Functions
+
+* **Description:** Covers defining and calling functions in Bash — including parameters, return values, local variables, and recursive functions.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Functions in Bash Scripting
+* **Est. Minutes:** 5
+* **Outline:** Explain function definition syntax, calling functions, local variables, return values, and recursion.
+
+* **Instructions (Slides):**
+
+  # Slide 1: Defining a Function
+
+  Two equivalent syntaxes:
+
+  ```bash
+  # Syntax 1 (preferred)
+  function_name() {
+      # commands
+  }
+
+  # Syntax 2 (using function keyword)
+  function function_name {
+      # commands
+  }
+  ```
+
+  Functions must be **defined before they are called**. The definition does nothing by itself — it only runs when called.
+
+  ---
+
+  # Slide 2: Calling a Function
+
+  Simply use the function name like any command:
+
+  ```bash
+  greet() {
+      echo "Hello from the function!"
+  }
+
+  greet         # call the function
+  greet         # call again — functions are reusable
+  ```
+
+  ---
+
+  # Slide 3: Function Arguments
+
+  Arguments are passed just like script arguments and accessed as `$1`, `$2`, etc.:
+
+  ```bash
+  greet_user() {
+      echo "Hello, $1! You are $2 years old."
+  }
+
+  greet_user "Alice" 20
+  greet_user "Bob" 22
+  ```
+
+  Inside a function, `$@` is all the function's arguments; `$#` is their count.
+
+  ---
+
+  # Slide 4: Local Variables
+
+  Variables inside functions are **global by default**. Use `local` to restrict scope:
+
+  ```bash
+  calculate() {
+      local x=$1
+      local y=$2
+      local sum=$((x + y))
+      echo "Sum: $sum"
+  }
+
+  calculate 3 7   # Sum: 10
+  echo $sum       # prints nothing — sum is local to calculate()
+  ```
+
+  Always use `local` in functions to prevent accidentally overwriting global variables.
+
+  ---
+
+  # Slide 5: Return Values
+
+  Bash functions can only `return` exit codes (0–255). Use `echo` to "return" actual data:
+
+  ```bash
+  square() {
+      local n=$1
+      echo $((n * n))    # "return" via stdout
+  }
+
+  result=$(square 5)   # capture via command substitution
+  echo "Square: $result"
+  ```
+
+  Check success/failure with `return 0` (success) and `return 1` (failure):
+  ```bash
+  is_even() {
+      [ $(($1 % 2)) -eq 0 ] && return 0 || return 1
+  }
+  is_even 4 && echo "Even" || echo "Odd"
+  ```
+
+  ---
+
+  # Slide 6: Recursive Functions
+
+  A function that calls itself — useful for factorial, Fibonacci:
+
+  ```bash
+  factorial() {
+      local n=$1
+      if [ $n -le 1 ]; then
+          echo 1
+          return
+      fi
+      local sub=$(factorial $((n - 1)))
+      echo $((n * sub))
+  }
+
+  result=$(factorial 5)
+  echo "5! = $result"   # 5! = 120
+  ```
+
+  Bash recursion can be slow for large values — prefer iterative loops for n > 15.
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** Writing and Calling Functions
+* **Est. Minutes:** 5
+* **Outline:** Create a script with multiple functions and call them.
+* **Instructions:** Create `/home/student/scripts/functions_demo.sh`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/scripts/functions_demo.sh` with a function `say_hello` that prints "Hello, World!" and call it.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/scripts/functions_demo.sh 2>/dev/null | grep -q "Hello, World!" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 2:**
+    * **Instruction:** Add a function `add_nums` that takes two arguments and prints their sum. Call it with 8 and 12; output must contain "20".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/scripts/functions_demo.sh 2>/dev/null | grep -q "20" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Calculator Using Functions
+* **Est. Minutes:** 8
+* **Outline:** Write a four-function calculator (add, subtract, multiply, divide) using Bash functions.
+* **Instructions:**
+  1. Create `/home/student/scripts/calculator.sh`.
+  2. Add shebang.
+  3. Define functions: `add()`, `subtract()`, `multiply()`, `divide()` — each takes `$1` and `$2` and echoes the result.
+  4. Read two numbers `a` and `b`.
+  5. Call all four functions and print labelled results:
+     ```
+     Add      : 15
+     Subtract : 5
+     Multiply : 50
+     Divide   : 2
+     ```
+  6. Handle division by zero: if b=0, print "Error: Division by zero".
+  7. Save and make executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/calculator.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/calculator.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Script must define at least 4 functions.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `[ $(grep -c '()' /home/student/scripts/calculator.sh) -ge 4 ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** For inputs 10 and 5, output must contain "Add" and "15".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "10\n5\n" | bash /home/student/scripts/calculator.sh 2>/dev/null | grep -q "15" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** For inputs 10 and 5, output must contain "50" (multiply result).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "10\n5\n" | bash /home/student/scripts/calculator.sh 2>/dev/null | grep -q "50" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 5:**
+    * **Instruction:** For inputs 10 and 0, output must contain "Division by zero".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "10\n0\n" | bash /home/student/scripts/calculator.sh 2>/dev/null | grep -qi "division by zero" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** Shell Functions Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehension check on function definition, arguments, and return values.
+
+* **Questions:**
+
+  * **Q1:** Which keyword restricts a variable's scope to the current function?
+    * **Options:**
+      * A) `private`
+      * B) `local`
+      * C) `scope`
+      * D) `static`
+    * **Correct Answer:** B) `local`
+    * **Explanation:** In Bash, the `local` keyword declares a variable with function-level scope. Without `local`, all variables are global and can accidentally affect other parts of the script.
+
+  * **Q2:** How do you "return" a computed value from a Bash function?
+    * **Options:**
+      * A) Use `return value`
+      * B) Use `echo value` and capture with `$(func_name)`
+      * C) Assign to a global variable only
+      * D) Use `output value`
+    * **Correct Answer:** B) Use `echo value` and capture with `$(func_name)`
+    * **Explanation:** Bash's `return` statement only returns exit codes (0–255). To pass actual data back to the caller, `echo` the value inside the function and capture it with command substitution.
+
+  * **Q3:** Inside a function, `$1` refers to:
+    * **Options:**
+      * A) The script's first command-line argument
+      * B) The function's first argument
+      * C) The function's name
+      * D) The script's process ID
+    * **Correct Answer:** B) The function's first argument
+    * **Explanation:** Inside a function, positional parameters (`$1`, `$2`, etc.) are reset to the function's own arguments. The script's original arguments are not visible unless explicitly passed.
+
+  * **Q4:** A recursive function in Bash MUST have:
+    * **Options:**
+      * A) A `local` keyword
+      * B) A base case to prevent infinite recursion
+      * C) The `function` keyword
+      * D) At least two parameters
+    * **Correct Answer:** B) A base case to prevent infinite recursion
+    * **Explanation:** All recursive functions need a base case — a condition where they stop calling themselves and return a direct result. Without it, the function calls itself indefinitely until the shell hits its stack limit.
+
+---
+
+# MODULE 10: SEARCHING ALGORITHMS
+
+## CHAPTER 10.1: Arrays in Shell
+
+* **Description:** Introduces Bash arrays — declaration, indexing, iteration, and common array operations — as the prerequisite foundation for implementing search algorithms.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Arrays in Bash
+* **Est. Minutes:** 5
+* **Outline:** Cover array declaration, indexed access, array length, iteration, and common operations.
+
+* **Instructions (Slides):**
+
+  # Slide 1: Declaring and Initializing Arrays
+
+  ```bash
+  # Declare explicitly (optional)
+  declare -a fruits
+
+  # Assign all at once
+  fruits=("apple" "banana" "cherry" "date" "elderberry")
+
+  # Assign individual elements
+  nums[0]=10
+  nums[1]=20
+  nums[2]=30
+  ```
+
+  Bash arrays are **zero-indexed** (first element is index 0).
+
+  ---
+
+  # Slide 2: Accessing Array Elements
+
+  ```bash
+  fruits=("apple" "banana" "cherry")
+
+  echo ${fruits[0]}      # apple
+  echo ${fruits[1]}      # banana
+  echo ${fruits[-1]}     # cherry (last element, Bash 4.2+)
+  echo ${fruits[@]}      # all elements
+  echo ${fruits[*]}      # all elements (as one string)
+  echo ${#fruits[@]}     # length (number of elements)
+  ```
+
+  Always use `${}` syntax (curly braces required for arrays).
+
+  ---
+
+  # Slide 3: Iterating Over an Array
+
+  ```bash
+  nums=(5 10 15 20 25)
+
+  # Method 1: iterate by value
+  for val in "${nums[@]}"; do
+      echo "Value: $val"
+  done
+
+  # Method 2: iterate by index
+  for (( i=0; i<${#nums[@]}; i++ )); do
+      echo "Index $i: ${nums[$i]}"
+  done
+  ```
+
+  Use Method 2 when you need the index (required for search algorithms).
+
+  ---
+
+  # Slide 4: Modifying Arrays
+
+  ```bash
+  arr=(1 2 3 4 5)
+
+  # Append element
+  arr+=( 6 )
+
+  # Modify element
+  arr[2]=99
+
+  # Delete element (leaves a gap)
+  unset arr[1]
+
+  # Delete entire array
+  unset arr
+  ```
+
+  ---
+
+  # Slide 5: Reading an Array From User Input
+
+  ```bash
+  read -p "Enter size: " n
+  echo "Enter $n numbers:"
+  for (( i=0; i<n; i++ )); do
+      read -p "  Element $((i+1)): " arr[$i]
+  done
+  echo "You entered: ${arr[@]}"
+  ```
+
+  This pattern is used in every search and sort algorithm practical.
+
+  ---
+
+  # Slide 6: Sorting an Array (Bubble Sort Preview)
+
+  ```bash
+  arr=(5 2 8 1 9 3)
+  n=${#arr[@]}
+  for (( i=0; i<n-1; i++ )); do
+      for (( j=0; j<n-i-1; j++ )); do
+          if [ ${arr[$j]} -gt ${arr[$((j+1))]} ]; then
+              temp=${arr[$j]}
+              arr[$j]=${arr[$((j+1))]}
+              arr[$((j+1))]=$temp
+          fi
+      done
+  done
+  echo "Sorted: ${arr[@]}"
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** Array Operations Practice
+* **Est. Minutes:** 5
+* **Outline:** Declare, populate, and iterate over a Bash array.
+* **Instructions:** Create `/home/student/scripts/array_demo.sh`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/scripts/array_demo.sh` that declares `nums=(10 20 30 40 50)` and prints each element on a separate line using a for loop.
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/scripts/array_demo.sh 2>/dev/null | grep -q "^30$" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 2:**
+    * **Instruction:** The script must also print the total number of elements: "Count: 5".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `bash /home/student/scripts/array_demo.sh 2>/dev/null | grep -q "Count: 5" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Array Input and Max Finder
+* **Est. Minutes:** 8
+* **Outline:** Write a script that reads N numbers into an array and finds the maximum.
+* **Instructions:**
+  1. Create `/home/student/scripts/find_max.sh`.
+  2. Add shebang.
+  3. Read `n` (size of array).
+  4. Loop to read `n` numbers into `arr[]`.
+  5. Initialize `max=${arr[0]}`.
+  6. Loop through array; if `arr[i] > max`, update `max`.
+  7. Print "Maximum: $max".
+  8. Save and make executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/find_max.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/find_max.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Script must use array indexing syntax `arr[`.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'arr\[' /home/student/scripts/find_max.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** For inputs n=5 and elements 3 9 1 7 2, output must contain "Maximum: 9".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "5\n3\n9\n1\n7\n2\n" | bash /home/student/scripts/find_max.sh 2>/dev/null | grep -q "Maximum: 9" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** Arrays Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehension check on Bash arrays.
+
+* **Questions:**
+
+  * **Q1:** What is the index of the first element of a Bash array?
+    * **Options:**
+      * A) 1
+      * B) -1
+      * C) 0
+      * D) It depends on declaration
+    * **Correct Answer:** C) 0
+    * **Explanation:** Bash arrays are zero-indexed. The first element is at index 0, the second at index 1, and so on — consistent with C and most programming languages.
+
+  * **Q2:** Which expression gives the number of elements in array `arr`?
+    * **Options:**
+      * A) `${arr.length}`
+      * B) `$#arr`
+      * C) `${#arr[@]}`
+      * D) `len($arr)`
+    * **Correct Answer:** C) `${#arr[@]}`
+    * **Explanation:** In Bash, `${#arr[@]}` returns the number of elements in the array `arr`. The `#` prefix gives the length, and `[@]` refers to all elements.
+
+  * **Q3:** How do you access all elements of an array `fruits`?
+    * **Options:**
+      * A) `$fruits`
+      * B) `${fruits}`
+      * C) `${fruits[*]}` or `${fruits[@]}`
+      * D) `${fruits[all]}`
+    * **Correct Answer:** C) `${fruits[*]}` or `${fruits[@]}`
+    * **Explanation:** `${arr[@]}` expands each element as a separate word (preserves spaces in elements), while `${arr[*]}` expands to a single string. Both can be used to access all elements.
+
+  * **Q4:** What does `arr+=(99)` do?
+    * **Options:**
+      * A) Adds 99 to every element
+      * B) Appends 99 as a new element at the end of the array
+      * C) Replaces the first element with 99
+      * D) Clears the array and sets it to 99
+    * **Correct Answer:** B) Appends 99 as a new element at the end of the array
+    * **Explanation:** The `+=` operator on a Bash array appends the elements in the parentheses to the end of the array, increasing its size by the number of new elements.
+
+---
+
+## CHAPTER 10.2: Linear Search (OS Practical #6)
+
+* **Description:** Implements Linear Search in Bash — searching an unsorted array element by element — directly addressing OS Practical Exam #6 requirements.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Linear Search Algorithm
+* **Est. Minutes:** 5
+* **Outline:** Explain linear search concept, algorithm steps, time complexity, and Bash implementation.
+
+* **Instructions (Slides):**
+
+  # Slide 1: What is Linear Search?
+
+  **Linear Search** (also called Sequential Search) scans each element of an array from left to right until it finds the target or reaches the end.
+
+  It is the simplest search algorithm:
+  - Works on **unsorted** arrays
+  - No preprocessing required
+  - Returns the index of the found element, or -1 if not found
+
+  ---
+
+  # Slide 2: Algorithm Steps
+
+  ```
+  Algorithm LinearSearch(arr, n, target):
+    FOR i FROM 0 TO n-1:
+      IF arr[i] == target:
+        RETURN i       // Found at index i
+    RETURN -1          // Not found
+  ```
+
+  Step by step for `arr = [5, 3, 8, 1, 9]`, target = `8`:
+  - i=0: 5 ≠ 8 → continue
+  - i=1: 3 ≠ 8 → continue
+  - i=2: 8 = 8 → **FOUND at index 2**
+
+  ---
+
+  # Slide 3: Time Complexity
+
+  | Case | Comparisons | Complexity |
+  |------|-------------|------------|
+  | Best Case | 1 (target is first element) | O(1) |
+  | Average Case | n/2 | O(n) |
+  | Worst Case | n (target is last or absent) | O(n) |
+
+  Linear search is suitable for **small arrays** or **unsorted data**. For large sorted data, Binary Search is preferred.
+
+  ---
+
+  # Slide 4: Bash Implementation
+
+  ```bash
+  #!/bin/bash
+  # OS Practical #6 - Linear Search
+
+  read -p "Enter size of array: " n
+  echo "Enter $n elements:"
+  for (( i=0; i<n; i++ )); do
+      read arr[$i]
+  done
+  read -p "Enter element to search: " target
+
+  found=-1
+  for (( i=0; i<n; i++ )); do
+      if [ ${arr[$i]} -eq $target ]; then
+          found=$i
+          break
+      fi
+  done
+
+  if [ $found -ne -1 ]; then
+      echo "Element $target found at index $found (position $((found+1)))"
+  else
+      echo "Element $target not found in array"
+  fi
+  ```
+
+  ---
+
+  # Slide 5: Linear Search with All Occurrences
+
+  If the array may have duplicates, don't break — collect all indices:
+
+  ```bash
+  count=0
+  for (( i=0; i<n; i++ )); do
+      if [ ${arr[$i]} -eq $target ]; then
+          echo "Found at index $i"
+          count=$((count + 1))
+      fi
+  done
+  echo "Total occurrences: $count"
+  ```
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** Implement Linear Search
+* **Est. Minutes:** 5
+* **Outline:** Build a complete linear search script and test it with known inputs.
+* **Instructions:** Create `/home/student/scripts/linear_search.sh`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/scripts/linear_search.sh` implementing linear search. File must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/linear_search.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** The script must use a `for` loop with array indexing.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q '\bfor\b' /home/student/scripts/linear_search.sh && grep -q 'arr\[' /home/student/scripts/linear_search.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** For inputs n=5, elements 3 9 1 7 2, target 7 — output must contain "found" (case-insensitive).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "5\n3\n9\n1\n7\n2\n7\n" | bash /home/student/scripts/linear_search.sh 2>/dev/null | grep -qi "found" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** For inputs n=5, elements 3 9 1 7 2, target 99 — output must contain "not found" (case-insensitive).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "5\n3\n9\n1\n7\n2\n99\n" | bash /home/student/scripts/linear_search.sh 2>/dev/null | grep -qi "not found" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Linear Search With Function (OS Practical #6)
+* **Est. Minutes:** 8
+* **Outline:** Refactor the linear search into a function and add a count of occurrences.
+* **Instructions:**
+  1. Create `/home/student/scripts/linear_search_fn.sh`.
+  2. Add shebang and comment `# OS Practical #6 - Linear Search (Function Version)`.
+  3. Define function `linear_search()` that takes the target as `$1` and uses global array `arr` and `n`.
+  4. Inside the function: loop through array; print every index where target is found; count occurrences.
+  5. After the function definition: read `n`, read `n` elements into `arr`, read `target`, call `linear_search $target`.
+  6. Print total occurrences at the end.
+  7. Save and make executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/linear_search_fn.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/linear_search_fn.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Script must define a function (contains `()` and `{`).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q '()' /home/student/scripts/linear_search_fn.sh && grep -q '{' /home/student/scripts/linear_search_fn.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** For inputs n=6, elements 4 7 2 7 9 1, target 7 — output must show 7 was found (mention index or "found").
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "6\n4\n7\n2\n7\n9\n1\n7\n" | bash /home/student/scripts/linear_search_fn.sh 2>/dev/null | grep -qi "found\|index" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** For the same inputs (target 7 appears twice), output must contain "2" (total occurrences).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "6\n4\n7\n2\n7\n9\n1\n7\n" | bash /home/student/scripts/linear_search_fn.sh 2>/dev/null | grep -q "2" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** Linear Search Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehension check on linear search algorithm and complexity.
+
+* **Questions:**
+
+  * **Q1:** What is the worst-case time complexity of Linear Search?
+    * **Options:**
+      * A) O(1)
+      * B) O(log n)
+      * C) O(n)
+      * D) O(n²)
+    * **Correct Answer:** C) O(n)
+    * **Explanation:** In the worst case (target is the last element or not present), linear search must compare against all n elements, giving O(n) time complexity.
+
+  * **Q2:** Linear Search requires the array to be:
+    * **Options:**
+      * A) Sorted in ascending order
+      * B) Sorted in descending order
+      * C) Stored in a hash table
+      * D) In any order (unsorted arrays work)
+    * **Correct Answer:** D) In any order (unsorted arrays work)
+    * **Explanation:** Linear search is order-independent — it scans sequentially regardless of element order. This is its key advantage over Binary Search, which requires a sorted array.
+
+  * **Q3:** What value is returned when the target is not found in a standard linear search implementation?
+    * **Options:**
+      * A) 0
+      * B) -1
+      * C) The last index
+      * D) An error
+    * **Correct Answer:** B) -1
+    * **Explanation:** By convention, search algorithms return -1 to indicate "not found", since -1 is never a valid array index (arrays start at 0). This sentinel value can then be checked by the caller.
+
+  * **Q4:** In a linear search, when is a `break` statement useful?
+    * **Options:**
+      * A) To reset the loop counter
+      * B) To search from the end of the array
+      * C) To stop the loop as soon as the target is found (first occurrence)
+      * D) To skip even-indexed elements
+    * **Correct Answer:** C) To stop the loop as soon as the target is found (first occurrence)
+    * **Explanation:** Once the target is found, there's no need to compare remaining elements. `break` exits the loop immediately, saving unnecessary comparisons. Without `break`, the search would continue to the end even after finding the target.
+
+---
+
+## CHAPTER 10.3: Binary Search (OS Practical #7)
+
+* **Description:** Implements Binary Search in Bash — the efficient divide-and-conquer search on sorted arrays — directly addressing OS Practical Exam #7. Covers both iterative and recursive variants.
+
+---
+
+### QUEST 1: THEORY
+
+* **Type:** `theory_only`
+* **Title:** Binary Search Algorithm
+* **Est. Minutes:** 5
+* **Outline:** Explain binary search logic, sorted array requirement, mid-point calculation, iterative and recursive implementations, and complexity comparison with linear search.
+
+* **Instructions (Slides):**
+
+  # Slide 1: What is Binary Search?
+
+  **Binary Search** is a highly efficient searching algorithm that works on **sorted arrays** by repeatedly halving the search space:
+
+  - Compare the target with the **middle element**
+  - If equal → found
+  - If target < middle → search the **left half**
+  - If target > middle → search the **right half**
+  - Repeat until found or search space is empty
+
+  Each comparison eliminates half the remaining elements.
+
+  ---
+
+  # Slide 2: Algorithm Steps
+
+  ```
+  Algorithm BinarySearch(arr, n, target):
+    low = 0
+    high = n - 1
+    WHILE low <= high:
+      mid = (low + high) / 2
+      IF arr[mid] == target:
+        RETURN mid
+      ELSE IF arr[mid] < target:
+        low = mid + 1
+      ELSE:
+        high = mid - 1
+    RETURN -1
+  ```
+
+  For `arr = [1, 3, 5, 7, 9, 11, 13]`, target = `7`:
+  - low=0, high=6, mid=3, arr[3]=7 → **FOUND at index 3**
+
+  ---
+
+  # Slide 3: Time Complexity
+
+  | Case | Comparisons | Complexity |
+  |------|-------------|------------|
+  | Best Case | 1 (target is middle) | O(1) |
+  | Average Case | log₂n | O(log n) |
+  | Worst Case | log₂n | O(log n) |
+
+  Comparison: For n=1,000,000 elements:
+  - Linear Search: up to 1,000,000 comparisons
+  - Binary Search: at most **20 comparisons** (log₂ 1,000,000 ≈ 20)
+
+  **Prerequisite:** Array MUST be sorted before binary search.
+
+  ---
+
+  # Slide 4: Iterative Bash Implementation
+
+  ```bash
+  #!/bin/bash
+  # OS Practical #7 - Binary Search (Iterative)
+
+  read -p "Enter size: " n
+  echo "Enter $n elements in SORTED order:"
+  for (( i=0; i<n; i++ )); do read arr[$i]; done
+  read -p "Enter target: " target
+
+  low=0
+  high=$((n - 1))
+  found=-1
+
+  while [ $low -le $high ]; do
+      mid=$(( (low + high) / 2 ))
+      if [ ${arr[$mid]} -eq $target ]; then
+          found=$mid
+          break
+      elif [ ${arr[$mid]} -lt $target ]; then
+          low=$((mid + 1))
+      else
+          high=$((mid - 1))
+      fi
+  done
+
+  if [ $found -ne -1 ]; then
+      echo "Found at index $found (position $((found+1)))"
+  else
+      echo "Not found"
+  fi
+  ```
+
+  ---
+
+  # Slide 5: Recursive Bash Implementation
+
+  ```bash
+  binary_search() {
+      local low=$1
+      local high=$2
+      local target=$3
+
+      if [ $low -gt $high ]; then
+          echo -1
+          return
+      fi
+
+      local mid=$(( (low + high) / 2 ))
+
+      if [ ${arr[$mid]} -eq $target ]; then
+          echo $mid
+      elif [ ${arr[$mid]} -lt $target ]; then
+          binary_search $((mid + 1)) $high $target
+      else
+          binary_search $low $((mid - 1)) $target
+      fi
+  }
+
+  result=$(binary_search 0 $((n-1)) $target)
+  if [ $result -ne -1 ]; then
+      echo "Found at index $result"
+  else
+      echo "Not found"
+  fi
+  ```
+
+  ---
+
+  # Slide 6: Binary Search vs Linear Search
+
+  | Feature | Linear Search | Binary Search |
+  |---------|--------------|---------------|
+  | Array requirement | Any order | Must be sorted |
+  | Time complexity | O(n) | O(log n) |
+  | Space complexity | O(1) | O(1) iterative, O(log n) recursive |
+  | Implementation | Simple | Moderate |
+  | Best for | Small/unsorted | Large sorted data |
+
+---
+
+### QUEST 2: TERMINAL CHALLENGE
+
+* **Type:** `terminal_challenge`
+* **Title:** Implement Iterative Binary Search
+* **Est. Minutes:** 5
+* **Outline:** Build and test a complete iterative binary search script.
+* **Instructions:** Create `/home/student/scripts/binary_search.sh`.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** Create `/home/student/scripts/binary_search.sh` with iterative binary search. Must use `while` loop and `low`/`high`/`mid` variables.
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `grep -q 'low' /home/student/scripts/binary_search.sh && grep -q 'high' /home/student/scripts/binary_search.sh && grep -q 'mid' /home/student/scripts/binary_search.sh && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** For inputs n=7, sorted elements 1 3 5 7 9 11 13, target 9 — output must contain "Found" or "found".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "7\n1\n3\n5\n7\n9\n11\n13\n9\n" | bash /home/student/scripts/binary_search.sh 2>/dev/null | grep -qi "found" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 3:**
+    * **Instruction:** For inputs n=7, sorted elements 1 3 5 7 9 11 13, target 6 — output must contain "Not found" or "not found".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "7\n1\n3\n5\n7\n9\n11\n13\n6\n" | bash /home/student/scripts/binary_search.sh 2>/dev/null | grep -qi "not found" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 3: FILE EDITOR CHALLENGE
+
+* **Type:** `editor_challenge`
+* **Title:** Recursive Binary Search (OS Practical #7)
+* **Est. Minutes:** 8
+* **Outline:** Write the complete recursive binary search with a wrapper function — the exam-ready version.
+* **Instructions:**
+  1. Create `/home/student/scripts/binary_search_rec.sh`.
+  2. Add shebang and comment `# OS Practical #7 - Binary Search (Recursive)`.
+  3. Declare global `arr` array.
+  4. Define `binary_search()` function with parameters: `low`, `high`, `target`.
+  5. Base case: if `low > high`, echo -1 and return.
+  6. Compute `mid=$(( (low + high) / 2 ))`.
+  7. If `arr[mid] == target`: echo `$mid`.
+  8. Elif `arr[mid] < target`: call `binary_search $((mid+1)) $high $target`.
+  9. Else: call `binary_search $low $((mid-1)) $target`.
+  10. Main body: read `n`, read sorted elements, read `target`, call function, print result.
+  11. Save and make executable.
+
+* **Tasks:**
+
+  * **Task 1:**
+    * **Instruction:** File `/home/student/scripts/binary_search_rec.sh` must exist.
+    * **Validation Type:** `file_exists`
+    * **Validation Script:** `[ -f "/home/student/scripts/binary_search_rec.sh" ] && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 2:**
+    * **Instruction:** Script must define a function that calls itself recursively (function name appears in its own body).
+    * **Validation Type:** `file_content`
+    * **Validation Script:** `fname=$(grep -m1 '()' /home/student/scripts/binary_search_rec.sh | grep -o '^[a-zA-Z_]*'); grep -c "$fname" /home/student/scripts/binary_search_rec.sh | grep -qv '^1$' && echo "OK" || echo "FAIL"`
+    * **Expected Output:** `OK`
+
+  * **Task 3:**
+    * **Instruction:** For inputs n=5, sorted elements 2 4 6 8 10, target 6 — output must contain index "2" (0-indexed) or position "3".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "5\n2\n4\n6\n8\n10\n6\n" | bash /home/student/scripts/binary_search_rec.sh 2>/dev/null | grep -qE "[23]" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 4:**
+    * **Instruction:** For inputs n=5, sorted elements 2 4 6 8 10, target 5 — output must contain "Not found" or "-1".
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "5\n2\n4\n6\n8\n10\n5\n" | bash /home/student/scripts/binary_search_rec.sh 2>/dev/null | grep -qiE "not found|-1" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+  * **Task 5:**
+    * **Instruction:** For inputs n=7, sorted 1 3 5 7 9 11 13, target 1 (first element) — output must indicate found (boundary test).
+    * **Validation Type:** `command_check`
+    * **Validation Script:** `printf "7\n1\n3\n5\n7\n9\n11\n13\n1\n" | bash /home/student/scripts/binary_search_rec.sh 2>/dev/null | grep -qiE "found|index 0|position 1" && echo "PASS" || echo "FAIL"`
+    * **Expected Output:** `PASS`
+
+---
+
+### QUEST 4: EXERCISE (MCQ)
+
+* **Type:** `exercise`
+* **Title:** Binary Search Quiz
+* **Est. Minutes:** 3
+* **Outline:** Comprehensive check on binary search algorithm, complexity, and comparison with linear search.
+
+* **Questions:**
+
+  * **Q1:** What is the primary prerequisite for Binary Search?
+    * **Options:**
+      * A) The array must contain only integers
+      * B) The array size must be a power of 2
+      * C) The array must be sorted
+      * D) The array must be stored in a file
+    * **Correct Answer:** C) The array must be sorted
+    * **Explanation:** Binary Search relies on the sorted order to decide which half to discard. If the array is unsorted, the algorithm cannot correctly determine which side contains the target and will produce wrong results.
+
+  * **Q2:** What is the time complexity of Binary Search in the worst case?
+    * **Options:**
+      * A) O(n)
+      * B) O(n²)
+      * C) O(1)
+      * D) O(log n)
+    * **Correct Answer:** D) O(log n)
+    * **Explanation:** Each comparison in binary search eliminates half the remaining elements. For n elements, the maximum number of comparisons is ⌊log₂n⌋ + 1, giving O(log n) complexity.
+
+  * **Q3:** In a binary search on an array of 7 elements `[1, 3, 5, 7, 9, 11, 13]`, searching for target=11. What is the first `mid` index?
+    * **Options:**
+      * A) 0
+      * B) 3
+      * C) 6
+      * D) 4
+    * **Correct Answer:** B) 3
+    * **Explanation:** low=0, high=6, mid = (0+6)/2 = 3. arr[3]=7 < 11, so search moves to right half (low=4, high=6). Next mid=(4+6)/2=5, arr[5]=11 → Found.
+
+  * **Q4:** Which of the following best describes the binary search "divide and conquer" strategy?
+    * **Options:**
+      * A) Sort the array, then use linear search
+      * B) Split the array in two halves recursively until the target is isolated
+      * C) Hash the target and look up its position
+      * D) Compare with every element starting from the middle
+    * **Correct Answer:** B) Split the array in two halves recursively until the target is isolated
+    * **Explanation:** Binary search is a classic divide-and-conquer algorithm: it divides the problem (search space) in half at each step, conquers by recursing/iterating on the relevant half, and combines by simply returning the found index — with no merge step needed.
+
+---
+
+# END OF CURRICULUM
+
+## Summary: All Modules, Chapters, and Quests
+
+| Module | Chapter | Quests |
+|--------|---------|--------|
+| 6: Shell Scripting Basics | 6.1 First Shell Script | Theory, Terminal, Editor, MCQ |
+| | 6.2 Variables | Theory, Terminal, Editor, MCQ |
+| | 6.3 User Input | Theory, Terminal, Editor, MCQ |
+| 7: Decision Making | 7.1 if Statement | Theory, Terminal, Editor, MCQ |
+| | 7.2 if-else | Theory, Terminal, Editor, MCQ |
+| | 7.3 Nested Conditions (OS Practical #4) | Theory, Terminal, Editor, MCQ |
+| 8: Loops | 8.1 for Loop | Theory, Terminal, Editor, MCQ |
+| | 8.2 while Loop | Theory, Terminal, Editor, MCQ |
+| | 8.3 Nested Loops | Theory, Terminal, Editor, MCQ |
+| | 8.4 Pascal Triangle & Diamond (OS Practical #5) | Theory, Terminal, Editor, MCQ |
+| 9: Functions | 9.1 Shell Functions | Theory, Terminal, Editor, MCQ |
+| 10: Searching Algorithms | 10.1 Arrays in Shell | Theory, Terminal, Editor, MCQ |
+| | 10.2 Linear Search (OS Practical #6) | Theory, Terminal, Editor, MCQ |
+| | 10.3 Binary Search (OS Practical #7) | Theory, Terminal, Editor, MCQ |
+
+**Total:** 14 Chapters × 4 Quests = **56 Quests**
+- 14 Theory (Slides) modules
+- 14 Terminal Challenges with working validation scripts
+- 14 File Editor Challenges with working validation scripts
+- 14 MCQ Exercises (4 questions each = 56 MCQs)
+
+---
+*Linux & Shell Scripting Fundamentals — OS Practical Exam Curriculum | Generated for University Students*
