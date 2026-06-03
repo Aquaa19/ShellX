@@ -87,5 +87,34 @@ export const ProgressService = {
     } catch (error) {
       console.warn('[ProgressService] Failed to record check attempt:', error);
     }
+  },
+
+  resetAllProgress: async (uid: string, moduleIds: string[], lessonIds: string[]): Promise<boolean> => {
+    try {
+      const batch = firestore().batch();
+
+      // Reset completed status in module progress docs
+      for (const moduleId of moduleIds) {
+        const path = FirestorePaths.userModuleProgress(uid, moduleId);
+        batch.set(firestore().doc(path), {
+          moduleId,
+          completedLessonIds: [],
+          inProgressLessonId: null,
+          lastUpdated: firestore.Timestamp.now(),
+        }, { merge: true });
+      }
+
+      // Delete checkpoint documents
+      for (const lessonId of lessonIds) {
+        const path = FirestorePaths.userLessonCheck(uid, lessonId);
+        batch.delete(firestore().doc(path));
+      }
+
+      await batch.commit();
+      return true;
+    } catch (error) {
+      console.warn('[ProgressService] Failed to reset all progress:', error);
+      return false;
+    }
   }
 };

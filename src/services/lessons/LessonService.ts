@@ -10,80 +10,102 @@ export const LessonService = {
         .orderBy('order')
         .get();
 
-      const modules: LessonModule[] = [];
+      // ── Pass 1: fetch all module cards + per-module progress docs in parallel ──
+      const rawModules = await Promise.all(
+        modulesSnapshot.docs.map(async (moduleDoc) => {
+          const moduleData = moduleDoc.data();
+          const moduleId   = moduleDoc.id;
 
-      for (const moduleDoc of modulesSnapshot.docs) {
-        const moduleData = moduleDoc.data();
-        const moduleId = moduleDoc.id;
-        const moduleTitle = moduleData.title || '';
-        const moduleOrder = moduleData.order || 0;
+          const [cardsSnapshot, progressDoc] = await Promise.all([
+            firestore()
+              .collection(FirestorePaths.moduleCards(moduleId))
+              .orderBy('order')
+              .get(),
+            firestore()
+              .doc(FirestorePaths.userModuleProgress(uid, moduleId))
+              .get(),
+          ]);
 
-        const cardsSnapshot = await firestore()
-          .collection(FirestorePaths.moduleCards(moduleId))
-          .orderBy('order')
-          .get();
+          const cards: LessonCardDocument[] = cardsSnapshot.docs.map((doc) => ({
+            ...(doc.data() as LessonCardDocument),
+            id: doc.id,
+            moduleId,
+          }));
 
-        const cards: LessonCardDocument[] = cardsSnapshot.docs.map((doc) => ({
-          ...(doc.data() as LessonCardDocument),
-          id: doc.id,
-          moduleId,
-        }));
+          const progressData = progressDoc.exists()
+            ? (progressDoc.data() as UserModuleProgressDocument)
+            : null;
 
-        const progressDoc = await firestore()
-          .doc(FirestorePaths.userModuleProgress(uid, moduleId))
-          .get();
+          return {
+            moduleId,
+            moduleTitle: moduleData.title || '',
+            moduleOrder: (moduleData.order as number) || 0,
+            cards,
+            progressData,
+          };
+        })
+      );
 
-        const progressData = progressDoc.exists()
-          ? (progressDoc.data() as UserModuleProgressDocument)
-          : null;
+      // ── Build global completed set & global in-progress ID ──
+      const globalCompletedIds = new Set<string>();
+      let   globalInProgressId: string | undefined;
 
-        const completedLessonIds = progressData?.completedLessonIds || [];
-        const inProgressLessonId = progressData?.inProgressLessonId;
+      for (const rm of rawModules) {
+        const ids = rm.progressData?.completedLessonIds || [];
+        ids.forEach((id) => globalCompletedIds.add(id));
+        if (rm.progressData?.inProgressLessonId) {
+          globalInProgressId = rm.progressData.inProgressLessonId;
+        }
+      }
 
-        const lessons: LessonData[] = cards.map((card) => {
+      const hasStartedJourney = globalCompletedIds.size > 0 || !!globalInProgressId;
+
+      // ── Pass 2: compute LessonState for every card using global progress ──
+      const modules: LessonModule[] = rawModules.map((rm) => {
+        const lessons: LessonData[] = rm.cards.map((card) => {
           let state: LessonState = 'locked';
 
-          if (completedLessonIds.includes(card.id)) {
+          if (globalCompletedIds.has(card.id)) {
             state = 'complete';
-          } else if (inProgressLessonId === card.id) {
+          } else if (globalInProgressId === card.id) {
             state = 'inProgress';
+          } else if (!card.prerequisiteId) {
+            // First lesson of a module (no prerequisite) — only unlock after journey starts
+            state = hasStartedJourney ? 'inProgress' : 'locked';
           } else {
-            if (!card.prerequisiteId) {
-              state = 'inProgress';
-            } else {
-              const isPrereqComplete = completedLessonIds.includes(card.prerequisiteId);
-              state = isPrereqComplete ? 'inProgress' : 'locked';
-            }
+            // Prerequisite-gated lesson — unlock only when prerequisite is globally complete
+            state = globalCompletedIds.has(card.prerequisiteId) ? 'inProgress' : 'locked';
           }
 
           const progress = state === 'complete' ? 1 : 0;
 
           return {
-            id: card.id,
-            moduleId,
-            title: card.title,
-            description: card.description,
-            commandCount: card.commandCount,
-            estimatedMinutes: card.estimatedMinutes,
+            id:                 card.id,
+            moduleId:           rm.moduleId,
+            title:              card.title,
+            description:        card.description,
+            commandCount:       card.commandCount,
+            estimatedMinutes:   card.estimatedMinutes,
             state,
             progress,
-            validationCommand: card.validationCommand,
+            validationCommand:  card.validationCommand,
             validationExpected: card.validationExpected,
-            instructions: card.instructions,
-            order: card.order,
-            starterFiles: card.starterFiles,
-            type: card.type || 'theory_only',
-            questions: card.questions || [],
+            instructions:       card.instructions,
+            order:              card.order,
+            starterFiles:       card.starterFiles,
+            type:               card.type || 'theory_only',
+            questions:          card.questions || [],
+            prerequisiteId:     card.prerequisiteId,
           };
         });
 
-        modules.push({
-          id: moduleId,
-          title: moduleTitle,
-          order: moduleOrder,
+        return {
+          id:     rm.moduleId,
+          title:  rm.moduleTitle,
+          order:  rm.moduleOrder,
           lessons,
-        });
-      }
+        };
+      });
 
       return modules.sort((a, b) => a.order - b.order);
     } catch (error) {

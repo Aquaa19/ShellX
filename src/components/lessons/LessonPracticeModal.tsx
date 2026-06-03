@@ -23,6 +23,7 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
   const { connectionState, outputLines, sendCommand, sendRawKey } = useTerminalConnection();
   const {
     activeLessonData,
+    modules,
     isTaskSheetOpen,
     isValidating,
     lastValidationResult,
@@ -32,6 +33,14 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
     completeExerciseLesson,
     deselectLesson,
   } = useLessonsContext();
+
+  const flatLessons = modules.flatMap((m) => m.lessons);
+  const currentLessonIndex = activeLessonData
+    ? flatLessons.findIndex((l) => l.id === activeLessonData.id)
+    : -1;
+  const nextLesson = currentLessonIndex !== -1 && currentLessonIndex < flatLessons.length - 1
+    ? flatLessons[currentLessonIndex + 1]
+    : null;
 
   const [inputText, setInputText] = useState('');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -168,7 +177,7 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
   const displayLines = isPrompt ? outputLines.slice(0, -1) : outputLines;
   const promptPrefix = isPrompt ? lastLine.content.trim() + ' ' : '$ ';
 
-  const renderFormattedText = (text: string, baseStyle: any, key?: number) => {
+  const renderFormattedText = (text: string, baseStyle: any, key?: string | number) => {
     const parts = text.split('**');
     return (
       <SafeText key={key} style={baseStyle}>
@@ -193,37 +202,161 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
     );
   };
 
-  const renderSlideLine = (line: string, idx: number) => {
-    const trimmed = line.trim();
-    if (!trimmed) return <View key={idx} style={{ height: 8 }} />;
+  interface ParsedNode {
+    type: 'heading1' | 'heading2' | 'bullet' | 'code' | 'table' | 'paragraph' | 'spacer';
+    content: string;
+    lines?: string[];
+    key: string;
+  }
 
-    if (trimmed.startsWith('# ')) {
-      return renderFormattedText(trimmed.replace('# ', ''), styles.slideHeader, idx);
+  const parseSlideLines = (lines: string[]): ParsedNode[] => {
+    const nodes: ParsedNode[] = [];
+    let i = 0;
+
+    while (i < lines.length) {
+      const line = lines[i];
+      const trimmed = line.trim();
+
+      if (!trimmed) {
+        nodes.push({ type: 'spacer', content: '', key: `spacer-${i}` });
+        i++;
+        continue;
+      }
+
+      if (trimmed.startsWith('# ')) {
+        nodes.push({ type: 'heading1', content: trimmed.replace('# ', ''), key: `h1-${i}` });
+        i++;
+        continue;
+      }
+      if (trimmed.startsWith('## ')) {
+        nodes.push({ type: 'heading2', content: trimmed.replace('## ', ''), key: `h2-${i}` });
+        i++;
+        continue;
+      }
+
+      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+        nodes.push({ type: 'bullet', content: trimmed.slice(2), key: `bullet-${i}` });
+        i++;
+        continue;
+      }
+
+      if (trimmed.startsWith('```')) {
+        const codeLines: string[] = [];
+        let j = i + 1;
+        while (j < lines.length && !lines[j].trim().startsWith('```')) {
+          codeLines.push(lines[j]);
+          j++;
+        }
+        nodes.push({ type: 'code', lines: codeLines, content: '', key: `code-${i}` });
+        i = j < lines.length ? j + 1 : j;
+        continue;
+      }
+
+      if (trimmed.startsWith('|')) {
+        const tableLines: string[] = [];
+        let j = i;
+        while (j < lines.length && lines[j].trim().startsWith('|')) {
+          tableLines.push(lines[j].trim());
+          j++;
+        }
+        nodes.push({ type: 'table', lines: tableLines, content: '', key: `table-${i}` });
+        i = j;
+        continue;
+      }
+
+      nodes.push({ type: 'paragraph', content: trimmed, key: `p-${i}` });
+      i++;
     }
-    if (trimmed.startsWith('## ')) {
-      return renderFormattedText(trimmed.replace('## ', ''), styles.slideSubHeader, idx);
-    }
-    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-      const cleanText = trimmed.slice(2);
-      return (
-        <View key={idx} style={styles.bulletRow}>
-          <SafeText style={styles.bulletDot}>•</SafeText>
-          {renderFormattedText(cleanText, styles.bulletText)}
+
+    return nodes;
+  };
+
+  const parseTableCells = (line: string): string[] => {
+    const rawCells = line.split('|').map((c) => c.trim());
+    if (rawCells[0] === '') rawCells.shift();
+    if (rawCells[rawCells.length - 1] === '') rawCells.pop();
+    return rawCells;
+  };
+
+  const renderTableNode = (tableLines: string[], nodeKey: string) => {
+    const dataLines = tableLines.filter((l) => !l.includes('|-') && !l.includes('| -'));
+    if (dataLines.length === 0) return null;
+
+    const headerLine = dataLines[0];
+    const headerCols = parseTableCells(headerLine);
+    const rowLines = dataLines.slice(1);
+    const parsedRows = rowLines.map((row) => parseTableCells(row));
+
+    const colCount = Math.max(headerCols.length, ...parsedRows.map((r) => r.length));
+
+    return (
+      <View key={nodeKey} style={styles.tableContainer}>
+        <View style={styles.tableHeaderRow}>
+          {headerCols.map((col, idx) => {
+            const isFirst = idx === 0;
+            return (
+              <View key={idx} style={[styles.tableCell, isFirst && colCount === 2 ? { width: 90, flex: 0 } : { flex: 1 }]}>
+                <MonoText size={12} color={Theme.colors.syntax.blue} weight="bold">
+                  {col}
+                </MonoText>
+              </View>
+            );
+          })}
         </View>
-      );
+
+        {parsedRows.map((row, rowIdx) => (
+          <View key={rowIdx} style={[styles.tableRow, rowIdx % 2 === 1 && styles.tableRowAlternating]}>
+            {row.map((cell, colIdx) => {
+              const isFirst = colIdx === 0;
+              return (
+                <View key={colIdx} style={[styles.tableCell, isFirst && colCount === 2 ? { width: 90, flex: 0 } : { flex: 1 }]}>
+                  {renderFormattedText(cell, styles.tableCellText)}
+                </View>
+              );
+            })}
+          </View>
+        ))}
+      </View>
+    );
+  };
+
+  const renderCodeNode = (codeLines: string[], nodeKey: string) => {
+    return (
+      <MonoText key={nodeKey} size={12} color={Theme.colors.syntax.green} style={styles.monoBlock}>
+        {codeLines.join('\n')}
+      </MonoText>
+    );
+  };
+
+  const renderParsedNode = (node: ParsedNode) => {
+    switch (node.type) {
+      case 'heading1':
+        return renderFormattedText(node.content, styles.slideHeader, node.key);
+      case 'heading2':
+        return renderFormattedText(node.content, styles.slideSubHeader, node.key);
+      case 'bullet':
+        return (
+          <View key={node.key} style={styles.bulletRow}>
+            <SafeText style={styles.bulletDot}>•</SafeText>
+            {renderFormattedText(node.content, styles.bulletText)}
+          </View>
+        );
+      case 'code':
+        return renderCodeNode(node.lines || [], node.key);
+      case 'table':
+        return renderTableNode(node.lines || [], node.key);
+      case 'paragraph':
+        return renderFormattedText(node.content, styles.paragraphText, node.key);
+      case 'spacer':
+        return <View key={node.key} style={{ height: 8 }} />;
+      default:
+        return null;
     }
-    if (trimmed.startsWith('```') || trimmed.startsWith('|')) {
-      return (
-        <MonoText key={idx} size={12} color={Theme.colors.syntax.green} style={styles.monoBlock}>
-          {trimmed}
-        </MonoText>
-      );
-    }
-    return renderFormattedText(trimmed, styles.paragraphText, idx);
   };
 
   const currentSlideText = slides[currentSlideIndex] || '';
   const currentSlideLines = currentSlideText.split('\n');
+  const parsedNodes = parseSlideLines(currentSlideLines);
 
   return (
     <Modal
@@ -387,8 +520,15 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
             ) : viewMode === 'slides' && slides.length > 0 ? (
               <ScrollView contentContainerStyle={styles.quizScrollContent}>
                 <View style={styles.slideCard}>
+                  {activeLessonData?.state === 'complete' && (
+                    <View style={styles.completedIndicator}>
+                      <MaterialIcon name="check-circle" size={16} color={Theme.colors.semantic.success} />
+                      <SafeText style={styles.completedIndicatorText}>Lesson Completed</SafeText>
+                    </View>
+                  )}
+
                   <ScrollView style={styles.slideScroll}>
-                    {currentSlideLines.map((line, idx) => renderSlideLine(line, idx))}
+                    {parsedNodes.map((node) => renderParsedNode(node))}
                   </ScrollView>
                   
                   <View style={styles.slideFooter}>
@@ -413,12 +553,25 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
                         style={styles.slideNavBtn}
                       />
                     ) : (
-                      activeLessonData?.type === 'theory_only' ? (
+                      activeLessonData?.state === 'complete' ? (
+                        nextLesson ? (
+                          <SecondaryActionButton
+                            label="NEXT LESSON"
+                            onPress={() => selectLesson(nextLesson)}
+                            style={styles.slideNavBtn}
+                          />
+                        ) : (
+                          <SecondaryActionButton
+                            label="CLOSE"
+                            onPress={handleClose}
+                            style={styles.slideNavBtn}
+                          />
+                        )
+                      ) : activeLessonData?.type === 'theory_only' ? (
                         <SecondaryActionButton
                           label="COMPLETE"
                           onPress={async () => {
                             await completeExerciseLesson();
-                            handleClose();
                           }}
                           style={styles.slideNavBtn}
                         />
@@ -718,5 +871,59 @@ const styles = StyleSheet.create({
     marginVertical: Theme.spacing.sm,
     borderWidth: Theme.borderWidth.hairline,
     borderColor: Theme.colors.border.subtle,
+  },
+  completedIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(79, 223, 148, 0.08)',
+    borderColor: Theme.colors.semantic.success,
+    borderWidth: Theme.borderWidth.hairline,
+    borderRadius: Theme.borderRadius.default,
+    paddingVertical: Theme.spacing.xs,
+    paddingHorizontal: Theme.spacing.sm,
+    alignSelf: 'flex-start',
+    marginBottom: Theme.spacing.md,
+    gap: Theme.spacing.xs,
+  },
+  completedIndicatorText: {
+    color: Theme.colors.semantic.success,
+    fontFamily: Theme.fontFamily.monoBold,
+    fontSize: Theme.fontSize.labelSM,
+    textTransform: 'uppercase',
+  },
+  tableContainer: {
+    borderWidth: Theme.borderWidth.hairline,
+    borderColor: Theme.colors.border.subtle,
+    borderRadius: Theme.borderRadius.default,
+    marginVertical: Theme.spacing.md,
+    overflow: 'hidden',
+    backgroundColor: '#050505',
+  },
+  tableHeaderRow: {
+    flexDirection: 'row',
+    backgroundColor: '#141414',
+    borderBottomWidth: Theme.borderWidth.hairline,
+    borderBottomColor: Theme.colors.border.strong,
+    paddingVertical: Theme.spacing.sm,
+    paddingHorizontal: Theme.spacing.md,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: Theme.borderWidth.hairline,
+    borderBottomColor: Theme.colors.border.subtle,
+    paddingVertical: Theme.spacing.sm,
+    paddingHorizontal: Theme.spacing.md,
+    alignItems: 'center',
+  },
+  tableRowAlternating: {
+    backgroundColor: '#0D0D0D',
+  },
+  tableCell: {
+    paddingRight: Theme.spacing.sm,
+  },
+  tableCellText: {
+    fontSize: 13,
+    color: Theme.colors.text.secondary,
+    lineHeight: 13 * Theme.lineHeight.normal,
   },
 });

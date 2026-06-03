@@ -15,7 +15,7 @@ import {
   ScanlineOverlay,
   DottedGridOverlay
 } from '../components';
-import { useAppContext, useAuthContext, useTerminalConnection } from '../context';
+import { useAppContext, useAuthContext, useTerminalConnection, useLessonsContext } from '../context';
 import { validateServerConfig, ServerConfigSchema } from '../services/validation';
 import type { ConnectionState } from '../types';
 
@@ -23,6 +23,7 @@ export const SettingsScreen: React.FC = () => {
   const { serverConfig, saveServerConfig } = useAppContext();
   const { signOut, isSigningOut, user } = useAuthContext();
   const { pingServer, connectionState, latencyMs } = useTerminalConnection();
+  const { resetProgress } = useLessonsContext();
   
   const [ipValue, setIpValue] = useState(serverConfig.ip);
   const [portValue, setPortValue] = useState(serverConfig.port);
@@ -125,6 +126,26 @@ export const SettingsScreen: React.FC = () => {
     );
   };
 
+  const handleResetProgress = () => {
+    Alert.alert(
+      "Reset Progress",
+      "Are you sure you want to reset all lesson progress? This will lock all lessons except the first one and delete all your challenge submissions.",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Reset", 
+          style: "destructive", 
+          onPress: async () => {
+            await resetProgress();
+            if (Platform.OS === 'android') {
+              ToastAndroid.show('Progress reset successful', ToastAndroid.SHORT);
+            }
+          } 
+        }
+      ]
+    );
+  };
+
   return (
     <AppBackground>
       <SafeAreaView style={styles.safeArea}>
@@ -203,6 +224,13 @@ export const SettingsScreen: React.FC = () => {
 
             <SettingsConfigCard title="Account">
               <SecondaryActionButton 
+                label="RESET LESSON PROGRESS" 
+                onPress={handleResetProgress} 
+                leftIcon={<MaterialIcon name="refresh" size={18} color={Theme.colors.syntax.orange} />}
+                style={styles.resetBtn}
+              />
+              <View style={{ height: Theme.spacing.md }} />
+              <SecondaryActionButton 
                 label="SIGN OUT" 
                 onPress={handleSignOut} 
                 loading={isSigningOut}
@@ -273,6 +301,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: Theme.spacing.sm,
     marginHorizontal: 0,
+  },
+  resetBtn: {
+    borderColor: Theme.colors.syntax.orange,
   },
   signOutBtn: {
     borderColor: Theme.colors.semantic.error,

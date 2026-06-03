@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState, useEffect, useRef, useCallb
 import { useAuthContext } from './AuthContext';
 import { useAppContext } from './AppContext';
 import { useTerminalConnection } from './TerminalConnectionContext';
-import { LessonService, ProgressService } from '../services/lessons';
-import { LessonData, LessonModule } from '../types';
+import { LessonService, ProgressService, UserModuleProgressDocument } from '../services/lessons';
+import { LessonData, LessonModule, LessonState } from '../types';
 
 interface LessonsContextState {
   modules:          LessonModule[];
@@ -19,6 +19,7 @@ interface LessonsContextState {
   refreshLessons:   () => Promise<void>;
   completeExerciseLesson: () => Promise<void>;
   deselectLesson:   () => void;
+  resetProgress:    () => Promise<void>;
 }
 
 const LessonsContext = createContext<LessonsContextState | null>(null);
@@ -58,6 +59,9 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
   // Manage subscription lifecycle refs to prevent duplicate subscription triggers on identical lists
   const unsubscribersRef = useRef<(() => void)[]>([]);
   const subscribedModuleIdsRef = useRef<Set<string>>(new Set());
+
+  // Global cache of per-module progress — used to evaluate cross-module state reactively
+  const allProgressRef = useRef<Map<string, UserModuleProgressDocument | null>>(new Map());
   const isFirstLoadRef = useRef(true);
 
   // Monitor outputLines to settle validation command execution output
@@ -122,6 +126,70 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, [user, refreshLessons]);
 
+  const updateModuleProgressReactively = useCallback(
+    (changedModuleId: string, progress: UserModuleProgressDocument | null) => {
+      // Update the global progress cache for this module
+      allProgressRef.current.set(changedModuleId, progress);
+
+      // Build the global completed set + global in-progress ID across ALL modules
+      const globalCompletedIds = new Set<string>();
+      let globalInProgressId: string | undefined;
+
+      allProgressRef.current.forEach((p) => {
+        (p?.completedLessonIds || []).forEach((id) => globalCompletedIds.add(id));
+        if (p?.inProgressLessonId) {
+          globalInProgressId = p.inProgressLessonId;
+        }
+      });
+
+      const hasStartedJourney = globalCompletedIds.size > 0 || !!globalInProgressId;
+
+      // Re-evaluate ALL modules with the global progress context
+      setModules((prevModules) =>
+        prevModules.map((m) => {
+          const updatedLessons = m.lessons.map((l) => {
+            let state: LessonState = 'locked';
+
+            if (globalCompletedIds.has(l.id)) {
+              state = 'complete';
+            } else if (globalInProgressId === l.id) {
+              state = 'inProgress';
+            } else if (!l.prerequisiteId) {
+              state = hasStartedJourney ? 'inProgress' : 'locked';
+            } else {
+              state = globalCompletedIds.has(l.prerequisiteId) ? 'inProgress' : 'locked';
+            }
+
+            const progressVal = state === 'complete' ? 1 : 0;
+            return { ...l, state, progress: progressVal };
+          });
+
+          return { ...m, lessons: updatedLessons };
+        })
+      );
+
+      // Also re-evaluate the active lesson if one is open
+      setActiveLessonData((prevActive) => {
+        if (!prevActive) return prevActive;
+
+        let state: LessonState = 'locked';
+        if (globalCompletedIds.has(prevActive.id)) {
+          state = 'complete';
+        } else if (globalInProgressId === prevActive.id) {
+          state = 'inProgress';
+        } else if (!prevActive.prerequisiteId) {
+          state = hasStartedJourney ? 'inProgress' : 'locked';
+        } else {
+          state = globalCompletedIds.has(prevActive.prerequisiteId) ? 'inProgress' : 'locked';
+        }
+
+        const progressVal = state === 'complete' ? 1 : 0;
+        return { ...prevActive, state, progress: progressVal };
+      });
+    },
+    []
+  );
+
   // Subscribe to real-time progress updates for each module (with check-guards to avoid infinite loops)
   useEffect(() => {
     if (!user || modules.length === 0) return;
@@ -139,14 +207,13 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
 
     // Subscribe to new modules
     unsubscribersRef.current = modules.map((m) =>
-      LessonService.subscribeToUserProgress(user.uid, m.id, () => {
-        // Trigger a silent background refresh to recalculate unlocked states
-        refreshLessonsSilent();
+      LessonService.subscribeToUserProgress(user.uid, m.id, (progress) => {
+        updateModuleProgressReactively(m.id, progress);
       })
     );
 
     subscribedModuleIdsRef.current = new Set(moduleIds);
-  }, [user, modules, refreshLessonsSilent]);
+  }, [user, modules, updateModuleProgressReactively]);
 
   // Clean up all subscriptions on unmount or user change
   useEffect(() => {
@@ -195,6 +262,30 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     setIsTaskSheetOpen(false);
   }, []);
 
+  const completeLessonOptimistically = useCallback((lessonId: string) => {
+    setModules((prevModules) => {
+      return prevModules.map((m) => {
+        const updatedLessons = m.lessons.map((l) => {
+          if (l.id === lessonId) {
+            return { ...l, state: 'complete' as const, progress: 1 };
+          }
+          if (l.state === 'locked' && l.prerequisiteId === lessonId) {
+            return { ...l, state: 'inProgress' as const };
+          }
+          return l;
+        });
+        return { ...m, lessons: updatedLessons };
+      });
+    });
+
+    setActiveLessonData((prev) => {
+      if (prev && prev.id === lessonId) {
+        return { ...prev, state: 'complete' as const, progress: 1 };
+      }
+      return prev;
+    });
+  }, []);
+
   const runValidation = useCallback(async () => {
     if (!user || !activeLessonData) return;
 
@@ -214,6 +305,9 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
       const passed = output.toLowerCase().includes(activeLessonData.validationExpected.toLowerCase());
 
       if (passed) {
+        // Optimistic local state update first
+        completeLessonOptimistically(activeLessonData.id);
+
         // Transaction to complete lesson and update progress
         await ProgressService.markLessonComplete(
           user.uid,
@@ -222,7 +316,6 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
           output
         );
         setLastValidationResult({ passed: true, output });
-        await refreshLessons();
       } else {
         await ProgressService.recordLessonCheckAttempt(
           user.uid,
@@ -238,11 +331,15 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     } finally {
       setIsValidating(false);
     }
-  }, [user, activeLessonData, sendCommand, refreshLessons]);
+  }, [user, activeLessonData, sendCommand, completeLessonOptimistically]);
 
   const completeExerciseLesson = useCallback(async () => {
     if (!user || !activeLessonData) return;
     setIsValidating(true);
+    
+    // Optimistic local state update first
+    completeLessonOptimistically(activeLessonData.id);
+
     try {
       await ProgressService.markLessonComplete(
         user.uid,
@@ -251,13 +348,49 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
         'Passed Quiz'
       );
       setLastValidationResult({ passed: true, output: 'Quiz completed successfully!' });
-      await refreshLessons();
     } catch (error: any) {
       console.warn('[LessonsContext] Quiz completion failed:', error);
     } finally {
       setIsValidating(false);
     }
-  }, [user, activeLessonData, refreshLessons]);
+  }, [user, activeLessonData, completeLessonOptimistically]);
+
+  const resetProgress = useCallback(async () => {
+    if (!user || modules.length === 0) return;
+    setIsLoading(true);
+    try {
+      const moduleIds = modules.map((m) => m.id);
+      const lessonIds = modules.flatMap((m) => m.lessons).map((l) => l.id);
+
+      await ProgressService.resetAllProgress(user.uid, moduleIds, lessonIds);
+
+      // Clear the global progress cache so reactive snapshots re-fire with empty state
+      allProgressRef.current.clear();
+
+      // Reset local modules list state — all lessons locked
+      setModules((prevModules) => {
+        return prevModules.map((m) => {
+          const updatedLessons = m.lessons.map((l) => {
+            return {
+              ...l,
+              state: 'locked' as const,
+              progress: 0,
+            };
+          });
+          return { ...m, lessons: updatedLessons };
+        });
+      });
+
+      setActiveLessonData(null);
+      setLastValidationResult(null);
+      setIsTaskSheetOpen(false);
+
+    } catch (error) {
+      console.warn('[LessonsContext] Reset progress failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user, modules]);
 
   return (
     <LessonsContext.Provider
@@ -274,6 +407,7 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
         refreshLessons,
         completeExerciseLesson,
         deselectLesson,
+        resetProgress,
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { Theme } from '../../tokens';
-import { HeadlineText, BodyText } from '../../atoms';
+import { HeadlineText, BodyText, SecondaryActionButton } from '../../atoms';
 import { AsciiProgressText } from './AsciiProgressText';
 
 export interface LessonsHeaderProps {
@@ -9,6 +9,8 @@ export interface LessonsHeaderProps {
   subtitle: string;
   overallProgress: number; // 0 to 1
   style?: StyleProp<ViewStyle>;
+  showStartButton?: boolean;
+  onStartPress?: () => void;
 }
 
 export const LessonsHeader: React.FC<LessonsHeaderProps> = ({
@@ -16,6 +18,8 @@ export const LessonsHeader: React.FC<LessonsHeaderProps> = ({
   subtitle,
   overallProgress,
   style,
+  showStartButton,
+  onStartPress,
 }) => {
   return (
     <View style={[styles.container, style]}>
@@ -25,7 +29,16 @@ export const LessonsHeader: React.FC<LessonsHeaderProps> = ({
       <BodyText size={Theme.fontSize.bodyMD} color={Theme.colors.text.secondary} style={styles.subtitle}>
         {subtitle}
       </BodyText>
-      <AsciiProgressText progress={overallProgress} length={12} style={styles.progress} />
+      <View style={styles.progressRow}>
+        <AsciiProgressText progress={overallProgress} length={12} style={styles.progress} />
+        {showStartButton && onStartPress && (
+          <SecondaryActionButton
+            label="Start Journey"
+            onPress={onStartPress}
+            style={styles.startBtn}
+          />
+        )}
+      </View>
     </View>
   );
 };
@@ -44,7 +57,17 @@ const styles = StyleSheet.create({
   subtitle: {
     marginBottom: Theme.spacing.md,
   },
-  progress: {
+  progressRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginTop: Theme.spacing.xs,
+  },
+  progress: {
+    marginTop: 0,
+  },
+  startBtn: {
+    borderColor: Theme.colors.syntax.green,
+    marginLeft: Theme.spacing.md,
   },
 });

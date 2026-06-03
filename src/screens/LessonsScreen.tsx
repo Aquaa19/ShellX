@@ -11,7 +11,8 @@ import {
   LessonCard,
   ShellXLogoText,
   LessonPracticeModal,
-  ShellXSpinner
+  ShellXSpinner,
+  StartJourneyModal
 } from '../components';
 import { useLessonsContext, useTerminalConnection } from '../context';
 import type { LessonData, LessonModule } from '../types';
@@ -20,12 +21,23 @@ export const LessonsScreen: React.FC = () => {
   const { modules, isLoading, selectLesson, refreshLessons } = useLessonsContext();
   const { connectionState } = useTerminalConnection();
   const [modalVisible, setModalVisible] = useState(false);
+  const [startModalVisible, setStartModalVisible] = useState(false);
+
+  const handleStartJourney = async () => {
+    if (modules.length > 0 && modules[0].lessons.length > 0) {
+      const firstLesson = modules[0].lessons[0];
+      setStartModalVisible(false);
+      await selectLesson(firstLesson);
+      setModalVisible(true);
+    }
+  };
 
 
 
   // Calculate dynamic overall progress based on loaded modules
   const allLessons = modules.flatMap((m) => m.lessons);
   const completedLessons = allLessons.filter((l) => l.state === 'complete').length;
+  const hasStarted = allLessons.some((l) => l.state === 'inProgress' || l.state === 'complete');
   const overallProgress = allLessons.length > 0 ? completedLessons / allLessons.length : 0;
 
   const renderModule: ListRenderItem<LessonModule> = ({ item }) => (
@@ -84,6 +96,8 @@ export const LessonsScreen: React.FC = () => {
             title="Linux Command Line" 
             subtitle="Master the fundamentals of the CUI." 
             overallProgress={overallProgress} 
+            showStartButton={!hasStarted}
+            onStartPress={() => setStartModalVisible(true)}
             style={styles.listHeader}
           />
         }
@@ -114,6 +128,13 @@ export const LessonsScreen: React.FC = () => {
         <LessonPracticeModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
+        />
+
+        {/* Start Journey Briefing Modal */}
+        <StartJourneyModal
+          visible={startModalVisible}
+          onClose={() => setStartModalVisible(false)}
+          onStart={handleStartJourney}
         />
       </SafeAreaView>
     </AppBackground>
