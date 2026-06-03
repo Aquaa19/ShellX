@@ -18,6 +18,7 @@ interface LessonsContextState {
   runValidation:    () => Promise<void>;
   refreshLessons:   () => Promise<void>;
   completeExerciseLesson: () => Promise<void>;
+  deselectLesson:   () => void;
 }
 
 const LessonsContext = createContext<LessonsContextState | null>(null);
@@ -39,6 +40,12 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
   useEffect(() => {
     outputLinesRef.current = outputLines;
   }, [outputLines]);
+
+  // Keep a ref to activeLessonData to avoid infinite re-run loop on refreshLessonsSilent
+  const activeLessonDataRef = useRef(activeLessonData);
+  useEffect(() => {
+    activeLessonDataRef.current = activeLessonData;
+  }, [activeLessonData]);
 
   // Reactive state for the validation settle timer
   const [validationPromise, setValidationPromise] = useState<{
@@ -81,14 +88,15 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     setModules(data);
 
     // Update activeLessonData with fresh data to sync status changes
-    if (activeLessonData) {
+    const active = activeLessonDataRef.current;
+    if (active) {
       const flatLessons = data.flatMap((m) => m.lessons);
-      const updated = flatLessons.find((l) => l.id === activeLessonData.id);
+      const updated = flatLessons.find((l) => l.id === active.id);
       if (updated) {
         setActiveLessonData(updated);
       }
     }
-  }, [user, activeLessonData]);
+  }, [user]);
 
   const refreshLessons = useCallback(async () => {
     setIsLoading(true);
@@ -181,6 +189,12 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     setIsTaskSheetOpen(false);
   }, []);
 
+  const deselectLesson = useCallback(() => {
+    setActiveLessonData(null);
+    setLastValidationResult(null);
+    setIsTaskSheetOpen(false);
+  }, []);
+
   const runValidation = useCallback(async () => {
     if (!user || !activeLessonData) return;
 
@@ -259,6 +273,7 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
         runValidation,
         refreshLessons,
         completeExerciseLesson,
+        deselectLesson,
       }}
     >
       {children}

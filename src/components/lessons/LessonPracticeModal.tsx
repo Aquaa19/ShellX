@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Animated, Modal, Alert, ScrollView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Animated, Modal, Alert, ScrollView, TouchableOpacity, Text } from 'react-native';
 import { Theme } from '../../tokens';
 import { IconButton, MaterialIcon, ConnectionBadge, StatusIndicatorBadge, SafeText, BorderedSurface, SecondaryActionButton, MonoText } from '../../atoms';
 import { BodyText } from '../../atoms/text/BodyText';
@@ -30,15 +30,39 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
     dismissTaskSheet,
     selectLesson,
     completeExerciseLesson,
+    deselectLesson,
   } = useLessonsContext();
 
   const [inputText, setInputText] = useState('');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedQuizOption, setSelectedQuizOption] = useState<string | null>(null);
 
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [viewMode, setViewMode] = useState<'slides' | 'terminal'>('slides');
+
+  const handleClose = () => {
+    deselectLesson();
+    onClose();
+  };
+
+  // Parse slides from instructions
+  const rawInstructions = activeLessonData?.instructions || '';
+  const slides = rawInstructions
+    ? rawInstructions.split(/\r?\n---\r?\n/).map((s) => s.trim()).filter(Boolean)
+    : [];
+
   useEffect(() => {
     setCurrentQuestionIndex(0);
     setSelectedQuizOption(null);
+    setCurrentSlideIndex(0);
+    
+    // Automatically default to terminal view if the lesson type is not theory and it doesn't have slides
+    const hasSlides = activeLessonData?.instructions ? activeLessonData.instructions.split(/\r?\n---\r?\n/).filter(Boolean).length > 0 : false;
+    if (activeLessonData?.type !== 'theory_only' && !hasSlides) {
+      setViewMode('terminal');
+    } else {
+      setViewMode('slides');
+    }
   }, [activeLessonData]);
   const [vimMode, setVimMode] = useState<VimMode>('NORMAL');
   const [isCtrlActive, setIsCtrlActive] = useState(false);
@@ -144,12 +168,69 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
   const displayLines = isPrompt ? outputLines.slice(0, -1) : outputLines;
   const promptPrefix = isPrompt ? lastLine.content.trim() + ' ' : '$ ';
 
+  const renderFormattedText = (text: string, baseStyle: any, key?: number) => {
+    const parts = text.split('**');
+    return (
+      <SafeText key={key} style={baseStyle}>
+        {parts.map((part, index) => {
+          const isBold = index % 2 === 1;
+          if (isBold) {
+            return (
+              <Text
+                key={index}
+                style={{
+                  fontFamily: Theme.fontFamily.sansBold,
+                  fontWeight: 'bold',
+                }}
+              >
+                {part}
+              </Text>
+            );
+          }
+          return part;
+        })}
+      </SafeText>
+    );
+  };
+
+  const renderSlideLine = (line: string, idx: number) => {
+    const trimmed = line.trim();
+    if (!trimmed) return <View key={idx} style={{ height: 8 }} />;
+
+    if (trimmed.startsWith('# ')) {
+      return renderFormattedText(trimmed.replace('# ', ''), styles.slideHeader, idx);
+    }
+    if (trimmed.startsWith('## ')) {
+      return renderFormattedText(trimmed.replace('## ', ''), styles.slideSubHeader, idx);
+    }
+    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+      const cleanText = trimmed.slice(2);
+      return (
+        <View key={idx} style={styles.bulletRow}>
+          <SafeText style={styles.bulletDot}>•</SafeText>
+          {renderFormattedText(cleanText, styles.bulletText)}
+        </View>
+      );
+    }
+    if (trimmed.startsWith('```') || trimmed.startsWith('|')) {
+      return (
+        <MonoText key={idx} size={12} color={Theme.colors.syntax.green} style={styles.monoBlock}>
+          {trimmed}
+        </MonoText>
+      );
+    }
+    return renderFormattedText(trimmed, styles.paragraphText, idx);
+  };
+
+  const currentSlideText = slides[currentSlideIndex] || '';
+  const currentSlideLines = currentSlideText.split('\n');
+
   return (
     <Modal
       visible={visible}
       animationType="slide"
       transparent={false}
-      onRequestClose={onClose}
+      onRequestClose={handleClose}
     >
       <AppBackground>
         <SafeAreaView style={styles.safeArea}>
@@ -163,7 +244,7 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
               leftSlot={
                 <IconButton 
                   icon={<MaterialIcon name="arrow-back" size={24} color={Theme.colors.text.primary} />}
-                  onPress={onClose}
+                  onPress={handleClose}
                   style={styles.backButton}
                 />
               }
@@ -173,11 +254,15 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
                   <IconButton 
                     icon={<MaterialIcon name="assignment" size={24} color={Theme.colors.text.primary} />}
                     onPress={() => {
-                      // Toggle instructions sheet
-                      if (isTaskSheetOpen) {
-                        dismissTaskSheet();
-                      } else if (activeLessonData) {
-                        selectLesson(activeLessonData);
+                      if (slides.length > 0) {
+                        setViewMode(viewMode === 'slides' ? 'terminal' : 'slides');
+                      } else {
+                        // Toggle instructions sheet
+                        if (isTaskSheetOpen) {
+                          dismissTaskSheet();
+                        } else if (activeLessonData) {
+                          selectLesson(activeLessonData);
+                        }
                       }
                     }}
                   />
@@ -279,7 +364,7 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
                                 onPress={async () => {
                                   if (isLastQuestion) {
                                     await completeExerciseLesson();
-                                    onClose();
+                                    handleClose();
                                   } else {
                                     setCurrentQuestionIndex(prev => prev + 1);
                                     setSelectedQuizOption(null);
@@ -298,6 +383,55 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
                     </SafeText>
                   )}
                 </BorderedSurface>
+              </ScrollView>
+            ) : viewMode === 'slides' && slides.length > 0 ? (
+              <ScrollView contentContainerStyle={styles.quizScrollContent}>
+                <View style={styles.slideCard}>
+                  <ScrollView style={styles.slideScroll}>
+                    {currentSlideLines.map((line, idx) => renderSlideLine(line, idx))}
+                  </ScrollView>
+                  
+                  <View style={styles.slideFooter}>
+                    {currentSlideIndex > 0 ? (
+                      <SecondaryActionButton
+                        label="BACK"
+                        onPress={() => setCurrentSlideIndex(prev => prev - 1)}
+                        style={styles.slideNavBtn}
+                      />
+                    ) : (
+                      <View style={{ width: 90 }} />
+                    )}
+                    
+                    <SafeText style={styles.slideProgress}>
+                      {currentSlideIndex + 1} / {slides.length}
+                    </SafeText>
+                    
+                    {currentSlideIndex < slides.length - 1 ? (
+                      <SecondaryActionButton
+                        label="NEXT"
+                        onPress={() => setCurrentSlideIndex(prev => prev + 1)}
+                        style={styles.slideNavBtn}
+                      />
+                    ) : (
+                      activeLessonData?.type === 'theory_only' ? (
+                        <SecondaryActionButton
+                          label="COMPLETE"
+                          onPress={async () => {
+                            await completeExerciseLesson();
+                            handleClose();
+                          }}
+                          style={styles.slideNavBtn}
+                        />
+                      ) : (
+                        <SecondaryActionButton
+                          label="PRACTICE"
+                          onPress={() => setViewMode('terminal')}
+                          style={styles.slideNavBtn}
+                        />
+                      )
+                    )}
+                  </View>
+                </View>
               </ScrollView>
             ) : (
               <>
@@ -384,7 +518,6 @@ const styles = StyleSheet.create({
   instructionsText: {
     color: Theme.colors.text.primary,
     fontSize: Theme.fontSize.bodyMD,
-    lineHeight: Theme.lineHeight.normal,
     marginBottom: Theme.spacing.md,
   },
   resultContainer: {
@@ -402,7 +535,6 @@ const styles = StyleSheet.create({
   resultOutput: {
     fontFamily: Theme.fontFamily.mono,
     fontSize: Theme.fontSize.codeXS,
-    lineHeight: Theme.lineHeight.normal,
   },
   textSuccess: {
     color: Theme.colors.semantic.success,
@@ -416,10 +548,6 @@ const styles = StyleSheet.create({
   },
   quizCard: {
     padding: Theme.spacing.md,
-    backgroundColor: '#0D0D0D',
-    borderRadius: Theme.borderRadius.lg,
-    borderWidth: Theme.borderWidth.hairline,
-    borderColor: Theme.colors.border.subtle,
   },
   quizHeader: {
     flexDirection: 'row',
@@ -441,7 +569,7 @@ const styles = StyleSheet.create({
   quizQuestionText: {
     color: Theme.colors.text.primary,
     fontSize: Theme.fontSize.bodyMD,
-    lineHeight: Theme.lineHeight.normal,
+    lineHeight: Theme.fontSize.bodyMD * Theme.lineHeight.normal,
     marginBottom: Theme.spacing.lg,
     fontWeight: 'bold',
   },
@@ -508,10 +636,87 @@ const styles = StyleSheet.create({
   quizExplanationText: {
     color: Theme.colors.text.secondary,
     fontSize: Theme.fontSize.bodySM,
-    lineHeight: Theme.lineHeight.normal,
+    lineHeight: Theme.fontSize.bodySM * Theme.lineHeight.normal,
     marginBottom: Theme.spacing.md,
   },
   quizNextBtn: {
     marginTop: Theme.spacing.sm,
+  },
+  slideCard: {
+    flex: 1,
+    backgroundColor: '#0D0D0D',
+    borderRadius: Theme.borderRadius.lg,
+    borderWidth: Theme.borderWidth.hairline,
+    borderColor: Theme.colors.border.subtle,
+    padding: Theme.spacing.lg,
+    minHeight: 450,
+  },
+  slideScroll: {
+    flex: 1,
+    marginBottom: Theme.spacing.md,
+  },
+  slideFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderTopWidth: Theme.borderWidth.hairline,
+    borderTopColor: Theme.colors.border.subtle,
+    paddingTop: Theme.spacing.md,
+    marginTop: 'auto',
+  },
+  slideProgress: {
+    fontFamily: Theme.fontFamily.mono,
+    fontSize: Theme.fontSize.labelSM,
+    color: Theme.colors.text.tertiary,
+  },
+  slideNavBtn: {
+    minWidth: 90,
+  },
+  slideHeader: {
+    fontSize: Theme.fontSize.titleLG,
+    fontFamily: Theme.fontFamily.sansBold,
+    color: Theme.colors.syntax.blue || '#3b82f6',
+    marginBottom: Theme.spacing.md,
+  },
+  slideSubHeader: {
+    fontSize: Theme.fontSize.titleMD,
+    fontFamily: Theme.fontFamily.sansSemiBold,
+    color: Theme.colors.syntax.orange || '#ffb95f',
+    marginTop: Theme.spacing.md,
+    marginBottom: Theme.spacing.sm,
+  },
+  bulletRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: Theme.spacing.sm,
+    paddingLeft: Theme.spacing.xs,
+  },
+  bulletDot: {
+    fontSize: Theme.fontSize.bodyMD,
+    color: Theme.colors.syntax.green || '#34d399',
+    marginRight: Theme.spacing.sm,
+    lineHeight: Theme.fontSize.bodyMD * Theme.lineHeight.normal,
+  },
+  bulletText: {
+    flex: 1,
+    fontSize: Theme.fontSize.bodyMD,
+    color: Theme.colors.text.primary,
+    lineHeight: Theme.fontSize.bodyMD * Theme.lineHeight.normal,
+  },
+  paragraphText: {
+    fontSize: Theme.fontSize.bodyMD,
+    color: Theme.colors.text.secondary,
+    lineHeight: Theme.fontSize.bodyMD * Theme.lineHeight.normal,
+    marginBottom: Theme.spacing.md,
+  },
+  monoBlock: {
+    backgroundColor: '#1E1E1E',
+    padding: Theme.spacing.sm,
+    borderRadius: Theme.borderRadius.default,
+    fontFamily: Theme.fontFamily.mono,
+    fontSize: Theme.fontSize.codeSM,
+    marginVertical: Theme.spacing.sm,
+    borderWidth: Theme.borderWidth.hairline,
+    borderColor: Theme.colors.border.subtle,
   },
 });

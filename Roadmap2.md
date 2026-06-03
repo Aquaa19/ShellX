@@ -1745,16 +1745,16 @@ Animated Splash    GoogleSignin       Validation,        Auto-scroll,       Task
 
 ## 🔲 Section V7 — Lesson Engine & Firestore Progress
 
-- [ ] **Firestore lesson fetch:** `LessonsScreen` loads with real lesson cards from Firestore. Skeleton loader shows during fetch (≤ 3 seconds typical). Static mock data is not rendered.
-- [ ] **Lesson state rendering — complete:** A completed lesson card has `Colors.semantic.success` border and `Colors.semantic.successDim` badge.
-- [ ] **Lesson state rendering — locked:** A locked lesson card has `opacity: 0.5`. Tapping a locked card does not call `selectLesson` — it shows a brief `Alert` or `Toast`: `"Complete the previous lesson first."`.
-- [ ] **Lesson selection flow:** Tap an unlocked lesson. `markLessonInProgress` is called (Firestore write confirmed in Firebase Console). Terminal navigates to foreground. `LessonContextHeader` shows lesson title. `TaskBottomSheet` slides up.
-- [ ] **"Run Check" happy path:** Complete the lesson task in terminal. Tap "Run Check". Validation command executes on server. Expected output is detected. `lastValidationResult.passed = true`. Green `PASSED` badge appears in task sheet. Lesson card transitions to `complete` state on Lessons screen. Next lesson unlocks.
-- [ ] **"Run Check" failure path:** Tap "Run Check" with incorrect work. `passed = false`. Red `FAILED` badge appears. Lesson remains in `inProgress` state. `attempts` counter increments in Firestore.
-- [ ] **Progress Firestore sync:** Sign out and sign back in. Previously completed lessons are restored to `complete` state (Firestore persistence confirmed).
-- [ ] **`LessonProgressBar`** on each lesson card shows correct `progress` (0–1) reflecting partial completion within a lesson (future: based on sub-task completion; in Roadmap 2 it reflects `passed` as 1.0).
-- [ ] **Firestore listener unsubscribe:** Navigate away from `LessonsScreen` and back. Confirm that only one Firestore listener is active (no duplicate subscription). Verified by checking Firestore usage in Firebase Console.
-- [ ] **Offline lesson display:** When `isNetworkOnline = false`, `LessonsScreen` shows a `NetworkBanner` and the last-fetched lesson data is displayed from memory. No crash. No empty state shown erroneously.
+- [x] **Firestore lesson fetch:** `LessonsScreen` loads with real lesson cards from Firestore. Skeleton loader shows during fetch (≤ 3 seconds typical). Static mock data is not rendered.
+- [x] **Lesson state rendering — complete:** A completed lesson card has `Colors.semantic.success` border and `Colors.semantic.successDim` badge.
+- [x] **Lesson state rendering — locked:** A locked lesson card has `opacity: 0.5`. Tapping a locked card does not call `selectLesson` — it shows a brief `Alert` or `Toast`: `"Complete the previous lesson first."`.
+- [x] **Lesson selection flow:** Tap an unlocked lesson. `markLessonInProgress` is called (Firestore write confirmed in Firebase Console). Terminal navigates to foreground. `LessonContextHeader` shows lesson title. `TaskBottomSheet` slides up.
+- [x] **"Run Check" happy path:** Complete the lesson task in terminal. Tap "Run Check". Validation command executes on server. Expected output is detected. `lastValidationResult.passed = true`. Green `PASSED` badge appears in task sheet. Lesson card transitions to `complete` state on Lessons screen. Next lesson unlocks.
+- [x] **"Run Check" failure path:** Tap "Run Check" with incorrect work. `passed = false`. Red `FAILED` badge appears. Lesson remains in `inProgress` state. `attempts` counter increments in Firestore.
+- [x] **Progress Firestore sync:** Sign out and sign back in. Previously completed lessons are restored to `complete` state (Firestore persistence confirmed).
+- [x] **`LessonProgressBar`** on each lesson card shows correct `progress` (0–1) reflecting partial completion within a lesson (future: based on sub-task completion; in Roadmap 2 it reflects `passed` as 1.0).
+- [x] **Firestore listener unsubscribe:** Navigate away from `LessonsScreen` and back. Confirm that only one Firestore listener is active (no duplicate subscription). Verified by checking Firestore usage in Firebase Console.
+- [x] **Offline lesson display:** When `isNetworkOnline = false`, `LessonsScreen` shows a `NetworkBanner` and the last-fetched lesson data is displayed from memory. No crash. No empty state shown erroneously.
 
 ---
 

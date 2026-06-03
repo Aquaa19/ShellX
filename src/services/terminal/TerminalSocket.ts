@@ -13,7 +13,7 @@ function buildGatewayUrl(ip: string, port: string, sshUser: string, uid: string)
 }
 
 class TerminalSocketClient {
-  private ws: WebSocket | null = null;
+  private ws: any = null;
   private callbacks: SocketEventCallback | null = null;
   private reconnectAttempts: number = 0;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
@@ -49,17 +49,17 @@ class TerminalSocketClient {
         this.callbacks?.onOpen();
       };
 
-      this.ws.onmessage = (event) => {
+      this.ws.onmessage = (event: any) => {
         if (typeof event.data === 'string') {
           this.callbacks?.onMessage(event.data);
         }
       };
 
-      this.ws.onerror = (event) => {
+      this.ws.onerror = (event: any) => {
         this.callbacks?.onError(event);
       };
 
-      this.ws.onclose = (event) => {
+      this.ws.onclose = (event: any) => {
         this.callbacks?.onClose(event.code ?? 1000, event.reason ?? '');
         if (!this.isIntentionallyClosed && this.reconnectAttempts < AppEnv.ws.maxReconnectAttempts) {
           this.scheduleReconnect();
