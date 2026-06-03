@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, RefreshCw, Ban, ShieldAlert, CheckCircle, Clock } from 'lucide-react';
 import { HeadlineText, MonoText, PrimaryButton, SecondaryButton, LabelCapsText } from '../components/atoms';
@@ -33,6 +33,70 @@ export const StudentDetailScreen: React.FC = () => {
     lastOutput: string;
     completedAt?: string;
   }[]>([]);
+
+  const terminalEndRef = useRef<HTMLDivElement>(null);
+  const [mirrorLogs, setMirrorLogs] = useState<string[]>([]);
+  const [isMirrorConnected, setIsMirrorConnected] = useState(false);
+  const [reconnectTrigger, setReconnectTrigger] = useState(0);
+
+  // Auto-scroll terminal window to bottom when new logs arrive
+  useEffect(() => {
+    if (terminalEndRef.current) {
+      terminalEndRef.current.scrollTop = terminalEndRef.current.scrollHeight;
+    }
+  }, [mirrorLogs]);
+
+  // Live PTY Mirror stream connection (Option A: connect on mount)
+  useEffect(() => {
+    if (!id) return;
+    const wsUrl = import.meta.env.VITE_PTY_WS_URL || (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host;
+    const wsBase = wsUrl.replace(/\/$/, '');
+    let socket: WebSocket;
+
+    try {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setMirrorLogs([
+        '[ SYSTEM: Requesting live container socket bridge... ]',
+        `[ SYSTEM: Handshaking with node PTY at ${wsBase}/mirror/${id} ]`
+      ]);
+      socket = new WebSocket(`${wsBase}/mirror/${id}`);
+      
+      socket.onopen = () => {
+        setIsMirrorConnected(true);
+        setMirrorLogs(prev => [...prev, '[ SYSTEM: Live PTY Mirror Connected. (Read-Only) ]']);
+      };
+
+      socket.onmessage = (event) => {
+        const text = event.data;
+        if (typeof text === 'string') {
+          const incoming = text.split(/\r?\n/).filter(line => line.length > 0);
+          setMirrorLogs(prev => {
+            const next = [...prev, ...incoming];
+            return next.length > 100 ? next.slice(-100) : next;
+          });
+        }
+      };
+
+      socket.onerror = () => {
+        setIsMirrorConnected(false);
+        setMirrorLogs(prev => [...prev, '[ ERROR: WebSocket connection failed or refused. ]']);
+      };
+
+      socket.onclose = () => {
+        setIsMirrorConnected(false);
+        setMirrorLogs(prev => [...prev, '[ SYSTEM: Live PTY Mirror Session Terminated. ]']);
+      };
+    } catch (e) {
+      console.error(e);
+      setMirrorLogs(prev => [...prev, '[ ERROR: Failed to instantiate connection. ]']);
+    }
+
+    return () => {
+      if (socket) {
+        socket.close();
+      }
+    };
+  }, [id, reconnectTrigger]);
 
   const loadStudentData = useCallback(async () => {
     if (!id) return;
@@ -374,25 +438,50 @@ export const StudentDetailScreen: React.FC = () => {
               Live Client Socket Mirror (Read-Only)
             </LabelCapsText>
             <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span style={{ width: '6px', height: '6px', backgroundColor: 'var(--color-semantic-success)', borderRadius: '50%' }} />
-              <LabelCapsText size="9px" color="var(--color-semantic-success)">Active PTY</LabelCapsText>
+              <span style={{ 
+                width: '6px', 
+                height: '6px', 
+                backgroundColor: isMirrorConnected ? 'var(--color-semantic-success)' : 'var(--color-semantic-error)', 
+                borderRadius: '50%' 
+              }} />
+              <LabelCapsText size="9px" color={isMirrorConnected ? 'var(--color-semantic-success)' : 'var(--color-semantic-error)'}>
+                {isMirrorConnected ? 'Active PTY' : 'PTY Offline'}
+              </LabelCapsText>
             </span>
           </div>
 
-          <div style={terminalContainerStyle}>
-            <MonoText size="11px" color="var(--color-text-tertiary)">@c30346c63ab3:~$ ls -la</MonoText>
-            <MonoText size="11px" color="var(--color-text-secondary)">total 16</MonoText>
-            <MonoText size="11px" color="var(--color-text-secondary)">drwxr-xr-x 2 student student 4096 Jun 2 13:14 .</MonoText>
-            <MonoText size="11px" color="var(--color-text-secondary)">drwxr-xr-x 3 student student 4096 Jun 2 13:14 ..</MonoText>
-            <MonoText size="11px" color="var(--color-text-secondary)">-rw-r--r-- 1 student student   18 Jun 2 13:14 a.txt</MonoText>
-            <MonoText size="11px" color="var(--color-text-tertiary)">@c30346c63ab3:~$ cat a.txt</MonoText>
-            <MonoText size="11px" color="var(--color-syntax-green)">Welcome to ShellX!</MonoText>
-            <MonoText size="11px" color="var(--color-text-tertiary)">@c30346c63ab3:~$ <span style={{ width: '8px', height: '14px', backgroundColor: 'var(--color-semantic-success)', display: 'inline-block' }} /></MonoText>
+          <div ref={terminalEndRef} style={terminalContainerStyle}>
+            {mirrorLogs.map((log, index) => {
+              let color = 'var(--color-text-secondary)';
+              if (log.startsWith('[ ERROR:')) {
+                color = 'var(--color-semantic-error)';
+              } else if (log.startsWith('[ SYSTEM:')) {
+                color = 'var(--color-syntax-orange)';
+              } else if (log.includes('error') || log.includes('failed')) {
+                color = 'var(--color-semantic-error)';
+              }
+              return (
+                <MonoText 
+                  key={index} 
+                  size="11px" 
+                  color={color}
+                  style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}
+                >
+                  {log}
+                </MonoText>
+              );
+            })}
+            {isMirrorConnected && (
+              <MonoText size="11px" color="var(--color-text-tertiary)">
+                mirroring PTY stream... <span style={{ width: '8px', height: '14px', backgroundColor: 'var(--color-semantic-success)', display: 'inline-block', verticalAlign: 'middle' }} />
+              </MonoText>
+            )}
           </div>
 
           <div style={{ display: 'flex', gap: 'var(--spacing-sm)', flexWrap: 'wrap' }}>
             <PrimaryButton 
-              onClick={() => handleAction('Attach Debugger', 'attach')}
+              onClick={() => setReconnectTrigger(p => p + 1)}
+              disabled={isMirrorConnected}
               style={{ minHeight: '36px', fontSize: '11px', flex: 1 }}
             >
               ATTACH SOCKET

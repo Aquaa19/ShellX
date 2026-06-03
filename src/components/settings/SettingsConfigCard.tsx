@@ -5,18 +5,20 @@ import { BorderedSurface, SectionHeader } from '../../atoms';
 
 export interface SettingsConfigCardProps {
   title: string;
+  rightSlot?: React.ReactNode;
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
 export const SettingsConfigCard: React.FC<SettingsConfigCardProps> = ({
   title,
+  rightSlot,
   children,
   style,
 }) => {
   return (
     <BorderedSurface level="default" borderRadius={Theme.borderRadius.lg} style={[styles.container, style]}>
-      <SectionHeader title={title} />
+      <SectionHeader title={title} rightSlot={rightSlot} />
       <View style={styles.content}>
         {children}
       </View>

@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    top: 0,
+    top: Theme.layout.statusBarHeight,
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',

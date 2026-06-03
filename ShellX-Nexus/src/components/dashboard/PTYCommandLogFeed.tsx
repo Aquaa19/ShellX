@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Terminal } from 'lucide-react';
 import { MonoText, LabelCapsText } from '../atoms';
 import type { CommandLog } from '../../types';
+import { db } from '../../config/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const INITIAL_LOGS: CommandLog[] = [
   { id: '1', username: 'john_doe@shellx', command: 'ls -la', exitCode: 0, timestamp: '13:14:02', lessonTitle: 'Directory Traversal' },
@@ -21,7 +23,7 @@ const RANDOM_COMMANDS = [
 ];
 
 export const PTYCommandLogFeed: React.FC = () => {
-  const [logs, setLogs] = useState<CommandLog[]>(INITIAL_LOGS);
+  const [logs, setLogs] = useState<CommandLog[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -34,14 +36,27 @@ export const PTYCommandLogFeed: React.FC = () => {
 
   // Connect to Live WebSockets Feed
   useEffect(() => {
-    const wsUrl = import.meta.env.VITE_PTY_WS_URL || 'ws://localhost:8080';
+    const wsUrl = import.meta.env.VITE_PTY_WS_URL || (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host;
     let socket: WebSocket;
     
     try {
-      socket = new WebSocket(`${wsUrl}/audit`);
+      const wsBase = wsUrl.replace(/\/$/, '');
+      socket = new WebSocket(`${wsBase}/audit`);
       
       socket.onopen = () => {
         setIsConnected(true);
+        const date = new Date();
+        const timeStr = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+        setLogs([
+          {
+            id: 'sys-init',
+            username: 'system',
+            command: 'WebSocket stream active. Awaiting live sandbox terminal activity...',
+            exitCode: 0,
+            timestamp: timeStr,
+            lessonTitle: 'System'
+          }
+        ]);
         console.log('[PTY Feed] WebSockets audit stream connected.');
       };
 
@@ -56,10 +71,31 @@ export const PTYCommandLogFeed: React.FC = () => {
           const date = new Date();
           const timeStr = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
           
+          const cmd = data.command || '';
+          const email = data.username || 'student@shellx.com';
+
+          // Sentinel filter for suspicious security actions
+          const isSuspicious = 
+            cmd.includes('sudo') || 
+            cmd.includes('su') || 
+            cmd.includes('rm -rf') || 
+            cmd.includes('/etc/passwd') ||
+            cmd.includes('/etc/shadow');
+
+          if (isSuspicious) {
+            addDoc(collection(db, 'securityAlerts'), {
+              command: cmd,
+              studentEmail: email,
+              flagType: cmd.includes('sudo') || cmd.includes('su') ? 'sudo' : 'file_access',
+              level: cmd.includes('rm -rf') ? 'critical' : 'warn',
+              timestamp: serverTimestamp(),
+            }).catch(err => console.error('[Sentinel] Failed to log security alert:', err));
+          }
+
           const newLog: CommandLog = {
             id: (Date.now() + Math.random()).toString(),
             username: data.username || 'student',
-            command: data.command || '',
+            command: cmd,
             exitCode: data.exitCode !== undefined ? data.exitCode : 0,
             timestamp: timeStr,
             lessonTitle: data.lessonTitle || 'Terminal Challenge',
@@ -177,6 +213,18 @@ export const PTYCommandLogFeed: React.FC = () => {
 
       <div ref={containerRef} style={feedBoxStyle}>
         {logs.map((log) => {
+          if (log.username === 'system') {
+            return (
+              <div key={log.id} style={logLineStyle}>
+                <MonoText size="11px" color="var(--color-text-tertiary)">
+                  [{log.timestamp}]
+                </MonoText>
+                <MonoText size="11px" color="var(--color-syntax-orange)">
+                  [ SYSTEM: {log.command} ]
+                </MonoText>
+              </div>
+            );
+          }
           const isError = log.exitCode !== 0;
           return (
             <div key={log.id} style={logLineStyle}>

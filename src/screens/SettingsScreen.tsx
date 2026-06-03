@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, ScrollView, Platform, Keyboard, Alert } from 'react-native';
+import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, ScrollView, Platform, Keyboard, Alert, TouchableOpacity, ToastAndroid } from 'react-native';
 import { Theme } from '../tokens';
-import { SecondaryActionButton, BodyText, StatusIndicatorBadge } from '../atoms';
+import { SecondaryActionButton, BodyText, StatusIndicatorBadge, MaterialIcon } from '../atoms';
 import { 
   AppBackground, 
   FocusedHeader,
@@ -27,6 +27,7 @@ export const SettingsScreen: React.FC = () => {
   const [ipValue, setIpValue] = useState(serverConfig.ip);
   const [portValue, setPortValue] = useState(serverConfig.port);
   const [sshUserValue, setSshUserValue] = useState(serverConfig.sshUser);
+  const [isLocked, setIsLocked] = useState(!!serverConfig.ip);
   
   const [errors, setErrors] = useState<Partial<Record<keyof ServerConfigSchema, string>>>({});
   const [isSaving, setIsSaving] = useState(false);
@@ -41,6 +42,7 @@ export const SettingsScreen: React.FC = () => {
     setIpValue(serverConfig.ip);
     setPortValue(serverConfig.port);
     setSshUserValue(serverConfig.sshUser);
+    setIsLocked(!!serverConfig.ip);
   }, [serverConfig]);
 
   useEffect(() => {
@@ -69,6 +71,10 @@ export const SettingsScreen: React.FC = () => {
     
     if (success) {
       setSaveSuccess(true);
+      setIsLocked(true);
+      if (Platform.OS === 'android') {
+        ToastAndroid.show('Data saved', ToastAndroid.SHORT);
+      }
       setTimeout(() => setSaveSuccess(false), 2500);
     } else {
       const { errors: validationErrors } = validateServerConfig(config);
@@ -149,6 +155,7 @@ export const SettingsScreen: React.FC = () => {
                 ipError={errors.ip}
                 portError={errors.port}
                 sshUserError={errors.sshUser}
+                disabled={isLocked}
               />
               <ServerStatusSignal
                 state={signalState}
@@ -156,11 +163,26 @@ export const SettingsScreen: React.FC = () => {
                 onTest={handleTestConnection}
                 isTesting={isTesting}
               />
-              <SaveConfigurationButton 
-                onPress={handleSave} 
-                isLoading={isSaving}
-                style={styles.saveBtn} 
-              />
+              <View style={styles.actionRow}>
+                <SecondaryActionButton
+                  label={isLocked ? "EDIT" : "LOCK"}
+                  onPress={() => setIsLocked(!isLocked)}
+                  style={styles.editBtn}
+                  leftIcon={
+                    <MaterialIcon 
+                      name={isLocked ? "edit" : "lock-open"} 
+                      size={18} 
+                      color={isLocked ? Theme.colors.text.secondary : Theme.colors.primary.default} 
+                    />
+                  }
+                />
+                <SaveConfigurationButton 
+                  onPress={handleSave} 
+                  isLoading={isSaving}
+                  disabled={isLocked}
+                  style={styles.saveBtn} 
+                />
+              </View>
               {saveSuccess && (
                 <View style={styles.successBadgeContainer}>
                   <StatusIndicatorBadge label="SAVED SUCCESSFULLY" variant="success" />
@@ -185,6 +207,7 @@ export const SettingsScreen: React.FC = () => {
                 onPress={handleSignOut} 
                 loading={isSigningOut}
                 disabled={isSigningOut}
+                leftIcon={<MaterialIcon name="logout" size={18} color={Theme.colors.semantic.error} />}
                 style={styles.signOutBtn}
               />
             </SettingsConfigCard>
@@ -226,8 +249,19 @@ const styles = StyleSheet.create({
     padding: Theme.spacing.md,
     paddingBottom: Theme.spacing.xxl,
   },
-  saveBtn: {
+  actionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Theme.spacing.md,
     marginTop: Theme.spacing.lg,
+    width: '100%',
+  },
+  editBtn: {
+    flex: 1,
+  },
+  saveBtn: {
+    flex: 1,
+    marginTop: 0,
   },
   successBadgeContainer: {
     marginTop: Theme.spacing.md,
@@ -242,6 +276,12 @@ const styles = StyleSheet.create({
   },
   signOutBtn: {
     borderColor: Theme.colors.semantic.error,
+  },
+  lockToggleBtn: {
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   spinnerOverlay: {
     zIndex: 999,

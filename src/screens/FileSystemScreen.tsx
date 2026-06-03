@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, SafeAreaView, Clipboard, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Theme } from '../tokens';
 import { MonoText, SecondaryActionButton, IconButton, MaterialIcon, StatusIndicatorBadge, BodyText } from '../atoms';
 import { 
@@ -41,12 +41,14 @@ export const FileSystemScreen: React.FC = () => {
     return path.substring(0, lastSlashIdx);
   };
 
-  // Initial fetch on mount or socket reconnects
-  useEffect(() => {
-    if (connectionState === 'connected') {
-      initialize();
-    }
-  }, [connectionState, initialize]);
+  // Fetch files whenever the screen comes into focus or connection state changes
+  useFocusEffect(
+    useCallback(() => {
+      if (connectionState === 'connected') {
+        initialize();
+      }
+    }, [connectionState, initialize])
+  );
 
   const handleOpenPress = () => {
     if (!selectedNode) return;
@@ -110,8 +112,8 @@ export const FileSystemScreen: React.FC = () => {
             }
             rightSlot={
               <IconButton
-                icon={<MaterialIcon name="settings" size={24} color={Theme.colors.text.secondary} />}
-                onPress={() => navigation.navigate('Settings')}
+                icon={<MaterialIcon name="refresh" size={24} color={Theme.colors.primary.default} />}
+                onPress={initialize}
                 variant="ghost"
               />
             }

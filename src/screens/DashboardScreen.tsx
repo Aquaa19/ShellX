@@ -1,10 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Theme } from '../tokens';
-import { MaterialIcon, MonoText, BodyText, BorderedSurface, StatusDot } from '../atoms';
+import { MaterialIcon, MonoText, BodyText, BorderedSurface, StatusDot, SecondaryActionButton } from '../atoms';
 import { AppBackground, AppHeader, ShellXLogoText, DottedGridOverlay, ScanlineOverlay } from '../components';
 import { useAppContext, useAuthContext, useLessonsContext, useTerminalConnection } from '../context';
+import mcqData from '../../linux_mcq_500_entire_database.json';
 
 export const DashboardScreen: React.FC = () => {
   const navigation = useNavigation<any>();
@@ -15,7 +16,36 @@ export const DashboardScreen: React.FC = () => {
   const { connectionState } = useTerminalConnection();
 
   // Daily Challenge State
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const dailyIndex = useMemo(() => {
+    const dateStr = new Date().toDateString() + '_' + (user?.uid || '');
+    let hash = 0;
+    for (let i = 0; i < dateStr.length; i++) {
+      hash = dateStr.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return Math.abs(hash) % mcqData.length;
+  }, [user?.uid]);
+
+  const [currentQuestion, setCurrentQuestion] = useState(mcqData[dailyIndex]);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+
+  useEffect(() => {
+    setCurrentQuestion(mcqData[dailyIndex]);
+  }, [dailyIndex]);
+
+  const handleChallengeSelect = (option: string) => {
+    if (selectedOption === null) {
+      setSelectedOption(option);
+    }
+  };
+
+  const handleNextQuestion = () => {
+    let nextIndex = Math.floor(Math.random() * mcqData.length);
+    if (nextIndex === mcqData.indexOf(currentQuestion)) {
+      nextIndex = (nextIndex + 1) % mcqData.length;
+    }
+    setCurrentQuestion(mcqData[nextIndex]);
+    setSelectedOption(null);
+  };
 
   // Dynamic Lessons Progress calculation
   const allLessons = useMemo(() => modules.flatMap((m) => m.lessons), [modules]);
@@ -60,9 +90,7 @@ export const DashboardScreen: React.FC = () => {
     return lines;
   }, [serverConfig, allLessons, user, isOnline]);
 
-  const handleChallengeSelect = (index: number) => {
-    setSelectedOption(index);
-  };
+
 
   return (
     <AppBackground>
@@ -198,73 +226,81 @@ export const DashboardScreen: React.FC = () => {
           <BorderedSurface level="default" style={styles.challengeCard}>
             <View style={styles.challengeHeader}>
               <MonoText size={Theme.fontSize.labelMD} color={Theme.colors.syntax.orange || '#ffb95f'} weight="bold">
-                Daily Challenge
+                Daily Challenge {currentQuestion.category ? `(${currentQuestion.category})` : ''}
               </MonoText>
               <MaterialIcon name="auto-awesome" size={18} color={Theme.colors.syntax.orange || '#ffb95f'} />
             </View>
             
             <View style={styles.challengeBody}>
               <BodyText size={Theme.fontSize.bodyMD} color={Theme.colors.text.primary} style={styles.challengeQuestion}>
-                What flag is used with <MonoText size={Theme.fontSize.bodyMD} color={Theme.colors.syntax.green}>ls</MonoText> to show hidden files?
+                {currentQuestion.question}
               </BodyText>
 
               <View style={styles.optionsList}>
-                {/* Option 1: -h */}
-                <TouchableOpacity 
-                  style={[
-                    styles.optionItem,
-                    selectedOption === 0 && styles.optionItemIncorrect
-                  ]}
-                  onPress={() => handleChallengeSelect(0)}
-                  activeOpacity={0.7}
-                >
-                  <View style={styles.radioOutline}>
-                    {selectedOption === 0 && <View style={styles.radioSelectedIncorrect} />}
-                  </View>
-                  <MonoText size={Theme.fontSize.codeBase} color={selectedOption === 0 ? Theme.colors.semantic.error : Theme.colors.text.secondary} style={styles.optionCode}>
-                    -h
-                  </MonoText>
-                </TouchableOpacity>
+                {currentQuestion.options.map((option, idx) => {
+                  const isSelected = selectedOption === option;
+                  const isCorrect = option === currentQuestion.answer;
+                  const showResult = selectedOption !== null;
 
-                {/* Option 2: -l */}
-                <TouchableOpacity 
-                  style={[
-                    styles.optionItem,
-                    selectedOption === 1 && styles.optionItemIncorrect
-                  ]}
-                  onPress={() => handleChallengeSelect(1)}
-                  activeOpacity={0.7}
-                >
-                  <View style={styles.radioOutline}>
-                    {selectedOption === 1 && <View style={styles.radioSelectedIncorrect} />}
-                  </View>
-                  <MonoText size={Theme.fontSize.codeBase} color={selectedOption === 1 ? Theme.colors.semantic.error : Theme.colors.text.secondary} style={styles.optionCode}>
-                    -l
-                  </MonoText>
-                </TouchableOpacity>
+                  let optionItemStyle: any = styles.optionItem;
+                  let textColor: string = Theme.colors.text.secondary;
+                  let radioStyle: any = styles.radioOutline;
+                  let innerRadio = null;
 
-                {/* Option 3: -a (Correct) */}
-                <TouchableOpacity 
-                  style={[
-                    styles.optionItem,
-                    selectedOption === 2 && styles.optionItemCorrect
-                  ]}
-                  onPress={() => handleChallengeSelect(2)}
-                  activeOpacity={0.7}
-                >
-                  <View style={[styles.radioOutline, selectedOption === 2 && styles.radioOutlineCorrect]}>
-                    {selectedOption === 2 && <View style={styles.radioSelectedCorrect} />}
-                  </View>
-                  <MonoText size={Theme.fontSize.codeBase} color={selectedOption === 2 ? Theme.colors.primary.default : Theme.colors.text.secondary} style={styles.optionCode}>
-                    -a
-                  </MonoText>
-                  {selectedOption === 2 && (
-                    <MonoText size={10} color={Theme.colors.syntax.green} style={styles.feedbackText} weight="bold">
-                      (CORRECT)
-                    </MonoText>
-                  )}
-                </TouchableOpacity>
+                  if (showResult) {
+                    if (isCorrect) {
+                      optionItemStyle = [styles.optionItem, styles.optionItemCorrect];
+                      textColor = Theme.colors.syntax.green;
+                      radioStyle = [styles.radioOutline, styles.radioOutlineCorrect];
+                      innerRadio = <View style={styles.radioSelectedCorrect} />;
+                    } else if (isSelected) {
+                      optionItemStyle = [styles.optionItem, styles.optionItemIncorrect];
+                      textColor = Theme.colors.semantic.error;
+                      radioStyle = [styles.radioOutline, { borderColor: Theme.colors.semantic.error }];
+                      innerRadio = <View style={styles.radioSelectedIncorrect} />;
+                    }
+                  }
+
+                  return (
+                    <TouchableOpacity 
+                      key={idx}
+                      style={optionItemStyle}
+                      onPress={() => handleChallengeSelect(option)}
+                      activeOpacity={0.7}
+                      disabled={showResult}
+                    >
+                      <View style={radioStyle}>
+                        {innerRadio}
+                      </View>
+                      <MonoText size={Theme.fontSize.codeBase} color={textColor} style={styles.optionCode}>
+                        {option}
+                      </MonoText>
+                      {showResult && isCorrect && isSelected && (
+                        <MonoText size={10} color={Theme.colors.syntax.green} style={styles.feedbackText} weight="bold">
+                          (CORRECT)
+                        </MonoText>
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
+
+              {selectedOption !== null && (
+                <View style={styles.explanationContainer}>
+                  <MonoText size={Theme.fontSize.labelSM} color={Theme.colors.syntax.orange || '#ffb95f'} weight="bold" style={styles.explanationTitle}>
+                    EXPLANATION:
+                  </MonoText>
+                  <BodyText size={Theme.fontSize.bodySM} color={Theme.colors.text.secondary} style={styles.explanationText}>
+                    {currentQuestion.explanation}
+                  </BodyText>
+                  
+                  <SecondaryActionButton
+                    label="NEXT QUESTION"
+                    onPress={handleNextQuestion}
+                    style={styles.nextQuestionBtn}
+                  />
+                </View>
+              )}
             </View>
           </BorderedSurface>
 
@@ -476,5 +512,23 @@ const styles = StyleSheet.create({
   },
   feedbackText: {
     marginLeft: Theme.spacing.sm,
+  },
+  explanationContainer: {
+    marginTop: Theme.spacing.md,
+    padding: Theme.spacing.md,
+    backgroundColor: Theme.colors.background.elevated,
+    borderRadius: Theme.borderRadius.default,
+    borderWidth: 1,
+    borderColor: Theme.colors.border.subtle,
+  },
+  explanationTitle: {
+    marginBottom: Theme.spacing.xs,
+  },
+  explanationText: {
+    lineHeight: 18,
+    marginBottom: Theme.spacing.md,
+  },
+  nextQuestionBtn: {
+    marginTop: Theme.spacing.xs,
   },
 });

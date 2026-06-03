@@ -76,6 +76,8 @@ export interface GatewayNode {
   maxUsers: number;
   activeUsers: number;
   uptime: string;
+  totalMem?: number;
+  usedMem?: number;
 }
 
 export interface SecurityAlert {

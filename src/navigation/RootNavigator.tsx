@@ -15,7 +15,7 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootNavigator: React.FC = () => {
-  const { user, isAuthLoading } = useAuthContext();
+  const { user, isAuthLoading, isOnboarded } = useAuthContext();
 
   if (isAuthLoading) return null;
 
@@ -43,7 +43,7 @@ export const RootNavigator: React.FC = () => {
           component={SplashScreen} 
           options={{ animation: 'fade' }} 
         />
-        {user ? (
+        {user && isOnboarded ? (
           <Stack.Screen 
             name="Main" 
             component={MainTabNavigator} 

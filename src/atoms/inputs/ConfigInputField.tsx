@@ -13,6 +13,7 @@ export interface ConfigInputFieldProps {
   hint?: string;
   error?: string;
   keyboardType?: KeyboardTypeOptions;
+  disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -24,6 +25,7 @@ export const ConfigInputField: React.FC<ConfigInputFieldProps> = ({
   hint,
   error,
   keyboardType,
+  disabled = false,
   style,
 }) => {
   return (
@@ -38,6 +40,7 @@ export const ConfigInputField: React.FC<ConfigInputFieldProps> = ({
         placeholder={placeholder}
         keyboardType={keyboardType}
         error={!!error}
+        disabled={disabled}
       />
       
       {!!error && (

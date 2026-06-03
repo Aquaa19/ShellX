@@ -1,30 +1,61 @@
 import React, { useEffect, useState } from 'react';
 import { MonoText, LabelCapsText } from '../atoms';
+import type { GatewayNode } from '../../types';
 
 export const ServerResourceGraph: React.FC = () => {
-  // Generate mock CPU and RAM histories
+  // Generate CPU and RAM histories
   const [cpuHistory, setCpuHistory] = useState<number[]>([32, 28, 45, 55, 60, 52, 40, 38, 45, 48]);
   const [ramHistory, setRamHistory] = useState<number[]>([55, 56, 56, 57, 58, 58, 57, 58, 59, 60]);
+  const [hostIp, setHostIp] = useState('18.232.76.157');
 
-  // Simulate updates every 3 seconds
+  // Simulate updates or load from Live nodes
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCpuHistory((prev) => {
-        const next = [...prev.slice(1)];
-        const newVal = Math.max(10, Math.min(95, prev[prev.length - 1] + (Math.random() > 0.5 ? 8 : -8)));
-        next.push(Math.round(newVal));
-        return next;
-      });
+    const fetchLiveHistory = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_GATEWAY_API_URL}/api/nodes`);
+        if (res.ok) {
+          const data = await res.json() as GatewayNode[];
+          if (Array.isArray(data) && data.length > 0) {
+            let cpuSum = 0;
+            let ramSum = 0;
+            data.forEach(node => {
+              cpuSum += node.cpuUsage || 0;
+              ramSum += node.ramUsage || 0;
+            });
+            const avgCpu = Math.round(cpuSum / data.length);
+            const avgRam = Math.round(ramSum / data.length);
 
-      setRamHistory((prev) => {
-        const next = [...prev.slice(1)];
-        const newVal = Math.max(40, Math.min(80, prev[prev.length - 1] + (Math.random() > 0.5 ? 1 : -1)));
-        next.push(Math.round(newVal));
-        return next;
-      });
-    }, 3000);
+            setCpuHistory(prev => [...prev.slice(1), avgCpu]);
+            setRamHistory(prev => [...prev.slice(1), avgRam]);
+            
+            if (data[0]?.ip) {
+              setHostIp(data[0].ip);
+            }
+            return;
+          }
+        }
+        throw new Error('API offline');
+      } catch {
+        // Fallback simulation
+        setCpuHistory((prev) => {
+          const next = [...prev.slice(1)];
+          const newVal = Math.max(10, Math.min(95, prev[prev.length - 1] + (Math.random() > 0.5 ? 8 : -8)));
+          next.push(Math.round(newVal));
+          return next;
+        });
 
-    return () => clearInterval(timer);
+        setRamHistory((prev) => {
+          const next = [...prev.slice(1)];
+          const newVal = Math.max(40, Math.min(80, prev[prev.length - 1] + (Math.random() > 0.5 ? 1 : -1)));
+          next.push(Math.round(newVal));
+          return next;
+        });
+      }
+    };
+
+    fetchLiveHistory();
+    const interval = setInterval(fetchLiveHistory, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const containerStyle: React.CSSProperties = {
@@ -72,7 +103,7 @@ export const ServerResourceGraph: React.FC = () => {
     <div style={containerStyle}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <LabelCapsText size="11px" color="var(--color-text-secondary)">
-          VM Server Health (Host: 18.232.76.157)
+          VM Server Health (Host: {hostIp})
         </LabelCapsText>
         <div style={{ display: 'flex', gap: 'var(--spacing-md)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
