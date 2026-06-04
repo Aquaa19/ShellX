@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, SafeAreaView, FlatList, ListRenderItem } from 'react-native';
 import { Theme } from '../tokens';
-import { IconButton, MaterialIcon, ConnectionBadge, TerminalText, SecondaryActionButton } from '../atoms';
+import { IconButton, MaterialIcon, ConnectionBadge, TerminalText, SecondaryActionButton, MonoText } from '../atoms';
 import { 
   AppBackground, 
   AppHeader,
@@ -40,26 +40,60 @@ export const LessonsScreen: React.FC = () => {
   const hasStarted = allLessons.some((l) => l.state === 'inProgress' || l.state === 'complete');
   const overallProgress = allLessons.length > 0 ? completedLessons / allLessons.length : 0;
 
-  const renderModule: ListRenderItem<LessonModule> = ({ item }) => (
-    <LessonModuleSection moduleTitle={item.title}>
-      <LessonCardGrid>
-        {item.lessons.map((lesson: LessonData) => (
-          <LessonCard
-            key={lesson.id}
-            title={lesson.title}
-            state={lesson.state}
-            progress={lesson.progress}
-            commandsCount={lesson.commandCount}
-            estimatedMinutes={lesson.estimatedMinutes}
-            onPress={async () => {
-              await selectLesson(lesson);
-              setModalVisible(true);
-            }}
-          />
+  const renderModule: ListRenderItem<LessonModule> = ({ item }) => {
+    const groups: { chapterTitle?: string; chapterId?: string; lessons: LessonData[] }[] = [];
+    item.lessons.forEach((lesson) => {
+      const lastGroup = groups[groups.length - 1];
+      if (lastGroup && lastGroup.chapterTitle === lesson.chapterTitle) {
+        lastGroup.lessons.push(lesson);
+      } else {
+        groups.push({
+          chapterTitle: lesson.chapterTitle,
+          chapterId: lesson.chapterId,
+          lessons: [lesson],
+        });
+      }
+    });
+
+    return (
+      <LessonModuleSection moduleTitle={item.title}>
+        {groups.map((group, groupIdx) => (
+          <View key={group.chapterId || `group-${groupIdx}`} style={styles.groupContainer}>
+            {group.chapterTitle ? (
+              <View style={[
+                styles.chapterHeader,
+                groupIdx === 0 && { marginTop: Theme.spacing.xs }
+              ]}>
+                <MonoText
+                  size={Theme.fontSize.bodySM}
+                  weight="bold"
+                  style={styles.chapterTitleText}
+                >
+                  {group.chapterTitle}
+                </MonoText>
+              </View>
+            ) : null}
+            <LessonCardGrid>
+              {group.lessons.map((lesson: LessonData) => (
+                <LessonCard
+                  key={lesson.id}
+                  title={lesson.title}
+                  state={lesson.state}
+                  progress={lesson.progress}
+                  commandsCount={lesson.commandCount}
+                  estimatedMinutes={lesson.estimatedMinutes}
+                  onPress={async () => {
+                    await selectLesson(lesson);
+                    setModalVisible(true);
+                  }}
+                />
+              ))}
+            </LessonCardGrid>
+          </View>
         ))}
-      </LessonCardGrid>
-    </LessonModuleSection>
-  );
+      </LessonModuleSection>
+    );
+  };
 
   const renderContent = () => {
     if (isLoading) {
@@ -147,6 +181,21 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: Theme.spacing.xxl,
+  },
+  groupContainer: {
+    marginBottom: Theme.spacing.md,
+  },
+  chapterHeader: {
+    borderLeftWidth: 3,
+    borderLeftColor: '#ffb95f',
+    paddingLeft: Theme.spacing.sm,
+    marginTop: Theme.spacing.md,
+    marginBottom: Theme.spacing.sm,
+    justifyContent: 'center',
+  },
+  chapterTitleText: {
+    color: '#ffb95f',
+    letterSpacing: 1,
   },
   listHeader: {
     marginBottom: Theme.spacing.lg,

@@ -484,7 +484,7 @@ export const CurriculumScreen: React.FC = () => {
           type: 'set'
         });
 
-        const flatLessons: Lesson[] = [];
+        const flatLessons: (Lesson & { chapterTitle: string; chapterId: string })[] = [];
         const sortedChapters = [...mod.chapters].sort((a, b) => a.order - b.order);
         
         for (const ch of sortedChapters) {
@@ -496,7 +496,11 @@ export const CurriculumScreen: React.FC = () => {
 
           const sortedLessons = [...ch.lessons].sort((a, b) => a.order - b.order);
           for (const les of sortedLessons) {
-            flatLessons.push(les);
+            flatLessons.push({
+              ...les,
+              chapterTitle: ch.title,
+              chapterId: ch.id,
+            });
             
             // Set dynamic hierarchical web lesson document
             operations.push({
@@ -558,6 +562,8 @@ export const CurriculumScreen: React.FC = () => {
             prerequisiteId?: string | null;
             type: string;
             questions?: import('../types').MCQQuestion[];
+            chapterTitle?: string;
+            chapterId?: string;
           } = {
             title: lesson.title,
             description: lesson.description,
@@ -571,7 +577,9 @@ export const CurriculumScreen: React.FC = () => {
             order: i + 1,
             starterFiles: lesson.starterFiles || [],
             type: lesson.type,
-            questions: lesson.questions || []
+            questions: lesson.questions || [],
+            chapterTitle: lesson.chapterTitle,
+            chapterId: lesson.chapterId
           };
           
           if (prereqId) {

@@ -19,6 +19,7 @@ export interface TerminalWorkspaceProps {
   cursorCol: number;
   onKeyPress: (key: string) => void;
   promptPrefix?: string;
+  bottomPadding?: number;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -34,6 +35,7 @@ export const TerminalWorkspace: React.FC<TerminalWorkspaceProps> = ({
   cursorCol,
   onKeyPress,
   promptPrefix,
+  bottomPadding = 0,
   style,
 }) => {
   return (
@@ -47,6 +49,7 @@ export const TerminalWorkspace: React.FC<TerminalWorkspaceProps> = ({
           onInputChange={onInputChange}
           onSubmit={onSubmit}
           promptPrefix={promptPrefix}
+          bottomPadding={bottomPadding}
         />
       </View>
       

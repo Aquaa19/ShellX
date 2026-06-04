@@ -96,6 +96,8 @@ export const LessonService = {
             type:               card.type || 'theory_only',
             questions:          card.questions || [],
             prerequisiteId:     card.prerequisiteId,
+            chapterTitle:       card.chapterTitle,
+            chapterId:          card.chapterId,
           };
         });
 

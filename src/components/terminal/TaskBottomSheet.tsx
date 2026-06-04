@@ -1,5 +1,5 @@
-import React from 'react';
-import { Animated, StyleSheet, StyleProp, ViewStyle, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Animated, StyleSheet, StyleProp, ViewStyle, View, Keyboard, useWindowDimensions, Platform } from 'react-native';
 import { Theme } from '../../tokens';
 import { TaskSheetHeader } from './TaskSheetHeader';
 import { TaskSheetActions } from './TaskSheetActions';
@@ -25,16 +25,48 @@ export const TaskBottomSheet: React.FC<TaskBottomSheetProps> = ({
   children,
   style,
 }) => {
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSubscription = Keyboard.addListener(showEvent, () => {
+      setIsKeyboardVisible(true);
+    });
+    const hideSubscription = Keyboard.addListener(hideEvent, () => {
+      setIsKeyboardVisible(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
+  const sheetHeight = isKeyboardVisible 
+    ? (isLandscape ? 64 : 250) 
+    : (isLandscape ? '40%' : '55%');
+
   return (
     <Animated.View
       style={[
         styles.container,
-        { transform: [{ translateY }] },
+        { 
+          transform: [{ translateY }],
+          height: sheetHeight,
+          overflow: 'hidden',
+        },
         style,
       ]}
     >
       <TaskSheetHeader title={title} onClose={onClose} />
-      <View style={styles.content}>
+      <View style={[
+        styles.content,
+        isKeyboardVisible && { paddingVertical: Theme.spacing.xs },
+      ]}>
         {children}
       </View>
       <TaskSheetActions onCheck={onCheck} onHint={onHint} isChecking={isChecking} />
@@ -48,7 +80,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: '60%', // Slides up to 60% of the screen
     backgroundColor: Theme.colors.surface.default,
     borderTopLeftRadius: Theme.borderRadius.xl,
     borderTopRightRadius: Theme.borderRadius.xl,

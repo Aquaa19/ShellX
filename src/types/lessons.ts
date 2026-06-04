@@ -29,6 +29,8 @@ export interface LessonData {
   starterFiles?:      StarterFile[];
   type?:              'theory_only' | 'terminal_challenge' | 'editor_challenge' | 'exercise';
   questions?:         MCQQuestion[];
+  chapterTitle?:      string;
+  chapterId?:         string;
 }
 
 export interface LessonModule {

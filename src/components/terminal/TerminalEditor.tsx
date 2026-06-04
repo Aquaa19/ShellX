@@ -11,6 +11,7 @@ export interface TerminalEditorProps {
   onInputChange: (text: string) => void;
   onSubmit: () => void;
   promptPrefix?: string;
+  bottomPadding?: number;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -20,6 +21,7 @@ export const TerminalEditor: React.FC<TerminalEditorProps> = ({
   onInputChange,
   onSubmit,
   promptPrefix,
+  bottomPadding = 0,
   style,
 }) => {
   const flatListRef = useRef<FlatList<TerminalLine>>(null);
@@ -54,7 +56,10 @@ export const TerminalEditor: React.FC<TerminalEditorProps> = ({
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
       style={[styles.container, style]}
-      contentContainerStyle={styles.contentContainer}
+      contentContainerStyle={[
+        styles.contentContainer,
+        { paddingBottom: bottomPadding + Theme.spacing.md },
+      ]}
       showsVerticalScrollIndicator={false}
       onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
       onLayout={handleLayout}

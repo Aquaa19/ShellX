@@ -21,6 +21,18 @@ export const TerminalPromptLine = React.forwardRef<TextInput, TerminalPromptLine
   isFocused = true,
   style,
 }, ref) => {
+  const handleTextChange = (text: string) => {
+    if (text.includes('\n')) {
+      const cleanedText = text.replace(/\n/g, '');
+      onChangeText(cleanedText);
+      if (onSubmitEditing) {
+        onSubmitEditing();
+      }
+    } else {
+      onChangeText(text);
+    }
+  };
+
   return (
     <View style={[styles.container, style]}>
       <MonoText size={Theme.fontSize.codeBase} color={Theme.colors.syntax.green} style={styles.prefix}>
@@ -31,17 +43,19 @@ export const TerminalPromptLine = React.forwardRef<TextInput, TerminalPromptLine
         <TerminalTextInput
           ref={ref}
           value={value}
-          onChangeText={onChangeText}
+          onChangeText={handleTextChange}
           onSubmitEditing={onSubmitEditing}
           autoFocus={isFocused}
+          multiline={true}
+          blurOnSubmit={false}
           style={styles.inlineInput}
         />
         
         <View style={styles.textOverlay} pointerEvents="none">
           <MonoText size={Theme.fontSize.codeBase} color={Theme.colors.syntax.white}>
             {value}
+            {isFocused && <TerminalCursor active={true} />}
           </MonoText>
-          {isFocused && <TerminalCursor active={true} />}
         </View>
       </View>
     </View>
@@ -51,14 +65,16 @@ export const TerminalPromptLine = React.forwardRef<TextInput, TerminalPromptLine
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    alignItems: 'center',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
     minHeight: Theme.lineHeight.terminal,
   },
   prefix: {
     marginRight: Theme.spacing.xs,
   },
   inputContainer: {
-    flex: 1,
+    flexGrow: 1,
+    minWidth: 150,
     position: 'relative',
   },
   inlineInput: {
@@ -67,15 +83,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     padding: 0,
     margin: 0,
-    height: Theme.lineHeight.terminal,
+    minHeight: Theme.lineHeight.terminal,
   },
   textOverlay: {
     position: 'absolute',
     left: 0,
     top: 0,
-    bottom: 0,
     right: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
 });

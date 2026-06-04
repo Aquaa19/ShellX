@@ -1,14 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Animated, Modal, Alert, ScrollView, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Animated, Modal, Alert, ScrollView, TouchableOpacity, Text, Keyboard } from 'react-native';
 import { Theme } from '../../tokens';
-import { IconButton, MaterialIcon, ConnectionBadge, StatusIndicatorBadge, SafeText, BorderedSurface, SecondaryActionButton, MonoText } from '../../atoms';
-import { BodyText } from '../../atoms/text/BodyText';
+import { IconButton, MaterialIcon, ConnectionBadge, StatusIndicatorBadge, SafeText, BorderedSurface, SecondaryActionButton, MonoText, HeadlineText } from '../../atoms';
 import { 
   AppBackground, 
   AppHeader, 
   TerminalWorkspace,
   LessonContextHeader,
-  TaskBottomSheet
+  TaskSheetActions
 } from '../../components';
 import { useTerminalConnection, useLessonsContext } from '../../context';
 import type { VimMode } from '../../types';
@@ -28,7 +27,6 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
     isValidating,
     lastValidationResult,
     runValidation,
-    dismissTaskSheet,
     selectLesson,
     completeExerciseLesson,
     deselectLesson,
@@ -48,6 +46,15 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [viewMode, setViewMode] = useState<'slides' | 'terminal'>('slides');
+
+  const [activeTab, setActiveTab] = useState<'terminal' | 'checklist'>('checklist');
+
+  const handleTabChange = (tab: 'terminal' | 'checklist') => {
+    setActiveTab(tab);
+    if (tab === 'checklist') {
+      Keyboard.dismiss();
+    }
+  };
 
   const handleClose = () => {
     deselectLesson();
@@ -178,25 +185,45 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
   const promptPrefix = isPrompt ? lastLine.content.trim() + ' ' : '$ ';
 
   const renderFormattedText = (text: string, baseStyle: any, key?: string | number) => {
-    const parts = text.split('**');
+    const boldParts = text.split('**');
     return (
       <SafeText key={key} style={baseStyle}>
-        {parts.map((part, index) => {
-          const isBold = index % 2 === 1;
+        {boldParts.map((boldPart, boldIdx) => {
+          const isBold = boldIdx % 2 === 1;
+          const codeParts = boldPart.split('`');
+          const renderedContent = codeParts.map((codePart, codeIdx) => {
+            const isCode = codeIdx % 2 === 1;
+            if (isCode) {
+              return (
+                <Text
+                  key={`code-${codeIdx}`}
+                  style={{
+                    fontFamily: Theme.fontFamily.mono || 'monospace',
+                    color: Theme.colors.syntax.orange || '#ffb95f',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  }}
+                >
+                  {codePart}
+                </Text>
+              );
+            }
+            return codePart;
+          });
+
           if (isBold) {
             return (
               <Text
-                key={index}
+                key={`bold-${boldIdx}`}
                 style={{
                   fontFamily: Theme.fontFamily.sansBold,
                   fontWeight: 'bold',
                 }}
               >
-                {part}
+                {renderedContent}
               </Text>
             );
           }
-          return part;
+          return renderedContent;
         })}
       </SafeText>
     );
@@ -387,14 +414,14 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
                   <IconButton 
                     icon={<MaterialIcon name="assignment" size={24} color={Theme.colors.text.primary} />}
                     onPress={() => {
-                      if (slides.length > 0) {
-                        setViewMode(viewMode === 'slides' ? 'terminal' : 'slides');
+                      if (slides.length > 0 && viewMode === 'slides') {
+                        setViewMode('terminal');
+                        setActiveTab('checklist');
                       } else {
-                        // Toggle instructions sheet
-                        if (isTaskSheetOpen) {
-                          dismissTaskSheet();
-                        } else if (activeLessonData) {
-                          selectLesson(activeLessonData);
+                        const targetTab = activeTab === 'terminal' ? 'checklist' : 'terminal';
+                        setActiveTab(targetTab);
+                        if (targetTab === 'checklist') {
+                          Keyboard.dismiss();
                         }
                       }
                     }}
@@ -409,6 +436,41 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
                 title={activeLessonData.title} 
                 progress={activeLessonData.progress} 
               />
+            )}
+
+            {viewMode === 'terminal' && (
+              <View style={styles.tabContainer}>
+                <TouchableOpacity 
+                  style={[styles.tabButton, activeTab === 'terminal' && styles.activeTabButton]} 
+                  onPress={() => handleTabChange('terminal')}
+                >
+                  <View style={styles.tabContent}>
+                    <MaterialIcon 
+                      name="code" 
+                      size={18} 
+                      color={activeTab === 'terminal' ? (Theme.colors.syntax.green || '#34d399') : Theme.colors.text.tertiary} 
+                    />
+                    <MonoText style={[styles.tabText, activeTab === 'terminal' && styles.activeTabText]}>
+                      TERMINAL
+                    </MonoText>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.tabButton, activeTab === 'checklist' && styles.activeTabButton]} 
+                  onPress={() => handleTabChange('checklist')}
+                >
+                  <View style={styles.tabContent}>
+                    <MaterialIcon 
+                      name="assignment" 
+                      size={18} 
+                      color={activeTab === 'checklist' ? (Theme.colors.syntax.green || '#34d399') : Theme.colors.text.tertiary} 
+                    />
+                    <MonoText style={[styles.tabText, activeTab === 'checklist' && styles.activeTabText]}>
+                      CHECKLIST
+                    </MonoText>
+                  </View>
+                </TouchableOpacity>
+              </View>
             )}
 
             {/* Conditional Quiz Workspace vs CLI Terminal Workspace */}
@@ -587,54 +649,60 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
                 </View>
               </ScrollView>
             ) : (
-              <>
-                {/* Main Terminal Workspace */}
-                <TerminalWorkspace
-                  filepath={`/home/lessons/${activeLessonData?.id ?? 'workspace'}`}
-                  connectionState={connectionState}
-                  lines={displayLines}
-                  currentInput={inputText}
-                  onInputChange={handleInputChange}
-                  onSubmit={handleSubmitCommand}
-                  vimMode={vimMode}
-                  cursorRow={displayLines.length}
-                  cursorCol={inputText.length + 1}
-                  onKeyPress={handleKeyPress}
-                  promptPrefix={promptPrefix}
-                />
+              <View style={{ flex: 1 }}>
+                {activeTab === 'terminal' ? (
+                  <TerminalWorkspace
+                    filepath={`/home/lessons/${activeLessonData?.id ?? 'workspace'}`}
+                    connectionState={connectionState}
+                    lines={displayLines}
+                    currentInput={inputText}
+                    onInputChange={handleInputChange}
+                    onSubmit={handleSubmitCommand}
+                    vimMode={vimMode}
+                    cursorRow={displayLines.length}
+                    cursorCol={inputText.length + 1}
+                    onKeyPress={handleKeyPress}
+                    promptPrefix={promptPrefix}
+                    bottomPadding={0}
+                  />
+                ) : (
+                  <View style={styles.checklistContainer}>
+                    <ScrollView style={styles.checklistScroll} contentContainerStyle={styles.checklistScrollContent} showsVerticalScrollIndicator={true}>
+                      <HeadlineText size={Theme.fontSize.titleSM} weight="bold" color={Theme.colors.text.primary} style={styles.checklistTitle}>
+                        Practice Checklist
+                      </HeadlineText>
 
-                {/* Floating Task Bottom Sheet */}
-                <TaskBottomSheet
-                  title="Practice Checklist"
-                  translateY={sheetTranslateY}
-                  onClose={dismissTaskSheet}
-                  onCheck={runValidation}
-                  onHint={() => Alert.alert('Lesson Hint', activeLessonData?.description || 'Follow instructions and complete command operations.')}
-                  isChecking={isValidating}
-                >
-                  <View style={styles.sheetBody}>
-                    <BodyText style={styles.instructionsText}>
-                      {activeLessonData?.instructions || 'Execute required validations to pass this lesson.'}
-                    </BodyText>
-                    
-                    {lastValidationResult && (
-                      <View style={styles.resultContainer}>
-                        <StatusIndicatorBadge 
-                          label={lastValidationResult.passed ? 'PASSED' : 'FAILED'} 
-                          variant={lastValidationResult.passed ? 'success' : 'error'} 
-                          style={styles.badgeMargin}
-                        />
-                        <SafeText style={[
-                          styles.resultOutput,
-                          lastValidationResult.passed ? styles.textSuccess : styles.textError
-                        ]} numberOfLines={3}>
-                          {lastValidationResult.output}
-                        </SafeText>
-                      </View>
-                    )}
+                      {renderFormattedText(
+                        activeLessonData?.instructions || 'Execute required validations to pass this lesson.',
+                        styles.instructionsText
+                      )}
+                      
+                      {lastValidationResult && (
+                        <View style={styles.resultContainer}>
+                          <StatusIndicatorBadge 
+                            label={lastValidationResult.passed ? 'PASSED' : 'FAILED'} 
+                            variant={lastValidationResult.passed ? 'success' : 'error'} 
+                            style={styles.badgeMargin}
+                          />
+                          <SafeText style={[
+                            styles.resultOutput,
+                            lastValidationResult.passed ? styles.textSuccess : styles.textError
+                          ]}>
+                            {lastValidationResult.output}
+                          </SafeText>
+                        </View>
+                      )}
+                    </ScrollView>
+
+                    <TaskSheetActions 
+                      onCheck={runValidation} 
+                      onHint={() => Alert.alert('Lesson Hint', activeLessonData?.description || 'Follow instructions and complete command operations.')} 
+                      isChecking={isValidating} 
+                      style={styles.checklistActions}
+                    />
                   </View>
-                </TaskBottomSheet>
-              </>
+                )}
+              </View>
             )}
 
           </KeyboardAvoidingView>
@@ -925,5 +993,66 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Theme.colors.text.secondary,
     lineHeight: 13 * Theme.lineHeight.normal,
+  },
+  sheetBodyContent: {
+    paddingBottom: Theme.spacing.md,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#090909',
+    borderBottomWidth: Theme.borderWidth.hairline,
+    borderBottomColor: Theme.colors.border.subtle,
+    height: 48,
+  },
+  tabButton: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+  },
+  activeTabButton: {
+    borderBottomColor: Theme.colors.syntax.green || '#34d399',
+    backgroundColor: 'rgba(52, 211, 153, 0.02)',
+  },
+  tabContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Theme.spacing.sm,
+  },
+  tabText: {
+    fontFamily: Theme.fontFamily.mono,
+    fontSize: Theme.fontSize.labelSM,
+    color: Theme.colors.text.tertiary,
+  },
+  activeTabText: {
+    color: Theme.colors.syntax.green || '#34d399',
+    fontFamily: Theme.fontFamily.monoBold,
+    fontWeight: 'bold',
+  },
+  checklistContainer: {
+    flex: 1,
+    backgroundColor: Theme.colors.background.floor,
+  },
+  checklistScroll: {
+    flex: 1,
+  },
+  checklistScrollContent: {
+    padding: Theme.spacing.md,
+    paddingBottom: Theme.spacing.xl,
+  },
+  checklistTitle: {
+    color: Theme.colors.text.primary,
+    marginBottom: Theme.spacing.md,
+    borderBottomWidth: Theme.borderWidth.hairline,
+    borderBottomColor: Theme.colors.border.subtle,
+    paddingBottom: Theme.spacing.sm,
+  },
+  checklistActions: {
+    backgroundColor: Theme.colors.surface.default,
+    borderTopWidth: Theme.borderWidth.hairline,
+    borderTopColor: Theme.colors.border.subtle,
+    paddingHorizontal: Theme.spacing.md,
+    paddingVertical: Theme.spacing.sm,
   },
 });

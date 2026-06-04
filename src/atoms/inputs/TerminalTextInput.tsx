@@ -11,6 +11,7 @@ export interface TerminalTextInputProps {
   autoFocus?: boolean;
   editable?: boolean;
   multiline?: boolean;
+  blurOnSubmit?: boolean;
   style?: StyleProp<TextStyle>;
   testID?: string;
 }
@@ -24,6 +25,7 @@ export const TerminalTextInput = React.forwardRef<TextInput, TerminalTextInputPr
   autoFocus = false,
   editable = true,
   multiline = false,
+  blurOnSubmit,
   style,
   testID,
 }, ref) => {
@@ -40,10 +42,11 @@ export const TerminalTextInput = React.forwardRef<TextInput, TerminalTextInputPr
       autoFocus={autoFocus}
       editable={editable}
       multiline={multiline}
+      blurOnSubmit={blurOnSubmit}
       autoCapitalize="none"
       autoCorrect={false}
       spellCheck={false}
-      keyboardType="visible-password"
+      keyboardType={multiline ? 'default' : 'visible-password'}
       autoComplete="off"
       importantForAutofill="no"
       textContentType="none"
