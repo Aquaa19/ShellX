@@ -240,6 +240,9 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
 
       if (lesson.starterFiles && lesson.starterFiles.length > 0) {
         for (const file of lesson.starterFiles) {
+          if (!file || typeof file.name !== 'string' || typeof file.content !== 'string') {
+            continue;
+          }
           const b64 = utf8ToBase64(file.content);
           cmd += ` && echo "${b64}" | base64 -d > "${lessonPath}/${file.name}"`;
         }

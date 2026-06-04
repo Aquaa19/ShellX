@@ -127,7 +127,7 @@ export const CurriculumScreen: React.FC = () => {
               estimatedMinutes: lData.estimatedMinutes || 5,
               order: lData.order || 0,
               tasks: lData.tasks || [],
-              starterFiles: lData.starterFiles || [],
+              starterFiles: (lData.starterFiles || []).filter((f: { name?: unknown; content?: unknown }) => f && typeof f.name === 'string' && typeof f.content === 'string'),
               questions: lData.questions || [],
             };
           }).sort((a, b) => a.order - b.order);
@@ -565,7 +565,9 @@ export const CurriculumScreen: React.FC = () => {
             estimatedMinutes: lesson.estimatedMinutes,
             validationCommand: valCmd,
             validationExpected: valExp,
-            instructions: lesson.instructions,
+            instructions: ((lesson.type === 'terminal_challenge' || lesson.type === 'editor_challenge') && lesson.tasks && lesson.tasks.length > 0)
+              ? `${lesson.instructions}\n\n${lesson.tasks.map((t, idx) => `**Task #${idx + 1}**\n${t.instruction}`).join('\n\n')}`
+              : lesson.instructions,
             order: i + 1,
             starterFiles: lesson.starterFiles || [],
             type: lesson.type,
