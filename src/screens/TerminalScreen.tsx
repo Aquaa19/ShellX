@@ -29,6 +29,7 @@ export const TerminalScreen: React.FC = () => {
   const { selectedPath, rootPath } = useFileSystemContext();
 
   const [inputText, setInputText] = useState('');
+  const [inputSelection, setInputSelection] = useState({ start: 0, end: 0 });
   const [vimMode, setVimMode] = useState<VimMode>('NORMAL');
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isFileEditorVisible, setIsFileEditorVisible] = useState(false);
@@ -78,6 +79,7 @@ export const TerminalScreen: React.FC = () => {
       }
       setIsFileEditorVisible(true);
       setInputText('');
+      setInputSelection({ start: 0, end: 0 });
       return;
     }
 
@@ -91,11 +93,13 @@ export const TerminalScreen: React.FC = () => {
 
     sendCommand(inputText);
     setInputText('');
+    setInputSelection({ start: 0, end: 0 });
   };
 
   const handleInputChange = (text: string) => {
     if (text === '') {
       setInputText('');
+      setInputSelection({ start: 0, end: 0 });
       return;
     }
 
@@ -113,10 +117,15 @@ export const TerminalScreen: React.FC = () => {
         setIsAltActive(false);
       }
       setInputText('');
+      setInputSelection({ start: 0, end: 0 });
       return;
     }
 
     setInputText(text);
+  };
+
+  const handleSelectionChange = (e: any) => {
+    setInputSelection(e.nativeEvent.selection);
   };
 
   const handleKeyPress = (key: string) => {
@@ -145,13 +154,16 @@ export const TerminalScreen: React.FC = () => {
     ) {
       sendRawKey(key);
       setInputText('');
+      setInputSelection({ start: 0, end: 0 });
       setIsCtrlActive(false);
       setIsAltActive(false);
     } else if (key === ANSI.ARROW_UP) {
       if (commandHistory.length === 0) return;
       const newIndex = historyIndex === -1 ? commandHistory.length - 1 : Math.max(0, historyIndex - 1);
       setHistoryIndex(newIndex);
-      setInputText(commandHistory[newIndex]);
+      const newText = commandHistory[newIndex];
+      setInputText(newText);
+      setInputSelection({ start: newText.length, end: newText.length });
       setIsCtrlActive(false);
       setIsAltActive(false);
     } else if (key === ANSI.ARROW_DOWN) {
@@ -160,10 +172,27 @@ export const TerminalScreen: React.FC = () => {
       if (newIndex >= commandHistory.length) {
         setHistoryIndex(-1);
         setInputText('');
+        setInputSelection({ start: 0, end: 0 });
       } else {
         setHistoryIndex(newIndex);
-        setInputText(commandHistory[newIndex]);
+        const newText = commandHistory[newIndex];
+        setInputText(newText);
+        setInputSelection({ start: newText.length, end: newText.length });
       }
+      setIsCtrlActive(false);
+      setIsAltActive(false);
+    } else if (key === ANSI.ARROW_LEFT && inputText.length > 0) {
+      setInputSelection((prev) => {
+        const nextPos = Math.max(0, prev.start - 1);
+        return { start: nextPos, end: nextPos };
+      });
+      setIsCtrlActive(false);
+      setIsAltActive(false);
+    } else if (key === ANSI.ARROW_RIGHT && inputText.length > 0) {
+      setInputSelection((prev) => {
+        const nextPos = Math.min(inputText.length, prev.start + 1);
+        return { start: nextPos, end: nextPos };
+      });
       setIsCtrlActive(false);
       setIsAltActive(false);
     } else {
@@ -242,9 +271,11 @@ export const TerminalScreen: React.FC = () => {
             onSubmit={handleSubmitCommand}
             vimMode={vimMode}
             cursorRow={displayLines.length}
-            cursorCol={inputText.length + 1}
+            cursorCol={inputSelection.start + 1}
             onKeyPress={handleKeyPress}
             promptPrefix={promptPrefix}
+            selection={inputSelection}
+            onSelectionChange={handleSelectionChange}
           />
 
           {/* Hamburger Options Menu Modal */}

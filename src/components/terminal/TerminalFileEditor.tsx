@@ -53,8 +53,11 @@ export const TerminalFileEditor: React.FC<TerminalFileEditorProps> = ({
       const response = await executeBackgroundCommand(`cat "${targetPath.trim()}" 2>&1`);
       
       // Check if command printed a shell error
-      if (
-        response.includes('No such file or directory') || 
+      if (response.includes('No such file or directory')) {
+        setContent('');
+        setOriginalContent('');
+        setStatusMessage({ text: 'New file (will be created on save).', isError: false });
+      } else if (
         response.includes('Permission denied') ||
         response.includes('Is a directory')
       ) {

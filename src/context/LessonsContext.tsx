@@ -27,7 +27,7 @@ const LessonsContext = createContext<LessonsContextState | null>(null);
 export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuthContext();
   const { serverConfig } = useAppContext();
-  const { sendCommand, outputLines, executeBackgroundCommand } = useTerminalConnection();
+  const { sendCommand, outputLines, executeBackgroundCommand, clearOutput } = useTerminalConnection();
 
   const [modules, setModules] = useState<LessonModule[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -229,6 +229,9 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     setActiveLessonData(lesson);
     setLastValidationResult(null);
     setIsTaskSheetOpen(true);
+    
+    // Reset terminal screen history locally for the new lesson workspace
+    clearOutput();
 
     // Call service layer to mark in progress
     await ProgressService.markLessonInProgress(user.uid, lesson.moduleId, lesson.id);
@@ -253,7 +256,7 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     } catch (e) {
       console.warn('[LessonsContext] Silent workspace setup cd/write failed:', e);
     }
-  }, [user, serverConfig.sshUser, executeBackgroundCommand]);
+  }, [user, serverConfig.sshUser, executeBackgroundCommand, clearOutput]);
 
   const dismissTaskSheet = useCallback(() => {
     setIsTaskSheetOpen(false);

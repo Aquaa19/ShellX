@@ -14,6 +14,8 @@ export interface TerminalTextInputProps {
   blurOnSubmit?: boolean;
   style?: StyleProp<TextStyle>;
   testID?: string;
+  selection?: { start: number; end: number };
+  onSelectionChange?: (event: any) => void;
 }
 
 export const TerminalTextInput = React.forwardRef<TextInput, TerminalTextInputProps>(({
@@ -28,6 +30,8 @@ export const TerminalTextInput = React.forwardRef<TextInput, TerminalTextInputPr
   blurOnSubmit,
   style,
   testID,
+  selection,
+  onSelectionChange,
 }, ref) => {
   return (
     <TextInput
@@ -50,6 +54,8 @@ export const TerminalTextInput = React.forwardRef<TextInput, TerminalTextInputPr
       autoComplete="off"
       importantForAutofill="no"
       textContentType="none"
+      selection={selection}
+      onSelectionChange={onSelectionChange}
       caretHidden={true}
       selectionColor="transparent"
       style={[styles.input, style]}

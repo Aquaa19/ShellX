@@ -11,6 +11,8 @@ export interface TerminalPromptLineProps {
   promptPrefix?: string;
   isFocused?: boolean;
   style?: StyleProp<ViewStyle>;
+  selection?: { start: number; end: number };
+  onSelectionChange?: (event: any) => void;
 }
 
 export const TerminalPromptLine = React.forwardRef<TextInput, TerminalPromptLineProps>(({
@@ -20,7 +22,25 @@ export const TerminalPromptLine = React.forwardRef<TextInput, TerminalPromptLine
   promptPrefix = '$',
   isFocused = true,
   style,
+  selection,
+  onSelectionChange,
 }, ref) => {
+  const [cursorIndex, setCursorIndex] = React.useState(value.length);
+
+  React.useEffect(() => {
+    if (cursorIndex > value.length) {
+      setCursorIndex(value.length);
+    }
+  }, [value, cursorIndex]);
+
+  const handleSelectionChange = (e: any) => {
+    setCursorIndex(e.nativeEvent.selection.start);
+    if (onSelectionChange) {
+      onSelectionChange(e);
+    }
+  };
+
+  const safeCursorIndex = Math.min(cursorIndex, value.length);
   const handleTextChange = (text: string) => {
     if (text.includes('\n')) {
       const cleanedText = text.replace(/\n/g, '');
@@ -49,12 +69,15 @@ export const TerminalPromptLine = React.forwardRef<TextInput, TerminalPromptLine
           multiline={true}
           blurOnSubmit={false}
           style={styles.inlineInput}
+          selection={selection}
+          onSelectionChange={handleSelectionChange}
         />
         
         <View style={styles.textOverlay} pointerEvents="none">
           <MonoText size={Theme.fontSize.codeBase} color={Theme.colors.syntax.white}>
-            {value}
+            {value.slice(0, safeCursorIndex)}
             {isFocused && <TerminalCursor active={true} />}
+            {value.slice(safeCursorIndex)}
           </MonoText>
         </View>
       </View>

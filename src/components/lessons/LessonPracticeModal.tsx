@@ -7,9 +7,10 @@ import {
   AppHeader, 
   TerminalWorkspace,
   LessonContextHeader,
-  TaskSheetActions
+  TaskSheetActions,
+  TerminalFileEditor
 } from '../../components';
-import { useTerminalConnection, useLessonsContext } from '../../context';
+import { useTerminalConnection, useLessonsContext, useAppContext } from '../../context';
 import type { VimMode } from '../../types';
 import { ANSI } from '../../services/terminal';
 
@@ -20,6 +21,7 @@ interface LessonPracticeModalProps {
 
 export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visible, onClose }) => {
   const { connectionState, outputLines, sendCommand, sendRawKey } = useTerminalConnection();
+  const { serverConfig } = useAppContext();
   const {
     activeLessonData,
     modules,
@@ -41,8 +43,11 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
     : null;
 
   const [inputText, setInputText] = useState('');
+  const [inputSelection, setInputSelection] = useState({ start: 0, end: 0 });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedQuizOption, setSelectedQuizOption] = useState<string | null>(null);
+  const [isFileEditorVisible, setIsFileEditorVisible] = useState(false);
+  const [editingFilePath, setEditingFilePath] = useState('');
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [viewMode, setViewMode] = useState<'slides' | 'terminal'>('slides');
@@ -112,13 +117,42 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
 
   const handleSubmitCommand = () => {
     if (!inputText.trim() && vimMode === 'NORMAL') return;
+
+    const trimmedInput = inputText.trim();
+    const parts = trimmedInput.split(/\s+/);
+    const commandName = parts[0];
+
+    // Automatically intercept standard editors to open the visual Remote File Editor modal
+    if (commandName === 'nano' || commandName === 'edit' || commandName === 'code') {
+      const filePathArg = parts.slice(1).join(' ').trim();
+      if (filePathArg) {
+        let resolvedPath = filePathArg;
+        if (!filePathArg.startsWith('/') && !filePathArg.startsWith('~')) {
+          const sshUser = serverConfig.sshUser || 'student';
+          const activePath = `/home/${sshUser}/lessons/${activeLessonData?.id ?? 'workspace'}`;
+          resolvedPath = `${activePath}/${filePathArg}`;
+        }
+        setEditingFilePath(resolvedPath);
+      } else {
+        const sshUser = serverConfig.sshUser || 'student';
+        const activePath = `/home/${sshUser}/lessons/${activeLessonData?.id ?? 'workspace'}`;
+        setEditingFilePath(`${activePath}/file.txt`);
+      }
+      setIsFileEditorVisible(true);
+      setInputText('');
+      setInputSelection({ start: 0, end: 0 });
+      return;
+    }
+
     sendCommand(inputText);
     setInputText('');
+    setInputSelection({ start: 0, end: 0 });
   };
 
   const handleInputChange = (text: string) => {
     if (text === '') {
       setInputText('');
+      setInputSelection({ start: 0, end: 0 });
       return;
     }
 
@@ -136,10 +170,15 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
         setIsAltActive(false);
       }
       setInputText('');
+      setInputSelection({ start: 0, end: 0 });
       return;
     }
 
     setInputText(text);
+  };
+
+  const handleSelectionChange = (e: any) => {
+    setInputSelection(e.nativeEvent.selection);
   };
 
   const handleKeyPress = (key: string) => {
@@ -168,6 +207,21 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
     ) {
       sendRawKey(key);
       setInputText('');
+      setInputSelection({ start: 0, end: 0 });
+      setIsCtrlActive(false);
+      setIsAltActive(false);
+    } else if (key === ANSI.ARROW_LEFT && inputText.length > 0) {
+      setInputSelection((prev) => {
+        const nextPos = Math.max(0, prev.start - 1);
+        return { start: nextPos, end: nextPos };
+      });
+      setIsCtrlActive(false);
+      setIsAltActive(false);
+    } else if (key === ANSI.ARROW_RIGHT && inputText.length > 0) {
+      setInputSelection((prev) => {
+        const nextPos = Math.min(inputText.length, prev.start + 1);
+        return { start: nextPos, end: nextPos };
+      });
       setIsCtrlActive(false);
       setIsAltActive(false);
     } else {
@@ -660,10 +714,12 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
                     onSubmit={handleSubmitCommand}
                     vimMode={vimMode}
                     cursorRow={displayLines.length}
-                    cursorCol={inputText.length + 1}
+                    cursorCol={inputSelection.start + 1}
                     onKeyPress={handleKeyPress}
                     promptPrefix={promptPrefix}
                     bottomPadding={0}
+                    selection={inputSelection}
+                    onSelectionChange={handleSelectionChange}
                   />
                 ) : (
                   <View style={styles.checklistContainer}>
@@ -704,6 +760,14 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
                 )}
               </View>
             )}
+
+
+            {/* Remote File Editor Modal */}
+            <TerminalFileEditor
+              visible={isFileEditorVisible}
+              onClose={() => setIsFileEditorVisible(false)}
+              initialFilePath={editingFilePath}
+            />
 
           </KeyboardAvoidingView>
         </SafeAreaView>

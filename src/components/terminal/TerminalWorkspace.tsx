@@ -21,6 +21,8 @@ export interface TerminalWorkspaceProps {
   promptPrefix?: string;
   bottomPadding?: number;
   style?: StyleProp<ViewStyle>;
+  selection?: { start: number; end: number };
+  onSelectionChange?: (event: any) => void;
 }
 
 export const TerminalWorkspace: React.FC<TerminalWorkspaceProps> = ({
@@ -37,6 +39,8 @@ export const TerminalWorkspace: React.FC<TerminalWorkspaceProps> = ({
   promptPrefix,
   bottomPadding = 0,
   style,
+  selection,
+  onSelectionChange,
 }) => {
   return (
     <View style={[styles.container, style]}>
@@ -50,6 +54,8 @@ export const TerminalWorkspace: React.FC<TerminalWorkspaceProps> = ({
           onSubmit={onSubmit}
           promptPrefix={promptPrefix}
           bottomPadding={bottomPadding}
+          selection={selection}
+          onSelectionChange={onSelectionChange}
         />
       </View>
       

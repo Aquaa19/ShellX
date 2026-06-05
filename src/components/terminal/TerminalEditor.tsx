@@ -13,6 +13,8 @@ export interface TerminalEditorProps {
   promptPrefix?: string;
   bottomPadding?: number;
   style?: StyleProp<ViewStyle>;
+  selection?: { start: number; end: number };
+  onSelectionChange?: (event: any) => void;
 }
 
 export const TerminalEditor: React.FC<TerminalEditorProps> = ({
@@ -23,6 +25,8 @@ export const TerminalEditor: React.FC<TerminalEditorProps> = ({
   promptPrefix,
   bottomPadding = 0,
   style,
+  selection,
+  onSelectionChange,
 }) => {
   const flatListRef = useRef<FlatList<TerminalLine>>(null);
   const inputRef = useRef<TextInput>(null);
@@ -73,6 +77,8 @@ export const TerminalEditor: React.FC<TerminalEditorProps> = ({
             onChangeText={onInputChange}
             onSubmitEditing={onSubmit}
             promptPrefix={promptPrefix}
+            selection={selection}
+            onSelectionChange={onSelectionChange}
           />
         </Pressable>
       }
