@@ -14,7 +14,8 @@ import {
   ScanlineOverlay,
   DottedGridOverlay
 } from '../components';
-import { useTerminalConnection, useFileSystemContext } from '../context';
+import { useTerminalConnection, useFileSystemContext, useLessonsContext } from '../context';
+import { useIsFocused } from '@react-navigation/native';
 import type { VimMode } from '../types';
 import { ANSI } from '../services/terminal';
 
@@ -27,6 +28,8 @@ export const TerminalScreen: React.FC = () => {
   } = useTerminalConnection();
 
   const { selectedPath, rootPath } = useFileSystemContext();
+  const { activeLessonData } = useLessonsContext();
+  const isFocused = useIsFocused();
 
   const [inputText, setInputText] = useState('');
   const [inputSelection, setInputSelection] = useState({ start: 0, end: 0 });
@@ -63,6 +66,16 @@ export const TerminalScreen: React.FC = () => {
       setVimMode('NORMAL');
     }
   }, [outputLines]);
+
+  // Synchronize visual prompt directory when returning to standalone terminal from a lesson
+  useEffect(() => {
+    if (isFocused && !activeLessonData && connectionState === 'connected') {
+      const lastLine = outputLines[outputLines.length - 1];
+      if (lastLine && lastLine.content.includes('/lessons/')) {
+        sendRawKey('\r');
+      }
+    }
+  }, [isFocused, activeLessonData, connectionState, outputLines, sendRawKey]);
 
   const handleSubmitCommand = () => {
     if (!inputText.trim() && vimMode === 'NORMAL') return;

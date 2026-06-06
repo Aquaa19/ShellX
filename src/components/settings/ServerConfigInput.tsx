@@ -94,11 +94,11 @@ export const ServerConfigInput: React.FC<ServerConfigInputProps> = ({
             onBlur={() => setFocusedIndex(null)}
             maxLength={3}
             keyboardType="number-pad"
-            editable={!disabled}
+            editable={false}
             style={[
               styles.ipInput,
               { borderColor: getBorderColor(0) },
-              disabled && styles.disabledInput
+              styles.disabledInput
             ]}
             placeholder="000"
             placeholderTextColor={Theme.colors.text.placeholder}
@@ -117,11 +117,11 @@ export const ServerConfigInput: React.FC<ServerConfigInputProps> = ({
             onBlur={() => setFocusedIndex(null)}
             maxLength={3}
             keyboardType="number-pad"
-            editable={!disabled}
+            editable={false}
             style={[
               styles.ipInput,
               { borderColor: getBorderColor(1) },
-              disabled && styles.disabledInput
+              styles.disabledInput
             ]}
             placeholder="000"
             placeholderTextColor={Theme.colors.text.placeholder}
@@ -140,11 +140,11 @@ export const ServerConfigInput: React.FC<ServerConfigInputProps> = ({
             onBlur={() => setFocusedIndex(null)}
             maxLength={3}
             keyboardType="number-pad"
-            editable={!disabled}
+            editable={false}
             style={[
               styles.ipInput,
               { borderColor: getBorderColor(2) },
-              disabled && styles.disabledInput
+              styles.disabledInput
             ]}
             placeholder="000"
             placeholderTextColor={Theme.colors.text.placeholder}
@@ -163,11 +163,11 @@ export const ServerConfigInput: React.FC<ServerConfigInputProps> = ({
             onBlur={() => setFocusedIndex(null)}
             maxLength={3}
             keyboardType="number-pad"
-            editable={!disabled}
+            editable={false}
             style={[
               styles.ipInput,
               { borderColor: getBorderColor(3) },
-              disabled && styles.disabledInput
+              styles.disabledInput
             ]}
             placeholder="000"
             placeholderTextColor={Theme.colors.text.placeholder}

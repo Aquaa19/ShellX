@@ -69,20 +69,28 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
   // Parse slides from instructions
   const rawInstructions = activeLessonData?.instructions || '';
   const slides = rawInstructions
-    ? rawInstructions.split(/\r?\n---\r?\n/).map((s) => s.trim()).filter(Boolean)
+    ? rawInstructions.split(/\r?\n[ \t]*-{3,}[ \t]*\r?\n/).map((s) => s.trim()).filter(Boolean)
     : [];
 
+  const prevLessonIdRef = useRef<string | null>(null);
+
   useEffect(() => {
-    setCurrentQuestionIndex(0);
-    setSelectedQuizOption(null);
-    setCurrentSlideIndex(0);
-    
-    // Automatically default to terminal view if the lesson type is not theory and it doesn't have slides
-    const hasSlides = activeLessonData?.instructions ? activeLessonData.instructions.split(/\r?\n---\r?\n/).filter(Boolean).length > 0 : false;
-    if (activeLessonData?.type !== 'theory_only' && !hasSlides) {
-      setViewMode('terminal');
-    } else {
-      setViewMode('slides');
+    const currentId = activeLessonData?.id ?? null;
+    const hasIdChanged = currentId !== prevLessonIdRef.current;
+    prevLessonIdRef.current = currentId;
+
+    if (hasIdChanged) {
+      setCurrentQuestionIndex(0);
+      setSelectedQuizOption(null);
+      setCurrentSlideIndex(0);
+      
+      // Automatically default to terminal view if the lesson type is not theory and it doesn't have slides
+      const hasSlides = activeLessonData?.instructions ? activeLessonData.instructions.split(/\r?\n[ \t]*-{3,}[ \t]*\r?\n/).filter(Boolean).length > 0 : false;
+      if (activeLessonData?.type !== 'theory_only' && !hasSlides) {
+        setViewMode('terminal');
+      } else {
+        setViewMode('slides');
+      }
     }
   }, [activeLessonData]);
   const [vimMode, setVimMode] = useState<VimMode>('NORMAL');

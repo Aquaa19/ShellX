@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { AppEnv } from '../config/env';
@@ -36,6 +36,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isOnboarded, setIsOnboarded] = useState(false);
+  const isSigningUpEmailRef = useRef(false);
 
   useEffect(() => {
     // Initialize Google SDK
@@ -43,6 +44,11 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     // Subscribe to Firebase Auth state
     const unsubscribe = auth().onAuthStateChanged(async (firebaseUser) => {
+      if (isSigningUpEmailRef.current) {
+        setIsAuthLoading(false);
+        return;
+      }
+
       if (firebaseUser) {
         const userData: AuthUser = {
           uid: firebaseUser.uid,
@@ -136,6 +142,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const signUpWithEmail = async (email: string, password: string, displayName: string, avatarUrl?: string) => {
     setIsSigningIn(true);
     setAuthError(null);
+    isSigningUpEmailRef.current = true;
     try {
       const cleanName = displayName.trim();
       const cleanAvatar = avatarUrl?.trim() || '';
@@ -179,6 +186,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setAuthError(error.message || 'Failed to create account.');
       throw error;
     } finally {
+      isSigningUpEmailRef.current = false;
       setIsSigningIn(false);
     }
   };

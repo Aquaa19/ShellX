@@ -38,6 +38,7 @@ export const CurriculumScreen: React.FC = () => {
   const [isLoadingCurriculum, setIsLoadingCurriculum] = useState(true);
   const [isPublishing, setIsPublishing] = useState(false);
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null);
+  const [hasLocalChanges, setHasLocalChanges] = useState(false);
   
   const [expandedModules, setExpandedModules] = useState<Record<string, boolean>>({});
   const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>({});
@@ -89,9 +90,27 @@ export const CurriculumScreen: React.FC = () => {
     setLesQuestions(prev => prev.filter((_, i) => i !== idx));
   };
 
-  // Fetch curriculum on mount
-  const fetchCurriculum = useCallback(async () => {
+  // Fetch curriculum
+  const fetchCurriculum = useCallback(async (forceFirestore = false) => {
     try {
+      if (!forceFirestore) {
+        const cached = localStorage.getItem('shellx_curriculum_modules');
+        const hasChangesVal = localStorage.getItem('shellx_curriculum_has_changes') === 'true';
+        if (cached) {
+          try {
+            const parsed = JSON.parse(cached);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setModules(parsed);
+              setHasLocalChanges(hasChangesVal);
+              setIsLoadingCurriculum(false);
+              return;
+            }
+          } catch (e) {
+            console.error('Error parsing cached curriculum:', e);
+          }
+        }
+      }
+
       const lessonsCol = collection(db, 'lessons');
       const modulesSnap = await getDocs(lessonsCol);
       
@@ -157,9 +176,13 @@ export const CurriculumScreen: React.FC = () => {
       // Fallback to mock data if Firestore has zero modules provisioned
       if (loadedModules.length === 0) {
         setModules(INITIAL_MODULES);
+        localStorage.setItem('shellx_curriculum_modules', JSON.stringify(INITIAL_MODULES));
       } else {
         setModules(loadedModules);
+        localStorage.setItem('shellx_curriculum_modules', JSON.stringify(loadedModules));
       }
+      localStorage.setItem('shellx_curriculum_has_changes', 'false');
+      setHasLocalChanges(false);
     } catch (error) {
       console.error('Error fetching curriculum from Firestore:', error);
       // Safeguard: Fallback to mock data so UI doesn't crash on load failure
@@ -173,6 +196,13 @@ export const CurriculumScreen: React.FC = () => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchCurriculum();
   }, [fetchCurriculum]);
+
+  // Sync to localStorage
+  useEffect(() => {
+    if (!isLoadingCurriculum) {
+      localStorage.setItem('shellx_curriculum_modules', JSON.stringify(modules));
+    }
+  }, [modules, isLoadingCurriculum]);
 
   // Sync state to inputs when selectedItem changes
   const selectItem = (item: SelectedItem) => {
@@ -218,6 +248,8 @@ export const CurriculumScreen: React.FC = () => {
   const handleSaveModule = () => {
     if (!selectedItem || selectedItem.type !== 'module') return;
     setModules(prev => prev.map(m => m.id === selectedItem.id ? { ...m, title: modTitle } : m));
+    setHasLocalChanges(true);
+    localStorage.setItem('shellx_curriculum_has_changes', 'true');
     alert('[STAGING] Module updated locally. Click PUBLISH to push changes to Firestore.');
   };
 
@@ -230,6 +262,8 @@ export const CurriculumScreen: React.FC = () => {
         chapters: m.chapters.map(c => c.id === selectedItem.id ? { ...c, title: chTitle, description: chDesc } : c)
       };
     }));
+    setHasLocalChanges(true);
+    localStorage.setItem('shellx_curriculum_has_changes', 'true');
     alert('[STAGING] Chapter updated locally. Click PUBLISH to push changes to Firestore.');
   };
 
@@ -257,6 +291,8 @@ export const CurriculumScreen: React.FC = () => {
         })
       };
     }));
+    setHasLocalChanges(true);
+    localStorage.setItem('shellx_curriculum_has_changes', 'true');
     alert('[STAGING] Lesson updated locally. Click PUBLISH to push changes to Firestore.');
   };
 
@@ -273,6 +309,8 @@ export const CurriculumScreen: React.FC = () => {
     setModules(updated);
     setSelectedItem({ type: 'module', id: newId });
     setModTitle(newMod.title);
+    setHasLocalChanges(true);
+    localStorage.setItem('shellx_curriculum_has_changes', 'true');
   };
 
   const handleAddChapter = (moduleId: string) => {
@@ -293,6 +331,8 @@ export const CurriculumScreen: React.FC = () => {
     setSelectedItem({ type: 'chapter', id: newId, moduleId });
     setChTitle(newCh.title);
     setChDesc(newCh.description);
+    setHasLocalChanges(true);
+    localStorage.setItem('shellx_curriculum_has_changes', 'true');
   };
 
   const handleAddLesson = (moduleId: string, chapterId: string) => {
@@ -329,6 +369,8 @@ export const CurriculumScreen: React.FC = () => {
     setLesType(newLes.type);
     setLesTasks(newLes.tasks);
     setLesQuestions([]);
+    setHasLocalChanges(true);
+    localStorage.setItem('shellx_curriculum_has_changes', 'true');
   };
 
   // Task Actions inside Lessons
@@ -372,6 +414,8 @@ export const CurriculumScreen: React.FC = () => {
       }));
       selectItem(null);
     }
+    setHasLocalChanges(true);
+    localStorage.setItem('shellx_curriculum_has_changes', 'true');
   };
 
   // Transaction Write Batches (Max 500 operations per Firebase limit)
@@ -539,7 +583,7 @@ export const CurriculumScreen: React.FC = () => {
                 if (t.expectedOutput) {
                   const escapedExpected = t.expectedOutput.replace(/"/g, '\\"').toLowerCase();
                   const escapedScript = t.validationScript.replace(/"/g, '\\"');
-                  return `[ "$(${escapedScript} | tr '[:upper:]' '[:lower:]')" = "${escapedExpected}" ]`;
+                  return `[ "$( ( ${escapedScript} ) | tr '[:upper:]' '[:lower:]' )" = "${escapedExpected}" ]`;
                 } else {
                   return `(${t.validationScript})`;
                 }
@@ -597,14 +641,28 @@ export const CurriculumScreen: React.FC = () => {
       // 3. Commit transactions
       await executeBatchedWrites(operations);
       alert('Production Curriculum successfully published to Firebase Firestore.');
+      localStorage.setItem('shellx_curriculum_has_changes', 'false');
+      setHasLocalChanges(false);
       setIsLoadingCurriculum(true);
-      await fetchCurriculum();
+      await fetchCurriculum(true);
     } catch (error) {
       console.error('Error publishing curriculum to Firestore:', error);
       alert('Failed to publish changes: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setIsPublishing(false);
     }
+  };
+
+  const handleDiscardLocalChanges = async () => {
+    if (!window.confirm('Are you sure you want to discard all local changes and reload curriculum from Firestore? This will overwrite your offline edits.')) {
+      return;
+    }
+    localStorage.removeItem('shellx_curriculum_modules');
+    localStorage.setItem('shellx_curriculum_has_changes', 'false');
+    setHasLocalChanges(false);
+    setIsLoadingCurriculum(true);
+    setSelectedItem(null);
+    await fetchCurriculum(true);
   };
 
   // Styles
@@ -668,7 +726,23 @@ export const CurriculumScreen: React.FC = () => {
             Configure Modules, outline Chapters, write Lessons, and compile multi-step terminal verification engines.
           </p>
         </div>
-        <div>
+        <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
+          {hasLocalChanges && (
+            <SecondaryButton 
+              onClick={handleDiscardLocalChanges}
+              disabled={isPublishing || isLoadingCurriculum}
+              style={{ 
+                minHeight: '36px', 
+                borderColor: 'var(--color-semantic-error)', 
+                color: 'var(--color-semantic-error)',
+                padding: '6px 12px',
+                opacity: (isPublishing || isLoadingCurriculum) ? 0.5 : 1,
+                cursor: (isPublishing || isLoadingCurriculum) ? 'not-allowed' : 'pointer'
+              }}
+            >
+              <span>DISCARD LOCAL CHANGES</span>
+            </SecondaryButton>
+          )}
           <SecondaryButton 
             onClick={handlePublishAll}
             disabled={isPublishing || isLoadingCurriculum}

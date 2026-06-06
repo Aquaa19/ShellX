@@ -73,7 +73,11 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
 
       settleTimerRef.current = setTimeout(() => {
         const newLines = outputLinesRef.current.slice(validationPromise.startLineCount);
-        const output = newLines.map((l) => l.content).join('\n');
+        // Filter out command input lines to prevent matching expected strings in command syntax itself
+        const output = newLines
+          .filter((l) => l.type !== 'command')
+          .map((l) => l.content)
+          .join('\n');
         validationPromise.resolve(output);
         setValidationPromise(null);
       }, 800); // Settle after 800ms of inactivity
@@ -266,7 +270,14 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     setActiveLessonData(null);
     setLastValidationResult(null);
     setIsTaskSheetOpen(false);
-  }, []);
+
+    // Silently cd back to the home directory when exiting a lesson context
+    const sshUser = serverConfig.sshUser || 'student';
+    const homePath = `/home/${sshUser}`;
+    executeBackgroundCommand(`cd "${homePath}"`).catch((e) => {
+      console.warn('[LessonsContext] Silent exit cd to home failed:', e);
+    });
+  }, [serverConfig.sshUser, executeBackgroundCommand]);
 
   const completeLessonOptimistically = useCallback((lessonId: string) => {
     setModules((prevModules) => {
@@ -308,7 +319,10 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
       });
 
       // Check if output meets validation expectations
-      const passed = output.toLowerCase().includes(activeLessonData.validationExpected.toLowerCase());
+      const outputLinesList = output.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const passed = outputLinesList.some(
+        (line) => line.toLowerCase() === activeLessonData.validationExpected.toLowerCase()
+      );
 
       if (passed) {
         // Optimistic local state update first

@@ -20,9 +20,9 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [isAppReady, setIsAppReady] = useState(false);
   const [isNetworkOnline, setIsNetworkOnline] = useState(true);
   const [serverConfig, setServerConfigState] = useState<ServerConfig>({
-    ip: '',
-    port: '',
-    sshUser: '',
+    ip: '18.232.76.157',
+    port: '8080',
+    sshUser: 'student',
   });
 
   useEffect(() => {
@@ -40,9 +40,9 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       StorageKeys.SERVER_SSH_USER,
     ]);
     setServerConfigState({
-      ip: data[StorageKeys.SERVER_IP] ?? '',
-      port: data[StorageKeys.SERVER_PORT] ?? '',
-      sshUser: data[StorageKeys.SERVER_SSH_USER] ?? '',
+      ip: data[StorageKeys.SERVER_IP] || '18.232.76.157',
+      port: data[StorageKeys.SERVER_PORT] || '8080',
+      sshUser: data[StorageKeys.SERVER_SSH_USER] || 'student',
     });
   };
 
