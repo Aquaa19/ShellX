@@ -23,6 +23,8 @@ export interface TerminalWorkspaceProps {
   style?: StyleProp<ViewStyle>;
   selection?: { start: number; end: number };
   onSelectionChange?: (event: any) => void;
+  isCtrlActive?: boolean;
+  isAltActive?: boolean;
 }
 
 export const TerminalWorkspace: React.FC<TerminalWorkspaceProps> = ({
@@ -41,6 +43,8 @@ export const TerminalWorkspace: React.FC<TerminalWorkspaceProps> = ({
   style,
   selection,
   onSelectionChange,
+  isCtrlActive = false,
+  isAltActive = false,
 }) => {
   return (
     <View style={[styles.container, style]}>
@@ -66,7 +70,11 @@ export const TerminalWorkspace: React.FC<TerminalWorkspaceProps> = ({
         cursorCol={cursorCol}
         lineCount={lines.length}
       />
-      <DeveloperKeyboardBar onKeyPress={onKeyPress} />
+      <DeveloperKeyboardBar 
+        onKeyPress={onKeyPress} 
+        isCtrlActive={isCtrlActive}
+        isAltActive={isAltActive}
+      />
     </View>
   );
 };

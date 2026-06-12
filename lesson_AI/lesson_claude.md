@@ -391,7 +391,7 @@
     * **Instruction:** Add a line to the file that includes the word "prompt" (e.g., "The shell prompt shows the username.").
     * **Validation Type:** `file_content`
     * **Validation Script:** `grep -qi "prompt" /home/student/terminal_cheatsheet.txt && echo "MATCH" || echo "NO_MATCH"`
-    * **Expected Output:** `MATCH`
+    * **Expected Output:** `MATCH `
 
   * **Task 3:**
     * **Instruction:** Add a line that contains the text "Ctrl+C" as a documented shortcut.
@@ -7123,7 +7123,7 @@ alias ll="ls -la"            # Create alias
     * **Expected Output:** `OK`
 
   * **Task 3:**
-    * **Instruction:** Make `/home/student/sorting/bubble.sh` executable using `chmod +x`.
+    * **Instruction:** c
     * **Validation Type:** `command_check`
     * **Validation Script:** `[ -x "/home/student/sorting/bubble.sh" ] && echo "OK" || echo "FAIL"`
     * **Expected Output:** `OK`

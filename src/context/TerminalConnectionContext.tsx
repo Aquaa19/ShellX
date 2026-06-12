@@ -229,7 +229,8 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
 
       backgroundTimeout.current = setTimeout(() => {
         if (activeBackgroundId.current === id) {
-          reject(new Error('Background command execution timed out.'));
+          const bufferContent = backgroundBuffer.current ? ` (Buffer: ${backgroundBuffer.current})` : '';
+          reject(new Error(`Background command execution timed out${bufferContent}.`));
           activeBackgroundId.current = null;
           backgroundBuffer.current = '';
           backgroundPromise.current = null;

@@ -8,11 +8,21 @@ import {
   KeyboardAvoidingView, 
   Platform,
   Alert,
-  ToastAndroid
+  ToastAndroid,
+  ScrollView,
+  Text
 } from 'react-native';
 import { Theme } from '../../tokens';
-import { useTerminalConnection } from '../../context';
-import { IconButton, MaterialIcon, PrimaryActionButton, SecondaryActionButton } from '../../atoms';
+import { useTerminalConnection, useLessonsContext } from '../../context';
+import { 
+  IconButton, 
+  MaterialIcon, 
+  PrimaryActionButton, 
+  SecondaryActionButton,
+  SafeText,
+  MonoText,
+  HeadlineText
+} from '../../atoms';
 import { BodyText } from '../../atoms/text/BodyText';
 import { ShellXSpinner } from '../shell';
 
@@ -28,11 +38,60 @@ export const TerminalFileEditor: React.FC<TerminalFileEditorProps> = ({
   initialFilePath,
 }) => {
   const { executeBackgroundCommand, connectionState } = useTerminalConnection();
+  const { activeLessonData } = useLessonsContext();
+  const isEditorChallenge = activeLessonData?.type === 'editor_challenge';
+
+  const [isChecklistMaximized, setIsChecklistMaximized] = useState(false);
   const [filePath, setFilePath] = useState('/home/student/project/a.txt');
   const [content, setContent] = useState('');
   const [originalContent, setOriginalContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ text: string; isError: boolean } | null>(null);
+
+  const renderFormattedText = (text: string, baseStyle: any, key?: string | number) => {
+    const boldParts = text.split('**');
+    return (
+      <SafeText key={key} style={baseStyle}>
+        {boldParts.map((boldPart, boldIdx) => {
+          const isBold = boldIdx % 2 === 1;
+          const codeParts = boldPart.split('`');
+          const renderedContent = codeParts.map((codePart, codeIdx) => {
+            const isCode = codeIdx % 2 === 1;
+            if (isCode) {
+              return (
+                <Text
+                  key={`code-${codeIdx}`}
+                  style={{
+                    fontFamily: Theme.fontFamily.mono || 'monospace',
+                    color: Theme.colors.syntax.orange || '#ffb95f',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  }}
+                >
+                  {codePart}
+                </Text>
+              );
+            }
+            return codePart;
+          });
+
+          if (isBold) {
+            return (
+              <Text
+                key={`bold-${boldIdx}`}
+                style={{
+                  fontFamily: Theme.fontFamily.sansBold,
+                  fontWeight: 'bold',
+                }}
+              >
+                {renderedContent}
+              </Text>
+            );
+          }
+          return renderedContent;
+        })}
+      </SafeText>
+    );
+  };
 
   const loadFileContent = useCallback(async (targetPath: string) => {
     if (!targetPath.trim()) {
@@ -261,6 +320,58 @@ export const TerminalFileEditor: React.FC<TerminalFileEditorProps> = ({
               textAlignVertical="top"
               editable={!isLoading}
             />
+
+            {/* Floating Checklist Bubble */}
+            {isEditorChallenge && activeLessonData && (
+              <>
+                {/* Click outside to dismiss overlay */}
+                {isChecklistMaximized && (
+                  <View 
+                    style={styles.dismissOverlay} 
+                    onTouchStart={() => setIsChecklistMaximized(false)}
+                  />
+                )}
+
+                <View 
+                  style={[
+                    styles.floatingContainer, 
+                    isChecklistMaximized ? styles.floatingMaximized : styles.floatingMinimized
+                  ]}
+                >
+                  {isChecklistMaximized ? (
+                    <View style={styles.checklistCard}>
+                      <View style={styles.checklistHeader}>
+                        <HeadlineText size={Theme.fontSize.bodySM} weight="bold" color={Theme.colors.text.primary}>
+                          Practice Checklist
+                        </HeadlineText>
+                        <IconButton 
+                          icon={<MaterialIcon name="close" size={18} color={Theme.colors.text.secondary} />}
+                          onPress={() => setIsChecklistMaximized(false)}
+                          style={styles.minimizeIconButton}
+                        />
+                      </View>
+                      <ScrollView 
+                        style={styles.checklistContentScroll}
+                        contentContainerStyle={styles.checklistContentScrollContent}
+                        showsVerticalScrollIndicator={true}
+                      >
+                        {renderFormattedText(
+                          activeLessonData.instructions || 'Execute required validations to pass this lesson.',
+                          styles.floatingInstructionsText
+                        )}
+                      </ScrollView>
+                    </View>
+                  ) : (
+                    <IconButton 
+                      icon={<MaterialIcon name="assignment" size={20} color={Theme.colors.syntax.orange} />}
+                      onPress={() => setIsChecklistMaximized(true)}
+                      size={44}
+                      style={styles.bubbleButton}
+                    />
+                  )}
+                </View>
+              </>
+            )}
             
             {isLoading && (
               <View style={styles.spinnerContainer}>
@@ -380,5 +491,74 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.colors.overlay.scrim,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  dismissOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: 'transparent',
+    zIndex: 9,
+  },
+  floatingContainer: {
+    position: 'absolute',
+    right: Theme.spacing.md,
+    top: Theme.spacing.md,
+    zIndex: 10,
+  },
+  floatingMinimized: {
+    width: 44,
+    height: 44,
+  },
+  floatingMaximized: {
+    width: 280,
+    maxHeight: 260,
+    borderRadius: Theme.borderRadius.default,
+    backgroundColor: Theme.colors.background.elevated,
+    borderWidth: Theme.borderWidth.hairline,
+    borderColor: Theme.colors.border.strong,
+  },
+  bubbleButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: Theme.colors.surface.raised,
+    borderWidth: Theme.borderWidth.hairline,
+    borderColor: Theme.colors.border.focus,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 0,
+  },
+  checklistCard: {
+    flex: 1,
+    padding: Theme.spacing.sm,
+  },
+  checklistHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: Theme.borderWidth.hairline,
+    borderColor: Theme.colors.border.subtle,
+    paddingBottom: Theme.spacing.xs,
+    marginBottom: Theme.spacing.xs,
+  },
+  minimizeIconButton: {
+    width: 28,
+    height: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 0,
+  },
+  checklistContentScroll: {
+    flex: 1,
+  },
+  checklistContentScrollContent: {
+    paddingVertical: Theme.spacing.xs,
+  },
+  floatingInstructionsText: {
+    color: Theme.colors.text.primary,
+    fontSize: Theme.fontSize.bodySM,
+    lineHeight: 18,
   },
 });

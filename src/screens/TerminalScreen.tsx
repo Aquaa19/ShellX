@@ -289,6 +289,8 @@ export const TerminalScreen: React.FC = () => {
             promptPrefix={promptPrefix}
             selection={inputSelection}
             onSelectionChange={handleSelectionChange}
+            isCtrlActive={isCtrlActive}
+            isAltActive={isAltActive}
           />
 
           {/* Hamburger Options Menu Modal */}

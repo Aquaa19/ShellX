@@ -1,0 +1,1104 @@
+[
+  {
+    "moduleId": "mod-1",
+    "cards": [
+      {
+        "id": "les-1-1-1",
+        "title": "The Linux Operating System — History, Architecture & Distributions",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780564517665",
+        "title": "Explore Your Linux Environment",
+        "validationCommand": "[ \"$( ( uname -r | grep -qE '^[0-9]+\\.[0-9]+' && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ \\\"$(whoami)\\\" = \\\"student\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( cat /etc/os-release | grep -qi \\\"ubuntu\\|debian\\|fedora\\|centos\\|linux\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780566055015",
+        "title": "Create Your First Linux Notes File",
+        "validationCommand": "[ \"$( ( grep -qi \\\"Linux\\\" /home/student/linux_notes.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -qi \\\"Linus Torvalds\\\" /home/student/linux_notes.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -qi \\\"kernel\\\" /home/student/linux_notes.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780566165509",
+        "title": "What Is Linux? — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780566467892",
+        "title": "The Terminal, Shell, and Command Structure",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780747069216",
+        "title": "Navigating the Shell Basics",
+        "validationCommand": "[ \"$( ( echo \\\"Hello, Linux!\\\" | grep -q \\\"Hello, Linux!\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ \\\"$(pwd)\\\" = \\\"/home/student\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( bash --version | grep -qi \\\"bash\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( history | grep -q \\\".\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780809240004",
+        "title": "Document Your Terminal Knowledge",
+        "validationCommand": "[ \"$( ( grep -qi \\\"Bash\\\" /home/student/terminal_cheatsheet.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -qi \\\"prompt\\\" /home/student/terminal_cheatsheet.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"Ctrl+C\\\" /home/student/terminal_cheatsheet.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780809430497",
+        "title": "Terminal & Shell — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-1780593484024",
+    "cards": [
+      {
+        "id": "les-1780847704880",
+        "title": "Functions in Bash Scripting",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780847754752",
+        "title": "Writing and Calling Functions",
+        "validationCommand": "[ \"$( ( bash /home/student/scripts/functions_demo.sh 2>/dev/null | grep -q \\\"Hello, World!\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( bash /home/student/scripts/functions_demo.sh 2>/dev/null | grep -q \\\"20\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780847848282",
+        "title": "Calculator Using Functions",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/scripts/calculator.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ $(grep -c '()' /home/student/scripts/calculator.sh) -ge 4 ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( printf \\\"10\\n5\\n\\\" | bash /home/student/scripts/calculator.sh 2>/dev/null | grep -q \\\"15\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( printf \\\"10\\n5\\n\\\" | bash /home/student/scripts/calculator.sh 2>/dev/null | grep -q \\\"50\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( printf \\\"10\\n0\\n\\\" | bash /home/student/scripts/calculator.sh 2>/dev/null | grep -qi \\\"division by zero\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780848190628",
+        "title": "Shell Functions Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-1780816077869",
+    "cards": [
+      {
+        "id": "les-1780816174543",
+        "title": "Commands for Reading and Viewing File Content",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780816245592",
+        "title": "Read and Inspect Files",
+        "validationCommand": "[ \"$( ( cat /etc/hostname | grep -q \\\".\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( head -n 5 /etc/passwd | wc -l | grep -q \\\"5\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( wc -l /etc/passwd | grep -qE \\\"^[0-9]+\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/linux_notes.txt\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780821204606",
+        "title": "Create a Multi-Line Study File",
+        "validationCommand": "[ \"$( ( [ \\\"$(wc -l < /home/student/os_course/notes/lecture1.txt)\\\" -ge 5 ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -qi \\\"cat\\\" /home/student/os_course/notes/lecture1.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780821331025",
+        "title": "Reading Files — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780821605095",
+        "title": "Copying Files and Directories with cp",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780821666532",
+        "title": "Copy Files and Directories",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/os_course/notes/lecture1_backup.txt\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( ls /home/student/os_course/reports/*.txt 2>/dev/null | grep -q \\\".txt\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -d \\\"/home/student/os_course_backup\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780821777566",
+        "title": "Create and Copy a Config File",
+        "validationCommand": "[ \"$( ( grep -qi \\\"configuration\\\" /home/student/os_course/config.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( [ -f \\\"/home/student/os_course/config.bak\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780822091044",
+        "title": "Copying Files — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780822719663",
+        "title": "Moving and Renaming with mv",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780822751597",
+        "title": "Move and Rename Files",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/os_course/notes/lecture1_v2.txt\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/os_course/reports/config.bak\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -d \\\"/home/student/os_course_archive\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780822886025",
+        "title": "Create and Rename a Draft Document",
+        "validationCommand": "[ \"$( ( grep -qi \\\"summary\\\" /home/student/os_course/reports/summary_draft.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( [ -f \\\"/home/student/os_course/reports/summary_final.txt\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780822978040",
+        "title": "Moving and Renaming — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780823312763",
+        "title": "Deleting Files and Directories Safely",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780823374073",
+        "title": "Delete Files and Directories Safely",
+        "validationCommand": "[ \"$( ( [ ! -f \\\"/home/student/os_course/notes/lecture1_v2.txt\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ ! -d \\\"/home/student/os_course/assignments/lab1\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ ! -d \\\"/home/student/os_course_archive\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780823612393",
+        "title": "Create a Deletion Log",
+        "validationCommand": "[ \"$( ( grep -qi \\\"interactive\\\" /home/student/rm_safety_guide.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -qi \\\"irreversible\\\" /home/student/rm_safety_guide.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780823718576",
+        "title": "Deleting Files — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-1780824112576",
+    "cards": [
+      {
+        "id": "les-1780824151415",
+        "title": "Writing Text to Files Using echo, printf, and Redirection",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780824191659",
+        "title": "Write Text to Files from the Terminal",
+        "validationCommand": "[ \"$( ( grep -q \\\"Hello, Linux Student!\\\" /home/student/greeting.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"Welcome to OS Practical!\\\" /home/student/greeting.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"Linux\\\" /home/student/heredoc_test.txt && grep -q \\\"Shell\\\" /home/student/heredoc_test.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780824281914",
+        "title": "Create a Formatted Student Profile",
+        "validationCommand": "[ \"$( ( grep -qi \\\"Name:\\\" /home/student/student_profile.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -qi \\\"Course:\\\" /home/student/student_profile.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -qi \\\"Date:\\\" /home/student/student_profile.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780824447233",
+        "title": "Writing Text — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780824908404",
+        "title": "wc — Word Count Command (OS Practical #2 Core Topic)",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780824941890",
+        "title": "OS Practical #2 — wc Exercises",
+        "validationCommand": "[ \"$( ( wc -l /etc/passwd | grep -qE \\\"^[0-9]+\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( wc -w /home/student/greeting.txt | grep -qE \\\"^[0-9]+\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( ls /home/student/os_course/notes/ | wc -l | grep -qE \\\"^[0-9]+$\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( wc -m /home/student/student_profile.txt | grep -qE \\\"^[0-9]+\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780825054826",
+        "title": "Create a wc Practice Data File",
+        "validationCommand": "[ \"$( ( [ \\\"$(wc -l < /home/student/wc_practice.txt)\\\" -ge 5 ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ \\\"$(wc -w < /home/student/wc_practice.txt)\\\" -ge 15 ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780825174785",
+        "title": "Word Count — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780825411202",
+        "title": "grep — Global Regular Expression Print (OS Practical #3)",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780825449516",
+        "title": "OS Practical #3 — grep Exercises",
+        "validationCommand": "[ \"$( ( grep \\\"bash\\\" /etc/passwd | grep -q \\\".\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -c \\\"nologin\\\" /etc/passwd | grep -qE \\\"^[0-9]+$\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -qi \\\"linux\\\" /home/student/linux_notes.txt && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -v \\\"^#\\\" /etc/ssh/sshd_config | head -5 | grep -q \\\".\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780825543385",
+        "title": "Create a Grep Practice Dataset",
+        "validationCommand": "[ \"$( ( grep -qi \\\"error\\\" /home/student/grep_data.txt && grep -qi \\\"info\\\" /home/student/grep_data.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( [ \\\"$(wc -l < /home/student/grep_data.txt)\\\" -ge 10 ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780825632126",
+        "title": "Searching Text — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780826166508",
+        "title": "Case Conversion — tr, awk, and sed (OS Practical #1)",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780826199328",
+        "title": "OS Practical #1 — Case Conversion Exercises",
+        "validationCommand": "[ \"$( ( echo \\\"hello linux world\\\" | tr '[:lower:]' '[:upper:]' | grep -q \\\"HELLO LINUX WORLD\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/linux_notes_upper.txt\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( awk '{print tolower($0)}' /home/student/greeting.txt | grep -q \\\".\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780826319578",
+        "title": "Write a Case Conversion Shell Script",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/convert_case.sh && grep -q \\\"tr\\\" /home/student/convert_case.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( [ -f \\\"/home/student/linux_notes_upper2.txt\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780826463906",
+        "title": "Case Conversion — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-1780826820922",
+    "cards": [
+      {
+        "id": "les-1780826871976",
+        "title": "Working with Date and Time in Linux",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780826907008",
+        "title": "Display and Format Dates",
+        "validationCommand": "[ \"$( ( date +%Y-%m-%d | grep -qE \\\"^[0-9]{4}-[0-9]{2}-[0-9]{2}$\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( date +%H:%M:%S | grep -qE \\\"^[0-9]{2}:[0-9]{2}:[0-9]{2}$\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/timestamp.txt\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( date +\\\"%A, %d %B %Y\\\" | grep -qE \\\"^[A-Za-z]+, [0-9]{2} [A-Za-z]+ [0-9]{4}$\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780827103185",
+        "title": "Write a Timestamped Log Entry Script",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/log_entry.sh && grep -q \\\"date\\\" /home/student/log_entry.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( [ -f \\\"/home/student/system.log\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780827175958",
+        "title": "Date and Time — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780827397542",
+        "title": "Environment Variables — Shell Variables and the Environment",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780827426994",
+        "title": "Explore and Set Environment Variables",
+        "validationCommand": "[ \"$( ( [ \\\"$HOME\\\" = \\\"/home/student\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( export COURSE_NAME=\\\"Linux Fundamentals\\\" && [ \\\"$COURSE_NAME\\\" = \\\"Linux Fundamentals\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( echo $PATH | grep -q \\\"/usr/bin\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( printenv | wc -l | grep -qE \\\"^[0-9]+$\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780827583282",
+        "title": "Create an Environment Setup Script",
+        "validationCommand": "[ \"$( ( grep -q \\\"export\\\" /home/student/setup_env.sh && grep -q \\\"#!/bin/bash\\\" /home/student/setup_env.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( chmod +x /home/student/setup_env.sh && /home/student/setup_env.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780827673106",
+        "title": "Environment Variables — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780827915391",
+        "title": "Login Scripts — .bashrc, .bash_profile, and .profile (OS Practical #4)",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780827970258",
+        "title": "OS Practical #4 — Login Script Exercises",
+        "validationCommand": "[ \"$( ( grep -q 'alias ll' /home/student/.bashrc && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"STUDENT_NAME\\\" /home/student/.bashrc && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( source /home/student/.bashrc 2>/dev/null && alias | grep -q \\\"ll\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780828176137",
+        "title": "Customize .bashrc with Aliases and a Greeting",
+        "validationCommand": "[ \"$( ( grep -q 'alias cls' /home/student/.bashrc && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q 'Welcome to Linux OS Lab' /home/student/.bashrc && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( source /home/student/.bashrc 2>/dev/null | grep -qi \\\"Welcome\\\" && echo \\\"OK\\\" || ( source /home/student/.bashrc 2>&1 | grep -qi \\\"Welcome\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780828327324",
+        "title": "Login Scripts — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-1780828659263",
+    "cards": [
+      {
+        "id": "les-1780828695113",
+        "title": "What is a Shell Script?",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780828735711",
+        "title": "Create and Run Your First Script",
+        "validationCommand": "[ \"$( ( [ -d \\\"/home/student/scripts\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q '#!/bin/bash' /home/student/scripts/hello.sh && grep -q 'Hello, World!' /home/student/scripts/hello.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -x \\\"/home/student/scripts/hello.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( /home/student/scripts/hello.sh | grep -q \\\"Hello, World!\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780828937956",
+        "title": "Write a Script With a Header Comment Block",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/scripts/sysinfo.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( head -1 /home/student/scripts/sysinfo.sh | grep -q '#!/bin/bash' && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q 'hostname' /home/student/scripts/sysinfo.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q 'whoami' /home/student/scripts/sysinfo.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( chmod +x /home/student/scripts/sysinfo.sh 2>/dev/null; /home/student/scripts/sysinfo.sh | grep -q \\\"Hostname:\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780829140651",
+        "title": "Shell Script Basics Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780829662767",
+        "title": "Variables in Bash",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780829701093",
+        "title": "Variables in the Terminal",
+        "validationCommand": "[ \"$( ( bash /home/student/scripts/vars_demo.sh 2>/dev/null | grep -q \\\"Hello, student\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( bash /home/student/scripts/vars_demo.sh 2>/dev/null | grep -q \\\"Sum: 10\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( bash /home/student/scripts/vars_demo.sh 2>/dev/null | grep -q \\\"Year:\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780829816308",
+        "title": "Personal Info Script Using Variables",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/scripts/profile.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q 'name=' /home/student/scripts/profile.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q 'roll_no=' /home/student/scripts/profile.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( chmod +x /home/student/scripts/profile.sh 2>/dev/null; /home/student/scripts/profile.sh | grep -q \\\"Student Profile\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780829961594",
+        "title": "Variables Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780830556926",
+        "title": "Reading Input With `read`",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780830605238",
+        "title": "Interactive Input Script",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/scripts/greet.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q 'read' /home/student/scripts/greet.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( echo \\\"TestUser\\\" | bash /home/student/scripts/greet.sh 2>/dev/null | grep -q \\\"Hello, TestUser!\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780830697865",
+        "title": "Student Registration Form Script",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/scripts/register.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ $(grep -c 'read' /home/student/scripts/register.sh) -ge 4 ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( printf \\\"Alice\\n2023CS001\\nCSE\\n3\\n\\\" | bash /home/student/scripts/register.sh 2>/dev/null | grep -q \\\"Registration Summary\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780830812248",
+        "title": "User Input Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-1780831011642",
+    "cards": [
+      {
+        "id": "les-1780831035428",
+        "title": "Making Decisions with `if`",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780831118130",
+        "title": "Write Conditional Scripts",
+        "validationCommand": "[ \"$( ( echo \\\"5\\\" | bash /home/student/scripts/check_positive.sh 2>/dev/null | grep -q \\\"Positive\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( bash /home/student/scripts/check_file.sh 2>/dev/null | grep -q \\\"File found\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780831224993",
+        "title": "Even or Odd Checker",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/scripts/even_odd.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q '\\bif\\b' /home/student/scripts/even_odd.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( echo \\\"4\\\" | bash /home/student/scripts/even_odd.sh 2>/dev/null | grep -qi \\\"even\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780831325660",
+        "title": "if Statement Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780831544284",
+        "title": "Branching With if-else and elif",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780831588464",
+        "title": "Build an if-else Grade Script",
+        "validationCommand": "[ \"$( ( echo \\\"95\\\" | bash /home/student/scripts/grade.sh 2>/dev/null | grep -q \\\"A+\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( echo \\\"30\\\" | bash /home/student/scripts/grade.sh 2>/dev/null | grep -qi \\\"F\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( grep -q 'elif' /home/student/scripts/grade.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780831669379",
+        "title": "Day-of-Week Selector Using `case`",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/scripts/day_name.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q 'case' /home/student/scripts/day_name.sh && grep -q 'esac' /home/student/scripts/day_name.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( echo \\\"3\\\" | bash /home/student/scripts/day_name.sh 2>/dev/null | grep -q \\\"Wednesday\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( echo \\\"9\\\" | bash /home/student/scripts/day_name.sh 2>/dev/null | grep -qi \\\"invalid\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780831841517",
+        "title": "if-else and case Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780832079433",
+        "title": "Nested if and Compound Conditions",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780832225134",
+        "title": "Nested Condition Scripts",
+        "validationCommand": "[ \"$( ( echo \\\"6\\\" | bash /home/student/scripts/classify.sh 2>/dev/null | grep -q \\\"Positive\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( echo \\\"6\\\" | bash /home/student/scripts/classify.sh 2>/dev/null | grep -qi \\\"even\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( echo \\\"0\\\" | bash /home/student/scripts/classify.sh 2>/dev/null | grep -qi \\\"zero\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780832438990",
+        "title": "Leap Year Checker (OS Practical #4)",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/scripts/leap_year.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ $(grep -c '\\bif\\b' /home/student/scripts/leap_year.sh) -ge 2 ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( echo \\\"2000\\\" | bash /home/student/scripts/leap_year.sh 2>/dev/null | grep -qi \\\"leap\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( echo \\\"1900\\\" | bash /home/student/scripts/leap_year.sh 2>/dev/null | grep -qi \\\"not\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( echo \\\"2024\\\" | bash /home/student/scripts/leap_year.sh 2>/dev/null | grep -qi \\\"leap\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780839347050",
+        "title": "Nested Conditions Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-1780848760966",
+    "cards": [
+      {
+        "id": "les-1780848789698",
+        "title": "Arrays in Bash",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780848885778",
+        "title": "Array Operations Practice",
+        "validationCommand": "[ \"$( ( bash /home/student/scripts/array_demo.sh 2>/dev/null | grep -q \\\"^30$\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( bash /home/student/scripts/array_demo.sh 2>/dev/null | grep -q \\\"Count: 5\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780848996176",
+        "title": "Array Input and Max Finder",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/scripts/find_max.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q 'arr\\[' /home/student/scripts/find_max.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( printf \\\"5\\n3\\n9\\n1\\n7\\n2\\n\\\" | bash /home/student/scripts/find_max.sh 2>/dev/null | grep -q \\\"Maximum: 9\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780849115284",
+        "title": "Arrays Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780849366562",
+        "title": "Linear Search Algorithm",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780849406154",
+        "title": "Implement Linear Search",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/scripts/linear_search.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q '\\bfor\\b' /home/student/scripts/linear_search.sh && grep -q 'arr\\[' /home/student/scripts/linear_search.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( printf \\\"5\\n3\\n9\\n1\\n7\\n2\\n7\\n\\\" | bash /home/student/scripts/linear_search.sh 2>/dev/null | grep -qi \\\"found\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( printf \\\"5\\n3\\n9\\n1\\n7\\n2\\n99\\n\\\" | bash /home/student/scripts/linear_search.sh 2>/dev/null | grep -qi \\\"not found\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780849572222",
+        "title": "Linear Search With Function (OS Practical #6)",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/scripts/linear_search_fn.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q '()' /home/student/scripts/linear_search_fn.sh && grep -q '{' /home/student/scripts/linear_search_fn.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( printf \\\"6\\n4\\n7\\n2\\n7\\n9\\n1\\n7\\n\\\" | bash /home/student/scripts/linear_search_fn.sh 2>/dev/null | grep -qi \\\"found\\|index\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( printf \\\"6\\n4\\n7\\n2\\n7\\n9\\n1\\n7\\n\\\" | bash /home/student/scripts/linear_search_fn.sh 2>/dev/null | grep -q \\\"2\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780849731108",
+        "title": "Linear Search Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780850276748",
+        "title": "Binary Search Algorithm",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780850374208",
+        "title": "Implement Iterative Binary Search",
+        "validationCommand": "[ \"$( ( grep -q 'low' /home/student/scripts/binary_search.sh && grep -q 'high' /home/student/scripts/binary_search.sh && grep -q 'mid' /home/student/scripts/binary_search.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( printf \\\"7\\n1\\n3\\n5\\n7\\n9\\n11\\n13\\n9\\n\\\" | bash /home/student/scripts/binary_search.sh 2>/dev/null | grep -qi \\\"found\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( printf \\\"7\\n1\\n3\\n5\\n7\\n9\\n11\\n13\\n6\\n\\\" | bash /home/student/scripts/binary_search.sh 2>/dev/null | grep -qi \\\"not found\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780851191072",
+        "title": "Recursive Binary Search (OS Practical #7)",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/scripts/binary_search_rec.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( fname=$(grep -m1 '()' /home/student/scripts/binary_search_rec.sh | grep -o '^[a-zA-Z_]*'); grep -c \\\"$fname\\\" /home/student/scripts/binary_search_rec.sh | grep -qv '^1$' && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( printf \\\"5\\n2\\n4\\n6\\n8\\n10\\n6\\n\\\" | bash /home/student/scripts/binary_search_rec.sh 2>/dev/null | grep -qE \\\"[23]\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( printf \\\"5\\n2\\n4\\n6\\n8\\n10\\n5\\n\\\" | bash /home/student/scripts/binary_search_rec.sh 2>/dev/null | grep -qiE \\\"not found|-1\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( printf \\\"7\\n1\\n3\\n5\\n7\\n9\\n11\\n13\\n1\\n\\\" | bash /home/student/scripts/binary_search_rec.sh 2>/dev/null | grep -qiE \\\"found|index 0|position 1\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780851795679",
+        "title": "Binary Search Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-1780853462380",
+    "cards": [
+      {
+        "id": "les-1780853595850",
+        "title": "Understanding Bubble Sort in Shell Scripting",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780853637524",
+        "title": "Bubble Sort Script Execution Practice",
+        "validationCommand": "[ \"$( ( [ -d \\\"/home/student/sorting\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/sorting/bubble.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -x \\\"/home/student/sorting/bubble.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780853732698",
+        "title": "Write and Validate the Bubble Sort Script",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/sorting/bubble.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"arr\\[\\\" /home/student/sorting/bubble.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( bash /home/student/sorting/bubble.sh 2>/dev/null | grep -qi \\\"sorted\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( bash /home/student/sorting/bubble.sh 2>/dev/null | grep -qw \\\"11\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780853880231",
+        "title": "Bubble Sort Concepts Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-1780854139365",
+    "cards": [
+      {
+        "id": "les-1780854223899",
+        "title": "Factorial Computation in Bash",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780854257027",
+        "title": "Factorial Script Setup",
+        "validationCommand": "[ \"$( ( [ -d \\\"/home/student/numerical\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/numerical/factorial.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -x \\\"/home/student/numerical/factorial.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780854361009",
+        "title": "Write the Factorial Script",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/numerical/factorial.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"fact\\\" /home/student/numerical/factorial.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( echo \\\"5\\\" | bash /home/student/numerical/factorial.sh 2>/dev/null | grep -q \\\"120\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( echo \\\"0\\\" | bash /home/student/numerical/factorial.sh 2>/dev/null | grep -qw \\\"1\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780854499253",
+        "title": "Factorial Concepts Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780854725043",
+        "title": "String Reversal Techniques in Bash",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780854779185",
+        "title": "String Reversal File Setup",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/numerical/reverse.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -x \\\"/home/student/numerical/reverse.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( echo \\\"hello\\\" | rev | grep -q \\\"olleh\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780854868663",
+        "title": "Write the String Reversal Script (Loop Method)",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/numerical/reverse.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -qE '\\$\\{#|\\$\\{str:' /home/student/numerical/reverse.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( echo \\\"hello\\\" | bash /home/student/numerical/reverse.sh 2>/dev/null | grep -q \\\"olleh\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( echo \\\"Linux\\\" | bash /home/student/numerical/reverse.sh 2>/dev/null | grep -q \\\"xuniL\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780855003919",
+        "title": "String Reversal Concepts Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780855318389",
+        "title": "Palindrome Detection in Bash",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780855372831",
+        "title": "Palindrome Script Setup",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/numerical/palindrome.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -x \\\"/home/student/numerical/palindrome.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780855443819",
+        "title": "Write the Palindrome Check Script",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/numerical/palindrome.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"reversed\\\" /home/student/numerical/palindrome.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( echo \\\"madam\\\" | bash /home/student/numerical/palindrome.sh 2>/dev/null | grep -qi \\\"palindrome\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( echo \\\"hello\\\" | bash /home/student/numerical/palindrome.sh 2>/dev/null | grep -qi \\\"not\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780855568734",
+        "title": "Palindrome Concepts Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780856060935",
+        "title": "Solving Quadratic Equations in Bash",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780856109580",
+        "title": "Quadratic Equation Script Setup",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/numerical/quadratic.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -x \\\"/home/student/numerical/quadratic.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( which bc > /dev/null 2>&1 && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780856240700",
+        "title": "Write the Quadratic Equation Solver",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/numerical/quadratic.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"bc\\\" /home/student/numerical/quadratic.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -qE \\\"b\\*b|4\\*a\\*c|\\bD\\b\\\" /home/student/numerical/quadratic.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( echo \\\"1 -5 6\\\" | bash /home/student/numerical/quadratic.sh 2>/dev/null | grep -q \\\"3\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780856348021",
+        "title": "Quadratic Equation Concepts Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-1780856574356",
+    "cards": [
+      {
+        "id": "les-1780856618290",
+        "title": "Menu-Driven Programs with case Statement",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780856653912",
+        "title": "Menu Script File Setup",
+        "validationCommand": "[ \"$( ( [ -d \\\"/home/student/menu\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/menu/calculator_menu.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -x \\\"/home/student/menu/calculator_menu.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780856773187",
+        "title": "Write the Calculator Menu Script",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/menu/calculator_menu.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"case\\\" /home/student/menu/calculator_menu.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"while\\\" /home/student/menu/calculator_menu.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"esac\\\" /home/student/menu/calculator_menu.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780856906728",
+        "title": "Case Statement Concepts Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780857253847",
+        "title": "File-Based Record Storage in Bash",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780857289493",
+        "title": "Record Storage File Setup",
+        "validationCommand": "[ \"$( ( [ -d \\\"/home/student/records\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/records/employees.txt\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q \\\"1001:John Smith\\\" /home/student/records/employees.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780857401890",
+        "title": "Write the Record Management Script",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/records/manage.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( grep -q \\\"grep\\\" /home/student/records/manage.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\">>\\\" /home/student/records/manage.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"case\\\" /home/student/records/manage.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780857554840",
+        "title": "File-Based Record Storage Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780857770532",
+        "title": "Designing an Employee Management System in Bash",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780857822719",
+        "title": "EMS Directory and File Setup",
+        "validationCommand": "[ \"$( ( [ -d \\\"/home/student/ems\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/ems/employees.dat\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/ems/ems.sh\\\" ] && [ -x \\\"/home/student/ems/ems.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780857927864",
+        "title": "Write the Complete Employee Management System",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/ems/ems.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"add_employee\\\" /home/student/ems/ems.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"delete_employee\\\" /home/student/ems/ems.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"employees.dat\\\" /home/student/ems/ems.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( echo \\\"9001:Test User:IT:60000\\\" >> /home/student/ems/employees.dat && grep -q \\\"9001\\\" /home/student/ems/employees.dat && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780858081908",
+        "title": "Employee Management System Concepts Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-1780894443665",
+    "cards": [
+      {
+        "id": "les-1780897115917",
+        "title": "File Processing Patterns in Bash",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780897149730",
+        "title": "File Processing Setup",
+        "validationCommand": "[ \"$( ( [ -d \\\"/home/student/data\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ $(wc -l < /home/student/data/sample.txt 2>/dev/null) -ge 3 ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ $(wc -l < /home/student/data/employees.txt 2>/dev/null) -ge 3 ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780897230019",
+        "title": "Write the File Processing Script",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/data/fileprocess.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"wc\\\" /home/student/data/fileprocess.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( bash /home/student/data/fileprocess.sh > /dev/null 2>&1; [ -f \\\"/home/student/data/report.txt\\\" ] && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780897314412",
+        "title": "File Processing Concepts Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780897536021",
+        "title": "Building a Text Search Utility in Bash",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780898545221",
+        "title": "Text Search Utility Setup",
+        "validationCommand": "[ \"$( ( grep -ic \\\"the\\\" /home/student/data/sample.txt > /dev/null 2>&1 && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/data/search.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -x \\\"/home/student/data/search.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780898690455",
+        "title": "Write the Text Search Utility",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/data/search.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -qE \\\"grep.*-[a-z]*n|grep.*-n\\\" /home/student/data/search.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( printf \\\"/home/student/data/sample.txt\\nhello\\n\\\" | bash /home/student/data/search.sh > /dev/null 2>&1; [ -f \\\"/home/student/data/search_report.txt\\\" ] && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780898832431",
+        "title": "Text Search Concepts Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780899541735",
+        "title": "Integrating Algorithms into a Menu-Driven System",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780899690893",
+        "title": "Algorithm Toolkit File Setup",
+        "validationCommand": "[ \"$( ( [ -d \\\"/home/student/project\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/project/algorithm_toolkit.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -x \\\"/home/student/project/algorithm_toolkit.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780899757345",
+        "title": "Write the Complete Algorithm Toolkit",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/project/algorithm_toolkit.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"bubble_sort\\\" /home/student/project/algorithm_toolkit.sh && grep -q \\\"factorial\\\" /home/student/project/algorithm_toolkit.sh && grep -q \\\"palindrome\\\" /home/student/project/algorithm_toolkit.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"while\\\" /home/student/project/algorithm_toolkit.sh && grep -q \\\"case\\\" /home/student/project/algorithm_toolkit.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( source /home/student/project/algorithm_toolkit.sh 2>/dev/null; echo \\\"4\\\" | (factorial 2>/dev/null || echo \\\"4\\\" | bash -c 'source /home/student/project/algorithm_toolkit.sh 2>/dev/null; echo \\\"4\\\" | factorial') 2>/dev/null | grep -q \\\"24\\\" && echo \\\"PASS\\\" || (bash /home/student/project/algorithm_toolkit.sh <<< $'2\\n4\\n5' 2>/dev/null | grep -q \\\"24\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\") ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780899904509",
+        "title": "Algorithm Integration Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780900156215",
+        "title": "Advanced Employee Management System",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780900459543",
+        "title": "Advanced EMS Preparation",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/ems/ems_advanced.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -x \\\"/home/student/ems/ems_advanced.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ $(wc -l < /home/student/ems/employees.dat 2>/dev/null || echo 0) -ge 3 ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780900542915",
+        "title": "Write the Advanced EMS",
+        "validationCommand": "[ \"$( ( grep -q \\\"#!/bin/bash\\\" /home/student/ems/ems_advanced.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -qE \\\"salary_stats|awk.*sum|awk.*max\\\" /home/student/ems/ems_advanced.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"generate_report\\\" /home/student/ems/ems_advanced.sh && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( bash /home/student/ems/ems_advanced.sh <<< $'8\\n5' > /dev/null 2>&1; [ -f \\\"/home/student/ems/emp_report.txt\\\" ] && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780900702479",
+        "title": "Advanced EMS Concepts Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780910849543",
+        "title": "Practical Exam Strategy and Quick Reference",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780910883825",
+        "title": "Mock Exam Setup — Create All Required Files",
+        "validationCommand": "[ \"$( ( [ -d \\\"/home/student/mockexam\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/mockexam/q1.sh\\\" ] && [ -f \\\"/home/student/mockexam/q2.sh\\\" ] && [ -f \\\"/home/student/mockexam/q3.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -x \\\"/home/student/mockexam/q1.sh\\\" ] && [ -x \\\"/home/student/mockexam/q2.sh\\\" ] && [ -x \\\"/home/student/mockexam/q3.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780911011421",
+        "title": "Mock Exam — Three Full Questions",
+        "validationCommand": "[ \"$( ( echo \\\"6\\\" | bash /home/student/mockexam/q1.sh 2>/dev/null | grep -qE \\\"0.*1.*1.*2.*3.*5|0 1 1 2 3 5\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( echo \\\"3\\\" | bash /home/student/mockexam/q2.sh 2>/dev/null | grep -q \\\"1 2 3\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && [ \"$( ( printf \\\"Alice\\n90\\n85\\n88\\n92\\n87\\n\\\" | bash /home/student/mockexam/q3.sh 2>/dev/null | grep -qi \\\"grade.*A\\|A.*grade\\| A$\\|Grade: A\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"pass\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780911111391",
+        "title": "Final Comprehensive Review Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-2",
+    "cards": [
+      {
+        "id": "les-1780809894389",
+        "title": "The Linux Filesystem Hierarchy and Path Types",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780810020422",
+        "title": "Navigate the Linux Filesystem",
+        "validationCommand": "[ \"$( ( ls / | grep -q \\\"etc\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( cd /etc && pwd | grep -q \\\"/etc\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( cd ~ && [ \\\"$(pwd)\\\" = \\\"/home/student\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( ls -la /home/student | grep -q \\\"student\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780810171775",
+        "title": "Create a Filesystem Reference File",
+        "validationCommand": "[ \"$( ( grep -q \\\"/etc\\\" /home/student/filesystem_reference.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"/home\\\" /home/student/filesystem_reference.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -q \\\"/var\\\" /home/student/filesystem_reference.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780810562421",
+        "title": "Directories and Paths — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780811203593",
+        "title": "Creating Directories with mkdir",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780813543913",
+        "title": "Build a Directory Structure",
+        "validationCommand": "[ \"$( ( [ -d \\\"/home/student/os_course\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -d \\\"/home/student/os_course/assignments/lab1\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -d \\\"/home/student/os_course/notes\\\" ] && [ -d \\\"/home/student/os_course/scripts\\\" ] && [ -d \\\"/home/student/os_course/reports\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780813889539",
+        "title": "Document Your Directory Structure",
+        "validationCommand": "[ \"$( ( grep -qi \\\"assignments\\\" /home/student/os_course/README.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -qi \\\"scripts\\\" /home/student/os_course/README.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780814049209",
+        "title": "Creating Directories — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780815536926",
+        "title": "Creating Files with touch and Redirects",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780815587373",
+        "title": "Create and Inspect Files",
+        "validationCommand": "[ \"$( ( [ -f \\\"/home/student/os_course/assignments/lab1/assignment1.txt\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( [ -f \\\"/home/student/os_course/notes/lecture1.txt\\\" ] && [ -f \\\"/home/student/os_course/notes/lecture2.txt\\\" ] && [ -f \\\"/home/student/os_course/notes/lecture3.txt\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && [ \"$( ( stat /home/student/os_course/assignments/lab1/assignment1.txt | grep -qi \\\"access\\|modify\\|birth\\|change\\\" && echo \\\"OK\\\" || echo \\\"FAIL\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"ok\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780815692952",
+        "title": "Write Your First Assignment File",
+        "validationCommand": "[ \"$( ( grep -qi \\\"touch\\\" /home/student/os_course/assignments/lab1/assignment1.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && [ \"$( ( grep -qi \\\"timestamp\\\" /home/student/os_course/assignments/lab1/assignment1.txt && echo \\\"MATCH\\\" || echo \\\"NO_MATCH\\\" ) | tr '[:upper:]' '[:lower:]' )\" = \"match\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780815780632",
+        "title": "Creating Files — Comprehension Check",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  },
+  {
+    "moduleId": "mod-8",
+    "cards": [
+      {
+        "id": "les-1780563425534",
+        "title": "Iteration with the for Loop",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780563778263",
+        "title": "for Loop Practice",
+        "validationCommand": "[ \"$( ( `bash /home/student/scripts/print_1_to_10.sh 2>/dev/null | grep -q \\\"^10$\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && [ \"$( ( `echo \\\"5\\\" | bash /home/student/scripts/sum_1_to_n.sh 2>/dev/null | grep -q \\\"Sum: 15\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \" `pass`\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780563993991",
+        "title": "Multiplication Table Generator",
+        "validationCommand": "[ \"$( ( `[ -f \\\"/home/student/scripts/mul_table.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`ok`\" ] && [ \"$( ( `grep -q '\\bfor\\b' /home/student/scripts/mul_table.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`ok`\" ] && [ \"$( ( `echo \\\"5\\\" | bash /home/student/scripts/mul_table.sh 2>/dev/null | grep -q \\\"5 x 5 = 25\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && [ \"$( ( `echo \\\"5\\\" | bash /home/student/scripts/mul_table.sh 2>/dev/null | grep -q \\\"5 x 10 = 50\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780564250487",
+        "title": "for Loop Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780586827805",
+        "title": "Condition-Based Loops with `while`",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780587349893",
+        "title": "while Loop Counter and Factorial",
+        "validationCommand": "[ \"$( ( `bash /home/student/scripts/countdown.sh 2>/dev/null | grep -q \\\"^1$\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && [ \"$( ( `echo \\\"5\\\" | bash /home/student/scripts/factorial.sh 2>/dev/null | grep -q \\\"Factorial: 120\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780587573286",
+        "title": "Number Guessing Game (Simplified)",
+        "validationCommand": "[ \"$( ( `[ -f \\\"/home/student/scripts/guess.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`ok`\" ] && [ \"$( ( `grep -q '\\bwhile\\b' /home/student/scripts/guess.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`ok`\" ] && [ \"$( ( `printf \\\"10\\n42\\n\\\" | bash /home/student/scripts/guess.sh 2>/dev/null | grep -qi \\\"correct\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && [ \"$( ( `printf \\\"10\\n42\\n\\\" | bash /home/student/scripts/guess.sh 2>/dev/null | grep -qi \\\"low\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780587805718",
+        "title": "while Loop Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780588172342",
+        "title": "Nested Loops and 2D Patterns",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780588233717",
+        "title": "Print Triangle Patterns",
+        "validationCommand": "[ \"$( ( `echo \\\"3\\\" | bash /home/student/scripts/star_triangle.sh 2>/dev/null | tail -1 | grep -q '\\* \\* \\*' && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && [ \"$( ( `echo \\\"3\\\" | bash /home/student/scripts/num_square.sh 2>/dev/null | sed -n '2p' | grep -q \\\"2\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780588364750",
+        "title": "Multiplication Table Grid",
+        "validationCommand": "[ \"$( ( `[ -f \\\"/home/student/scripts/mul_grid.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`ok`\" ] && [ \"$( ( `[ $(grep -c '\\bfor\\b' /home/student/scripts/mul_grid.sh) -ge 2 ] && echo \\\"OK\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`ok`\" ] && [ \"$( ( `echo \\\"3\\\" | bash /home/student/scripts/mul_grid.sh 2>/dev/null | tail -1 | grep -q \\\"9\\\" && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780588544917",
+        "title": "Nested Loops Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780588868021",
+        "title": "Pascal's Triangle and Diamond Patterns",
+        "validationCommand": "",
+        "validationExpected": ""
+      },
+      {
+        "id": "les-1780588946078",
+        "title": "Diamond Pattern in the Terminal",
+        "validationCommand": "[ \"$( ( `[ -f \\\"/home/student/scripts/diamond.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`ok`\" ] && [ \"$( (  `echo \\\"3\\\" | bash /home/student/scripts/diamond.sh 2>/dev/null | grep -q '\\*\\*\\*\\*\\*' && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && [ \"$( ( `echo \\\"3\\\" | bash /home/student/scripts/diamond.sh 2>/dev/null | head -1 | grep -q '\\*' && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780592430048",
+        "title": "Pascal's Triangle (OS Practical #5)",
+        "validationCommand": "[ \"$( ( `[ -f \\\"/home/student/scripts/pascal.sh\\\" ] && echo \\\"OK\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`ok`\" ] && [ \"$( ( `grep -q 'declare\\|row\\[' /home/student/scripts/pascal.sh && echo \\\"OK\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`ok`\" ] && [ \"$( ( `echo \\\"5\\\" | bash /home/student/scripts/pascal.sh 2>/dev/null | head -1 | grep -q '1' && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && [ \"$( ( `echo \\\"5\\\" | bash /home/student/scripts/pascal.sh 2>/dev/null | sed -n '5p' | grep -q '6' && echo \\\"PASS\\\" || echo \\\"FAIL\\\"` ) | tr '[:upper:]' '[:lower:]' )\" = \"`pass`\" ] && echo \"SHELLX_OK\"",
+        "validationExpected": "SHELLX_OK"
+      },
+      {
+        "id": "les-1780592954665",
+        "title": "Pascal & Diamond Quiz",
+        "validationCommand": "",
+        "validationExpected": ""
+      }
+    ]
+  }
+]

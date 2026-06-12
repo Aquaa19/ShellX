@@ -48,14 +48,6 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     activeLessonDataRef.current = activeLessonData;
   }, [activeLessonData]);
 
-  // Reactive state for the validation settle timer
-  const [validationPromise, setValidationPromise] = useState<{
-    resolve: (val: string) => void;
-    startLineCount: number;
-  } | null>(null);
-
-  const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   // Manage subscription lifecycle refs to prevent duplicate subscription triggers on identical lists
   const unsubscribersRef = useRef<(() => void)[]>([]);
   const subscribedModuleIdsRef = useRef<Set<string>>(new Set());
@@ -63,32 +55,6 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
   // Global cache of per-module progress — used to evaluate cross-module state reactively
   const allProgressRef = useRef<Map<string, UserModuleProgressDocument | null>>(new Map());
   const isFirstLoadRef = useRef(true);
-
-  // Monitor outputLines to settle validation command execution output
-  useEffect(() => {
-    if (validationPromise) {
-      if (settleTimerRef.current) {
-        clearTimeout(settleTimerRef.current);
-      }
-
-      settleTimerRef.current = setTimeout(() => {
-        const newLines = outputLinesRef.current.slice(validationPromise.startLineCount);
-        // Filter out command input lines to prevent matching expected strings in command syntax itself
-        const output = newLines
-          .filter((l) => l.type !== 'command')
-          .map((l) => l.content)
-          .join('\n');
-        validationPromise.resolve(output);
-        setValidationPromise(null);
-      }, 800); // Settle after 800ms of inactivity
-    }
-
-    return () => {
-      if (settleTimerRef.current) {
-        clearTimeout(settleTimerRef.current);
-      }
-    };
-  }, [outputLines, validationPromise]);
 
   const refreshLessonsSilent = useCallback(async () => {
     if (!user) return;
@@ -310,13 +276,9 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     setLastValidationResult(null);
 
     try {
-      const startLineCount = outputLinesRef.current.length;
-
-      // Start the observer promise and send command in foreground
-      const output = await new Promise<string>((resolve) => {
-        setValidationPromise({ resolve, startLineCount });
-        sendCommand(activeLessonData.validationCommand);
-      });
+      // Execute the validation command in the background silently
+      const sanitizedCommand = sanitizeValidationCommand(activeLessonData.validationCommand);
+      const output = await executeBackgroundCommand(sanitizedCommand);
 
       // Check if output meets validation expectations
       const outputLinesList = output.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
@@ -351,7 +313,7 @@ export const LessonsContextProvider: React.FC<{ children: React.ReactNode }> = (
     } finally {
       setIsValidating(false);
     }
-  }, [user, activeLessonData, sendCommand, completeLessonOptimistically]);
+  }, [user, activeLessonData, executeBackgroundCommand, completeLessonOptimistically]);
 
   const completeExerciseLesson = useCallback(async () => {
     if (!user || !activeLessonData) return;
@@ -482,4 +444,29 @@ function utf8ToBase64(str: string): string {
     result += chars.charAt(enc1) + chars.charAt(enc2) + chars.charAt(enc3) + chars.charAt(enc4);
   }
   return result;
+}
+
+// Automatically correct syntax/parenthesis issues in Firestore-stored validation scripts
+function sanitizeValidationCommand(cmd: string): string {
+  if (!cmd) return cmd;
+
+  // Step 1: Normalize all literal escaped quotes to unescaped double quotes
+  let clean = cmd.replace(/\\"/g, '"');
+
+  // Step 2: Standardize check subshell formatting
+  const regex = /\[\s*"\$\(\(?\s*(.+?)\s*\)\s*\|\s*tr\s+'\[:upper:\]'\s+'\[:lower:\]'\s*\)"\s*=\s*"(.+?)"\s*\]/gi;
+
+  let sanitized = clean.replace(regex, (match, script, expected) => {
+    let cleanScript = script.trim();
+    const cleanExpected = expected.trim();
+
+    // Strip leading parenthesis if it was mismatched due to regex capturing
+    if (cleanScript.startsWith('(')) {
+      cleanScript = cleanScript.slice(1).trim();
+    }
+
+    return `[ "$( ( ${cleanScript} ) | tr '[:upper:]' '[:lower:]' )" = "${cleanExpected}" ]`;
+  });
+
+  return sanitized;
 }

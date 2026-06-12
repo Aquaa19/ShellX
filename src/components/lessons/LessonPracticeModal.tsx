@@ -54,6 +54,70 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
 
   const [activeTab, setActiveTab] = useState<'terminal' | 'checklist'>('checklist');
 
+  // Timer state
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [hasAlertedTimeOver, setHasAlertedTimeOver] = useState<boolean>(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Initialize and run timer
+  useEffect(() => {
+    if (visible && activeLessonData) {
+      const minutes = activeLessonData.estimatedMinutes || 10;
+      const initialSeconds = minutes * 60;
+      setTimeLeft(initialSeconds);
+      setHasAlertedTimeOver(false);
+
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+
+      const isComplete = activeLessonData.state === 'complete';
+
+      // Only run timer for non-theory lessons that are not yet complete
+      if (activeLessonData.type !== 'theory_only' && !isComplete) {
+        timerRef.current = setInterval(() => {
+          setTimeLeft((prev) => {
+            if (prev <= 1) {
+              if (timerRef.current) {
+                clearInterval(timerRef.current);
+                timerRef.current = null;
+              }
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      }
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [visible, activeLessonData?.id, activeLessonData?.state]);
+
+  // Alert when time is over
+  useEffect(() => {
+    if (timeLeft === 0 && visible && activeLessonData && activeLessonData.type !== 'theory_only' && !hasAlertedTimeOver) {
+      setHasAlertedTimeOver(true);
+      Alert.alert(
+        "Time's Up!",
+        "You have run out of the estimated time for this lesson. No pressure! You can take all the time you need to complete the checklist and practice.",
+        [{ text: "Continue" }]
+      );
+    }
+  }, [timeLeft, visible, activeLessonData, hasAlertedTimeOver]);
+
+  // Format time (MM:SS)
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const handleTabChange = (tab: 'terminal' | 'checklist') => {
     setActiveTab(tab);
     if (tab === 'checklist') {
@@ -472,6 +536,23 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
               }
               rightSlot={
                 <View style={styles.headerRight}>
+                  {activeLessonData && activeLessonData.type !== 'theory_only' && (
+                    <View style={[styles.timerContainer, timeLeft === 0 && styles.timerWarning]}>
+                      <MaterialIcon 
+                        name="schedule" 
+                        size={16} 
+                        color={timeLeft === 0 ? Theme.colors.semantic.error : Theme.colors.syntax.orange} 
+                        style={{ marginRight: 4 }} 
+                      />
+                      <MonoText 
+                        size={12} 
+                        color={timeLeft === 0 ? Theme.colors.semantic.error : Theme.colors.syntax.orange} 
+                        weight="bold"
+                      >
+                        {formatTime(timeLeft)}
+                      </MonoText>
+                    </View>
+                  )}
                   <ConnectionBadge state={connectionState} style={styles.badge} />
                   <IconButton 
                     icon={<MaterialIcon name="assignment" size={24} color={Theme.colors.text.primary} />}
@@ -728,6 +809,8 @@ export const LessonPracticeModal: React.FC<LessonPracticeModalProps> = ({ visibl
                     bottomPadding={0}
                     selection={inputSelection}
                     onSelectionChange={handleSelectionChange}
+                    isCtrlActive={isCtrlActive}
+                    isAltActive={isAltActive}
                   />
                 ) : (
                   <View style={styles.checklistContainer}>
@@ -801,6 +884,21 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  timerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    paddingHorizontal: Theme.spacing.sm,
+    paddingVertical: Theme.spacing.xs,
+    borderRadius: Theme.borderRadius.default,
+    marginRight: Theme.spacing.md,
+    borderWidth: Theme.borderWidth.hairline,
+    borderColor: Theme.colors.border.subtle,
+  },
+  timerWarning: {
+    backgroundColor: 'rgba(239, 68, 68, 0.08)',
+    borderColor: 'rgba(239, 68, 68, 0.2)',
   },
   badge: {
     marginRight: Theme.spacing.sm,
