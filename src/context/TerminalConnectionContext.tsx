@@ -99,9 +99,23 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
             const cleanContent = stripAnsiCodes(content).trim();
             backgroundPromise.current?.resolve(cleanContent);
 
+            // FIX: Recover trailing data (like the returned bash prompt) so it doesn't vanish
+            const remainingText = bufferText.substring(endIdx + endMarker.length).replace(/^\r?\n/, '');
+
             activeBackgroundId.current = null;
             backgroundBuffer.current = '';
             backgroundPromise.current = null;
+
+            if (remainingText.trim()) {
+              const parsed = parseTerminalOutput(remainingText, '');
+              if (parsed.length > 0) {
+                setOutputLines((prev) => {
+                  const combined = [...prev, ...parsed];
+                  return combined.length > 500 ? combined.slice(-500) : combined;
+                });
+              }
+            }
+            return;
           }
           return; // Prevents background logs from polluting terminal lists
         }
@@ -237,15 +251,11 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
         }
       }, 15000);
 
-      // Check if command is multi-line
-      const isMultiLine = command.includes('\n') || command.includes('\r');
-      let wrapped = '';
-      if (isMultiLine) {
-        const cleanCommand = command.replace(/\r?\n/g, '\r');
-        wrapped = `echo 'START'_"${id}"\r${cleanCommand}\recho 'END'_"${id}"\r`;
-      } else {
-        wrapped = `echo 'START'_"${id}" ; ${command} ; echo 'END'_"${id}"\r`;
-      }
+      // FIX: Wrap multi-line commands in a bash group block to prevent intermediate PTY echoing
+      const cleanCommand = command.replace(/\r?\n/g, ' ; ');
+      // USE PARENTHESES instead of curly braces
+      const wrapped = `echo 'START'_"${id}" ; ( ${cleanCommand} ) ; echo 'END'_"${id}"\r`;
+      
       terminalSocket.send(wrapped);
     });
   }, [connectionState]);
@@ -274,12 +284,14 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
     }
   }, [connect, disconnect, serverConfig, user, connectionState]);
 
-  // Safe teardown when context goes out of scope
+  // Auto-connect ONLY once on mount to prevent infinite UI glitching
   useEffect(() => {
-    return () => {
-      terminalSocket.disconnect();
-    };
-  }, []);
+    if (user && serverConfig.ip && connectionState === 'offline') {
+      connect(serverConfig, user.uid);
+    }
+    // We intentionally removed 'connectionState' and 'serverConfig' from the 
+    // dependency array below. This guarantees React will NEVER auto-loop the connection!
+  }, [user]);
 
   return (
     <TerminalConnectionContext.Provider

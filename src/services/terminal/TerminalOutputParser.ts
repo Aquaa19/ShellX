@@ -1,8 +1,8 @@
 import { TerminalLine, TerminalLineType } from '../../types';
 
 export function stripAnsiCodes(raw: string): string {
-  // Matches all ANSI escape sequences (CSI, character sets, keypad modes, etc.)
-  const pattern = '[\\u001b\\u009b][[\\]()#;?]*((?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*)?[a-zA-Z\\d_|~<>=-]';
+  // Add a double-backslash before the opening bracket inside the character class
+  const pattern = '[\\u001b\\u009b][\\[\\]()#;?]*((?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*)?[a-zA-Z\\d_|~<>=-]';
   const ansiRegex = new RegExp(pattern, 'g');
   return raw.replace(ansiRegex, '').replace(/\r/g, '');
 }
