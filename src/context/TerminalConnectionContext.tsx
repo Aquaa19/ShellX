@@ -251,10 +251,17 @@ export const TerminalConnectionContextProvider: React.FC<{ children: React.React
         }
       }, 15000);
 
-      // FIX: Wrap multi-line commands in a bash group block to prevent intermediate PTY echoing
-      const cleanCommand = command.replace(/\r?\n/g, ' ; ');
-      // USE PARENTHESES instead of curly braces
-      const wrapped = `echo 'START'_"${id}" ; ( ${cleanCommand} ) ; echo 'END'_"${id}"\r`;
+      let wrapped: string;
+      if (command.includes('<<')) {
+        // If the command contains a heredoc redirection, we MUST use actual newlines (\n) instead of semicolons
+        const cleanCommand = command.replace(/\r/g, ''); // normalize CR
+        wrapped = `echo 'START'_"${id}"\n( ${cleanCommand}\n)\necho 'END'_"${id}"\r`;
+      } else {
+        // Otherwise, we can replace newlines with semicolons to keep simple multi-line validation scripts clean
+        const cleanCommand = command.replace(/\r?\n/g, ' ; ');
+        wrapped = `echo 'START'_"${id}" ; ( ${cleanCommand} ) ; echo 'END'_"${id}"\r`;
+      }
+
       
       terminalSocket.send(wrapped);
     });

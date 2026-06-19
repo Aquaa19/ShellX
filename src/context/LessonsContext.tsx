@@ -453,20 +453,13 @@ function sanitizeValidationCommand(cmd: string): string {
   // Step 1: Normalize all literal escaped quotes to unescaped double quotes
   let clean = cmd.replace(/\\"/g, '"');
 
-  // Step 2: Standardize check subshell formatting
-  const regex = /\[\s*"\$\(\(?\s*(.+?)\s*\)\s*\|\s*tr\s+'\[:upper:\]'\s+'\[:lower:\]'\s*\)"\s*=\s*"(.+?)"\s*\]/gi;
+  // Step 2: Extract and simplify the inner validation command, bypassing the verbose casing wrappers
+  const wrapperRegex = /\[\s*"\$\(\s*\(\s*(.+?)\s+&&\s+echo\s+["']?(?:MATCH|OK)["']?\s+\|\|\s+echo\s+["']?(?:NO_MATCH|FAIL)["']?\s*\)\s*\|\s*tr\s+['"]\[:upper:\]['"]\s+['"]\[:lower:\]['"]\s*\)"\s*=\s*["'](?:match|ok)["']\s*\]/gi;
 
-  let sanitized = clean.replace(regex, (match, script, expected) => {
-    let cleanScript = script.trim();
-    const cleanExpected = expected.trim();
-
-    // Strip leading parenthesis if it was mismatched due to regex capturing
-    if (cleanScript.startsWith('(')) {
-      cleanScript = cleanScript.slice(1).trim();
-    }
-
-    return `[ "$( ( ${cleanScript} ) | tr '[:upper:]' '[:lower:]' )" = "${cleanExpected}" ]`;
+  let sanitized = clean.replace(wrapperRegex, (match, innerScript) => {
+    return innerScript.trim();
   });
 
   return sanitized;
 }
+
